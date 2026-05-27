@@ -194,7 +194,7 @@ export default function ContactPage() {
           <motion.div
             variants={{
               hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } }
             }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(255,255,255,0.05)] mb-8"
           >
@@ -226,7 +226,7 @@ export default function ContactPage() {
           <motion.h1
             variants={{
               hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
             }}
             className="text-5xl sm:text-6xl md:text-8xl font-black text-white tracking-tighter mb-6 leading-[1.05]"
           >
@@ -239,7 +239,7 @@ export default function ContactPage() {
           <motion.p
             variants={{
               hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
             }}
             className="text-base sm:text-lg text-zinc-400 font-light max-w-2xl mx-auto mb-12 leading-relaxed"
           >
@@ -250,7 +250,7 @@ export default function ContactPage() {
           <motion.div
             variants={{
               hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
             }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
@@ -303,7 +303,7 @@ export default function ContactPage() {
               key={i}
               variants={{
                 hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } }
               }}
               className="h-full"
             >
