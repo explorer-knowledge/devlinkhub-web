@@ -1,4 +1,4 @@
-# Devlink
+# devlink-web
 
 Welcome to the Devlink repository. This is a monorepo containing all components of the Devlink platform:
 
