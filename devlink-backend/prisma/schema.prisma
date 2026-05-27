@@ -1,0 +1,227 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:../devlink.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  role         String   @default("Fullstack Developer")
+  githubUrl    String?
+  avatar       String?
+  bio          String?
+  skills       String?  // JSON string array of skills
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  projects     Project[]
+  rsvps        EventRSVP[]
+  pitchesSent  Pitch[]    @relation("PitchesSent")
+  pitchesRecv  Pitch[]    @relation("PitchesReceived")
+}
+
+model Project {
+  id              String   @id @default(uuid())
+  name            String
+  category        String
+  description     String
+  longDescription String?
+  tech            String   // JSON string array of technologies
+  stars           Int      @default(0)
+  forks           Int      @default(0)
+  contributors    Int      @default(1)
+  status          String   @default("Active Dev")
+  color           String   @default("#00F0FF")
+  githubUrl       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Owner User
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+  
+  // Relations
+  issues          ProjectIssue[]
+  openings        ProjectOpening[]
+}
+
+model ProjectIssue {
+  id         String   @id @default(uuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title      String
+  difficulty String   // Easy, Medium, Hard
+  tags       String   // JSON string array of tags
+  claimedBy  String?
+}
+
+model ProjectOpening {
+  id         String   @id @default(uuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  role       String
+  commitment String
+  equity     String
+}
+
+model Startup {
+  id          String   @id @default(uuid())
+  name        String
+  tagline     String
+  description String
+  sector      String   // AI, Web3, SaaS, DevTools, BioTech
+  stage       String   // Pre-seed, Seed, Series A, Bootstrapped
+  raised      String
+  teamSize    Int      @default(1)
+  tech        String   // JSON string array
+  color       String   @default("#00F0FF")
+  logoText    String
+  founderName String
+  founderAvatar String
+  founderHandle String
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  jobs        StartupJob[]
+}
+
+model StartupJob {
+  id        String  @id @default(uuid())
+  startupId String
+  startup   Startup @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  role      String
+  salary    String
+  equity    String
+  type      String  // Full-Time, Part-Time, Contract
+}
+
+model Event {
+  id             String   @id // e.g. "ai-agriculture-summit-2026"
+  title          String
+  desc           String
+  longDesc       String?
+  date           String
+  month          String?
+  time           String?
+  location       String
+  type           String   // Workshop, Meetup, Hackathon
+  color          String   @default("#00FFA3")
+  tags           String   // JSON string array of tags
+  capacity       Int      @default(100)
+  requirements   String?  // JSON string array of requirements
+  status         String   @default("open") // open, live, completed
+  photosCount    Int      @default(0)
+  videoRecap     Boolean  @default(false)
+  videoUrl       String?
+  images         String?  // JSON string array of image URLs
+  attendeesCount Int      @default(0)
+  projectsBuilt  Int      @default(0)
+  commitsLine    String?
+  linesOfCode    String?
+  
+  // Relations
+  speakers       EventSpeaker[]
+  agenda         EventAgenda[]
+  projects       EventProject[]
+  rsvps          EventRSVP[]
+}
+
+model EventSpeaker {
+  id      String @id @default(uuid())
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name    String
+  role    String
+  avatar  String
+  bio     String
+}
+
+model EventAgenda {
+  id          String  @id @default(uuid())
+  eventId     String
+  event       Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  time        String
+  title       String
+  description String
+  speaker     String?
+}
+
+model EventProject {
+  id           String @id @default(uuid())
+  eventId      String
+  event        Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  name         String
+  description  String
+  link         String?
+  contributors String // JSON string array of contributors
+}
+
+model EventRSVP {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, eventId])
+}
+
+model Inquiry {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  category     String   // PARTNERSHIPS, SPONSORSHIPS, SUPPORT
+  subject      String
+  message      String
+  organization String?
+  status       String   @default("New") // New, In Progress, Resolved
+  timestamp    DateTime @default(now())
+  
+  // Relations
+  replies      InquiryReply[]
+}
+
+model InquiryReply {
+  id        String   @id @default(uuid())
+  inquiryId String
+  inquiry   Inquiry  @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  sender    String
+  text      String
+  timestamp DateTime @default(now())
+}
+
+model Pitch {
+  id          String   @id @default(uuid())
+  senderId    String
+  sender      User     @relation("PitchesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  recipientId String
+  recipient   User     @relation("PitchesReceived", fields: [recipientId], references: [id], onDelete: Cascade)
+  message     String
+  portfolio   String
+  discord     String
+  status      String   @default("Pending") // Pending, Accepted, Rejected
+  createdAt   DateTime @default(now())
+}
+
+model AdminSetting {
+  key   String @id
+  value String // JSON string representation of value
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  status    String   @default("draft") // draft, published
+  active    Boolean  @default(false)
+  timestamp DateTime @default(now())
+}
