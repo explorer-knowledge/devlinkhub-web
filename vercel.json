@@ -1,0 +1,6 @@
+{
+  "framework": "nextjs",
+  "installCommand": "cd devlink-frontend && npm install",
+  "buildCommand": "cd devlink-frontend && npm run build",
+  "outputDirectory": "devlink-frontend/.next"
+}
