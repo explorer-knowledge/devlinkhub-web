@@ -1,9 +1,17 @@
 import { Request, Response } from "express";
 import prisma from "../db/prismaInstance.js";
+import redis, { CacheKeys, CACHE_TTL } from "../db/redisClient.js";
 
 // ─── GET /api/startups ───────────────────────────────────────────────────────
 
 export const getStartups = async (_req: Request, res: Response): Promise<void> => {
+  const cacheKey = CacheKeys.startupsAll();
+
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) { res.json(JSON.parse(cached)); return; }
+  } catch (err) { console.error("Startups cache read error:", err); }
+
   try {
     const dbStartups = await prisma.startup.findMany({ include: { jobs: true } });
     const formatted = dbStartups.map(s => ({
@@ -15,6 +23,8 @@ export const getStartups = async (_req: Request, res: Response): Promise<void> =
         handle: s.founderHandle,
       },
     }));
+
+    await redis.setex(cacheKey, CACHE_TTL.STARTUPS, JSON.stringify(formatted)).catch(() => {});
     res.json(formatted);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -57,6 +67,9 @@ export const createStartup = async (req: Request, res: Response): Promise<void> 
         });
       }
     }
+
+    // Invalidate list cache
+    await redis.del(CacheKeys.startupsAll()).catch(() => {});
 
     res.status(201).json(startup);
   } catch (error: any) {

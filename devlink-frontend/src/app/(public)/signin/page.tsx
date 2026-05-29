@@ -47,7 +47,7 @@ export default function LoginPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:10000/api/auth/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -277,7 +277,7 @@ export default function LoginPage() {
 
           {/* Google and GitHub buttons in a single row */}
           <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3">
-            <a href="http://localhost:10000/api/auth/google" className="h-12 flex items-center justify-center gap-2 bg-white/[0.03] hover:bg-white/[0.08] text-white font-medium rounded-xl border border-white/10 transition-all active:scale-[0.98]">
+            <a href="/api/auth/google" className="h-12 flex items-center justify-center gap-2 bg-white/[0.03] hover:bg-white/[0.08] text-white font-medium rounded-xl border border-white/10 transition-all active:scale-[0.98]">
               <svg viewBox="0 0 24 24" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -286,7 +286,7 @@ export default function LoginPage() {
               </svg>
               Sign in with Google
             </a>
-            <a href="http://localhost:10000/api/auth/github" className="h-12 flex items-center justify-center gap-2 bg-white/[0.03] hover:bg-white/[0.08] text-white font-medium rounded-xl border border-white/10 transition-all active:scale-[0.98]">
+            <a href="/api/auth/github" className="h-12 flex items-center justify-center gap-2 bg-white/[0.03] hover:bg-white/[0.08] text-white font-medium rounded-xl border border-white/10 transition-all active:scale-[0.98]">
               <Github size={18} />
               Sign in with GitHub
             </a>

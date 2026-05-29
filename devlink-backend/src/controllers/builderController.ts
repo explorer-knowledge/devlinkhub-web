@@ -1,9 +1,17 @@
 import { Request, Response } from "express";
 import prisma from "../db/prismaInstance.js";
+import redis, { CacheKeys, CACHE_TTL } from "../db/redisClient.js";
 
 // ─── GET /api/builders ───────────────────────────────────────────────────────
 
 export const getBuilders = async (_req: Request, res: Response): Promise<void> => {
+  const cacheKey = CacheKeys.buildersAll();
+
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) { res.json(JSON.parse(cached)); return; }
+  } catch (err) { console.error("Builders cache read error:", err); }
+
   try {
     const dbUsers = await prisma.user.findMany({
       where: { NOT: { role: "Administrator" } },
@@ -21,6 +29,7 @@ export const getBuilders = async (_req: Request, res: Response): Promise<void> =
       socials: { github: u.githubUrl || "https://github.com", linkedin: "https://linkedin.com" },
     }));
 
+    await redis.setex(cacheKey, CACHE_TTL.BUILDERS, JSON.stringify(formatted)).catch(() => {});
     res.json(formatted);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

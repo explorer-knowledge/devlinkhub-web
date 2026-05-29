@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import prisma from "../db/prismaInstance.js";
+import { createHash } from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import prisma from "../db/prismaInstance.js";
+import redis, { CacheKeys, CACHE_TTL } from "../db/redisClient.js";
 import { AuthRequest } from "../middleware/authMiddleware.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "devlink_secret_signature_key_2026";
@@ -45,6 +47,9 @@ export const RegisterController = async (req: Request, res: Response): Promise<v
         avatar: avatar || (firstName ? firstName.substring(0, 2).toUpperCase() : username.substring(0, 2).toUpperCase()),
       },
     });
+
+    // Invalidate builders cache (new user = new builder entry)
+    await redis.del(CacheKeys.buildersAll()).catch(() => {});
 
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "24h" });
 
@@ -125,7 +130,42 @@ export const LoginController = async (req: Request, res: Response): Promise<void
   }
 };
 
+// ─── LOGOUT ───────────────────────────────────────────────────────────────────
+// Blacklists the JWT in Redis so it cannot be reused even before expiry.
+
+export const LogoutController = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const token = req.token;
+    if (!token) {
+      res.status(400).json({ error: "No token provided" });
+      return;
+    }
+
+    // Decode token to get remaining TTL
+    const decoded = jwt.decode(token) as { exp?: number };
+    const nowSec = Math.floor(Date.now() / 1000);
+    const remainingSec = decoded?.exp ? decoded.exp - nowSec : 86400; // fallback 24h
+
+    if (remainingSec > 0) {
+      const tokenHash = createHash("sha256").update(token).digest("hex");
+      // Store in blacklist with TTL = remaining lifetime of the token
+      await redis.setex(CacheKeys.tokenBlacklist(tokenHash), remainingSec, "1");
+    }
+
+    // Also clear the user's profile cache
+    if (req.user?.userId) {
+      await redis.del(CacheKeys.userProfile(req.user.userId)).catch(() => {});
+    }
+
+    res.json({ message: "Logged out successfully" });
+  } catch (error: any) {
+    console.error("Logout error:", error);
+    res.status(500).json({ error: "Logout failed" });
+  }
+};
+
 // ─── PROFILE ──────────────────────────────────────────────────────────────────
+// Reads from Redis cache first; falls back to Prisma on cache miss.
 
 export const ProfileController = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -134,6 +174,20 @@ export const ProfileController = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
+    const cacheKey = CacheKeys.userProfile(req.user.userId);
+
+    // ── Cache hit ─────────────────────────────────────────────────────────────
+    try {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        res.json({ user: JSON.parse(cached), fromCache: true });
+        return;
+      }
+    } catch (redisErr) {
+      console.error("Profile cache read error:", redisErr);
+    }
+
+    // ── Cache miss: query Prisma ───────────────────────────────────────────────
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
       select: {
@@ -156,6 +210,13 @@ export const ProfileController = async (req: AuthRequest, res: Response): Promis
     if (!user) {
       res.status(404).json({ error: "User not found" });
       return;
+    }
+
+    // Store in cache
+    try {
+      await redis.setex(cacheKey, CACHE_TTL.PROFILE, JSON.stringify(user));
+    } catch (redisErr) {
+      console.error("Profile cache write error:", redisErr);
     }
 
     res.json({ user });

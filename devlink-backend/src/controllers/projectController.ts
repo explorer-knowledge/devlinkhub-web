@@ -1,9 +1,17 @@
 import { Request, Response } from "express";
 import prisma from "../db/prismaInstance.js";
+import redis, { CacheKeys, CACHE_TTL } from "../db/redisClient.js";
 
 // ─── GET /api/projects ───────────────────────────────────────────────────────
 
 export const getProjects = async (_req: Request, res: Response): Promise<void> => {
+  const cacheKey = CacheKeys.projectsAll();
+
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) { res.json(JSON.parse(cached)); return; }
+  } catch (err) { console.error("Projects cache read error:", err); }
+
   try {
     const dbProjects = await prisma.project.findMany({
       include: { issues: true, openings: true },
@@ -13,6 +21,8 @@ export const getProjects = async (_req: Request, res: Response): Promise<void> =
       tech: JSON.parse(p.tech),
       issues: p.issues.map(i => ({ ...i, tags: JSON.parse(i.tags) })),
     }));
+
+    await redis.setex(cacheKey, CACHE_TTL.PROJECTS, JSON.stringify(formatted)).catch(() => {});
     res.json(formatted);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -22,6 +32,13 @@ export const getProjects = async (_req: Request, res: Response): Promise<void> =
 // ─── GET /api/projects/:id ───────────────────────────────────────────────────
 
 export const getProjectById = async (req: Request, res: Response): Promise<void> => {
+  const cacheKey = CacheKeys.projectById(req.params.id);
+
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) { res.json(JSON.parse(cached)); return; }
+  } catch (err) { console.error("Project by ID cache read error:", err); }
+
   try {
     const project = await prisma.project.findUnique({
       where: { id: req.params.id },
@@ -36,6 +53,8 @@ export const getProjectById = async (req: Request, res: Response): Promise<void>
       tech: JSON.parse(project.tech),
       issues: project.issues.map(i => ({ ...i, tags: JSON.parse(i.tags) })),
     };
+
+    await redis.setex(cacheKey, CACHE_TTL.PROJECTS, JSON.stringify(formatted)).catch(() => {});
     res.json(formatted);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -98,6 +117,9 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
       },
     });
 
+    // Invalidate list cache
+    await redis.del(CacheKeys.projectsAll()).catch(() => {});
+
     res.status(201).json(project);
   } catch (error: any) {
     console.error("Create project error:", error);
@@ -130,6 +152,13 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
         contributors: contributors ? Number(contributors) : undefined,
       },
     });
+
+    // Invalidate list and individual caches
+    await Promise.all([
+      redis.del(CacheKeys.projectsAll()),
+      redis.del(CacheKeys.projectById(req.params.id)),
+    ]).catch(() => {});
+
     res.json(project);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -141,6 +170,12 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
 export const deleteProject = async (req: Request, res: Response): Promise<void> => {
   try {
     await prisma.project.delete({ where: { id: req.params.id } });
+
+    await Promise.all([
+      redis.del(CacheKeys.projectsAll()),
+      redis.del(CacheKeys.projectById(req.params.id)),
+    ]).catch(() => {});
+
     res.json({ success: true });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
