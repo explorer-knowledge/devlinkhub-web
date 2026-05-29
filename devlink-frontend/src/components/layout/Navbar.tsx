@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Github, Menu, X, Zap, ArrowRight, TerminalSquare } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -14,43 +15,20 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string | null>(null);
 
-  // Scroll detection & Scroll Spy for active links
+  // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
-      // Toggle floating nav state
       setNavScrolled(window.scrollY > 40);
-
-      // Scroll Spy logic to update active link
-      const sections = NAV_LINKS.map((link) => link.href.substring(1));
-      let currentSection = null;
-
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          // If the section is within the top half of the viewport
-          if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
-            currentSection = `#${section}`;
-          }
-        }
-      }
-
-      // Fallback to null if at the absolute top
-      if (window.scrollY < 100) currentSection = null;
-      
-      if (currentSection !== activeLink) {
-        setActiveLink(currentSection);
-      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll(); // Initial check
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeLink]);
+  }, []);
 
   // Keyboard accessibility
   useEffect(() => {
@@ -113,34 +91,28 @@ export default function Navbar() {
           {/* ── Desktop Nav ── */}
           <nav className="hidden lg:flex items-center gap-1.5 relative z-10">
             {NAV_LINKS.map((link) => {
-              const isActive = activeLink === link.href;
+              const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.label}
                   href={link.href}
-                  onClick={() => setActiveLink(link.href)}
                   className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 group ${
                     isActive
-                      ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
-                      : "text-zinc-400 hover:text-white"
+                      ? "text-black shadow-sm"
+                      : "text-zinc-400 hover:text-black"
                   }`}
                 >
                   <span className="relative z-10">{link.label}</span>
 
                   {/* Hover background pill */}
-                  <span className="absolute inset-0 rounded-lg bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="absolute inset-0 rounded-lg bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   {/* Active background pill & Underline glow */}
                   {isActive && (
                     <motion.div
                       layoutId="nav-active-pill"
-                      className="absolute inset-0 rounded-lg bg-white/[0.06] border border-white/[0.08]"
-                    >
-                      <motion.div 
-                        layoutId="nav-active-glow"
-                        className="absolute -bottom-[1px] left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-[#00F0FF] to-[#7B61FF] rounded-full shadow-[0_0_12px_rgba(0,240,255,0.8)]"
-                      />
-                    </motion.div>
+                      className="absolute inset-0 rounded-lg bg-white"
+                    />
                   )}
                 </Link>
               );
@@ -260,11 +232,15 @@ export default function Navbar() {
                     >
                       <Link
                         href={link.href}
-                        onClick={() => { setActiveLink(link.href); setMobileMenuOpen(false); }}
-                        className="flex items-center justify-between px-4 py-4 rounded-xl text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-all duration-200 group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center justify-between px-4 py-4 rounded-xl transition-all duration-200 group ${
+                          pathname === link.href 
+                            ? "bg-white text-black font-bold shadow-md"
+                            : "text-zinc-400 hover:text-black hover:bg-white"
+                        }`}
                       >
-                        <span className="text-[15px] font-semibold">{link.label}</span>
-                        <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-[#00F0FF]" />
+                        <span className="text-[15px]">{link.label}</span>
+                        <ArrowRight size={16} className={`transition-all ${pathname === link.href ? "text-black" : "opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 text-black"}`} />
                       </Link>
                     </motion.div>
                   ))}

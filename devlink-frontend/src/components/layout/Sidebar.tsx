@@ -10,7 +10,6 @@ import {
 
 const navItems = [
   { label: "Overview",      href: "/dashboard",              icon: LayoutDashboard },
-  { label: "Profile",       href: "/dashboard/profile",      icon: User },
   { label: "My Projects",   href: "/dashboard/projects",     icon: FolderKanban },
   { label: "Tasks",         href: "/dashboard/tasks",        icon: CheckSquare },
   { label: "Leaderboard",   href: "/dashboard/leaderboard",  icon: Trophy },
@@ -36,45 +35,45 @@ export default function Sidebar() {
       </div>
 
       {/* User quick card */}
-      <div className="mx-3 mt-4 p-3 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] flex items-center gap-3">
+      <Link href="/dashboard/profile" className="mx-3 mt-4 mb-[10px] p-3 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] flex items-center gap-3 hover:bg-white/5 transition-colors group cursor-pointer">
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#3ABEFF] to-[#60A5FA] flex items-center justify-center text-black font-bold text-sm">
           A
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-white truncate">Alex Chen</p>
+          <p className="text-sm font-semibold text-white truncate group-hover:text-[#3ABEFF] transition-colors">Alex Chen</p>
           <p className="text-xs text-[var(--muted)] truncate">Full-Stack Dev</p>
         </div>
-        <ChevronRight size={14} className="text-[var(--muted)] ml-auto shrink-0" />
-      </div>
+        <ChevronRight size={14} className="text-[var(--muted)] ml-auto shrink-0 group-hover:translate-x-1 transition-transform" />
+      </Link>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 flex flex-col gap-0.5">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted)] px-3 mb-2">
-          Main
-        </p>
+      <nav className="flex-1 overflow-y-auto px-3 py-2 flex flex-col gap-0.5">
         {navItems.map(({ label, href, icon: Icon }) => (
           <Link
             key={href}
             href={href}
-            className={`sidebar-link ${pathname === href ? "active" : ""}`}
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              pathname === href 
+                ? "bg-white text-black shadow-sm" 
+                : "text-zinc-400 hover:bg-white hover:text-black"
+            }`}
           >
-            <Icon size={16} />
-            {label}
+            <Icon size={18} className="shrink-0" />
+            <span className="truncate">{label}</span>
           </Link>
         ))}
 
-        <div className="divider my-3" />
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted)] px-3 mb-2">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--muted)] px-3 py-[5px] my-[4px]">
           Explore
         </p>
-        <Link href="/projects" className="sidebar-link">
-          <GitBranch size={16} /> Projects
+        <Link href="/projects" className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/projects' ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:bg-white hover:text-black'}`}>
+          <GitBranch size={18} className="shrink-0" /> <span className="truncate">Projects</span>
         </Link>
-        <Link href="/guilds" className="sidebar-link">
-          <Users size={16} /> Guilds
+        <Link href="/guilds" className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/guilds' ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:bg-white hover:text-black'}`}>
+          <Users size={18} className="shrink-0" /> <span className="truncate">Guilds</span>
         </Link>
-        <Link href="/hackathons" className="sidebar-link">
-          <Zap size={16} /> Hackathons
+        <Link href="/hackathons" className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/hackathons' ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:bg-white hover:text-black'}`}>
+          <Zap size={18} className="shrink-0" /> <span className="truncate">Hackathons</span>
         </Link>
       </nav>
 
@@ -84,15 +83,19 @@ export default function Sidebar() {
           <Link
             key={href}
             href={href}
-            className={`sidebar-link ${pathname === href ? "active" : ""}`}
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              pathname === href 
+                ? "bg-white text-black shadow-sm" 
+                : "text-zinc-400 hover:bg-white hover:text-black"
+            }`}
           >
-            <Icon size={16} />
-            {label}
+            <Icon size={18} className="shrink-0" />
+            <span className="truncate">{label}</span>
           </Link>
         ))}
-        <button className="sidebar-link text-red-400 hover:text-red-300 hover:bg-[rgba(248,113,113,0.08)]">
-          <LogOut size={16} />
-          Sign Out
+        <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-red-400 hover:text-red-300 hover:bg-[rgba(248,113,113,0.08)]">
+          <LogOut size={18} className="shrink-0" />
+          <span className="truncate">Sign Out</span>
         </button>
       </div>
     </aside>
