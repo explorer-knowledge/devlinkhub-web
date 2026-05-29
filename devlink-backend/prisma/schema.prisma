@@ -1,6 +1,6 @@
 datasource db {
-  provider = "sqlite"
-  url      = "file:../devlink.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -9,10 +9,14 @@ generator client {
 
 model User {
   id           String   @id @default(uuid())
-  name         String
-  username     String   @unique
+  name         String?
+  username     String?  @unique
   email        String   @unique
-  passwordHash String
+  passwordHash String?
+  firstName    String?
+  lastName     String?
+  provider     String?  // 'local', 'google', 'github'
+  providerId   String?  // OAuth provider user ID
   role         String   @default("Fullstack Developer")
   githubUrl    String?
   avatar       String?
@@ -20,12 +24,14 @@ model User {
   skills       String?  // JSON string array of skills
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
+
   // Relations
   projects     Project[]
   rsvps        EventRSVP[]
   pitchesSent  Pitch[]    @relation("PitchesSent")
   pitchesRecv  Pitch[]    @relation("PitchesReceived")
+
+  @@map("users")
 }
 
 model Project {
