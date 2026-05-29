@@ -37,10 +37,14 @@ export const metadata: Metadata = {
     description: "Build. Collaborate. Ship. Grow.",
     type: "website",
   },
+  other: {
+    "darkreader-lock": "true"
+  }
 };
 
 export const viewport = {
   themeColor: "#030303",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

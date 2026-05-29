@@ -137,7 +137,7 @@ export const INITIAL_STARTUPS: Startup[] = [
   }
 ];
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:10000/api";
 
 export async function getMergedStartups(): Promise<Startup[]> {
   try {

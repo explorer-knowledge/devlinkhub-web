@@ -1,7 +1,5 @@
-import { 
-  TerminalSquare, Star, GitFork, Users, ExternalLink, 
-  Activity, Code2, Cpu, Globe2, Database, Search, FolderKanban, Network, HelpCircle 
-} from "lucide-react";
+
+
 
 export interface ProjectIssue {
   id: string;
@@ -161,7 +159,7 @@ export const INITIAL_PROJECTS: Project[] = [
   }
 ];
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:10000/api";
 
 export async function getMergedProjects(): Promise<Project[]> {
   try {

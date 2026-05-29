@@ -32,8 +32,8 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 const allowedOrigins = [
   FRONTEND_URL,
-  "https://juliette-hokey-pacifically.ngrok-free.dev",
 ];
+
 
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());

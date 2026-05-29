@@ -11,7 +11,7 @@ export function configurePassport(): void {
         {
           clientID: process.env.GOOGLE_CLIENT_ID,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-          callbackURL: "/api/auth/google/callback",
+          callbackURL: `${process.env.BACKEND_URL || "http://localhost:10000"}/api/auth/google/callback`,
         },
         async (_accessToken, _refreshToken, profile, done) => {
           try {
@@ -71,7 +71,7 @@ export function configurePassport(): void {
         {
           clientID: process.env.GITHUB_CLIENT_ID,
           clientSecret: process.env.GITHUB_CLIENT_SECRET,
-          callbackURL: "/api/auth/github/callback",
+          callbackURL: `${process.env.BACKEND_URL || "http://localhost:10000"}/api/auth/github/callback`,
         },
         async (_accessToken: string, _refreshToken: string, profile: any, done: any) => {
           try {
