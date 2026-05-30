@@ -84,7 +84,7 @@ export default function GuildsPage() {
              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent" />
              <h2 className="text-3xl font-bold text-white">Can't find your domain?</h2>
              <p className="text-[var(--muted)] max-w-xl mx-auto">
-               The DevLink ecosystem is constantly growing. If you have the expertise, 
+               The DevLinkHub ecosystem is constantly growing. If you have the expertise, 
                you can apply to lead and establish a new specialized guild.
              </p>
              <Button className="h-12 px-8">

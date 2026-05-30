@@ -77,12 +77,12 @@ export default function Navbar() {
             <div className="relative h-7 flex items-center">
               <div className="absolute inset-0 bg-[#00F0FF]/0 group-hover:bg-[#00F0FF]/15 blur-xl transition-all duration-500 rounded-full" />
               <img
-                src="/logos/DevLink_Text_Logo-white.png"
-                alt="DevLink"
+                src="/logos/DevLinkHub_Text_Logo-white.png"
+                alt="DevLinkHub"
                 className="relative h-full w-auto object-contain drop-shadow-[0_0_10px_rgba(0,240,255,0.1)] group-hover:drop-shadow-[0_0_20px_rgba(0,240,255,0.8)] transition-all duration-500"
                 onError={(e) => { 
                   e.currentTarget.style.display = "none";
-                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINK</span>')
+                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINKHUB</span>')
                 }}
               />
             </div>
@@ -122,7 +122,7 @@ export default function Navbar() {
           {/* ── Desktop CTA & Utils ── */}
           <div className="hidden lg:flex items-center gap-4 relative z-10">
             <a
-              href="https://github.com/devlinkorg"
+              href="https://github.com/devlinkhuborg"
               target="_blank"
               rel="noreferrer"
               className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/[0.05] transition-all duration-200 border border-transparent hover:border-white/10"
@@ -153,7 +153,7 @@ export default function Navbar() {
               
               <span className="relative z-10 flex items-center gap-2">
                 <Zap size={14} className="text-[#7B61FF]" fill="#7B61FF" />
-                Join DevLink
+                Join DevLinkHub
               </span>
             </Link>
           </div>
@@ -274,7 +274,7 @@ export default function Navbar() {
                       className="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white text-black font-bold text-[15px] hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-[0.98]"
                     >
                       <Zap size={16} className="text-[#7B61FF]" fill="#7B61FF" />
-                      Join DevLink
+                      Join DevLinkHub
                     </Link>
                   </motion.div>
                 </div>

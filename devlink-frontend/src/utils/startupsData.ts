@@ -153,9 +153,9 @@ export async function getMergedStartups(): Promise<Startup[]> {
     return INITIAL_STARTUPS;
   }
   
-  const stored = localStorage.getItem("devlink_custom_startups");
+  const stored = localStorage.getItem("devlinkhub_custom_startups");
   if (!stored) {
-    localStorage.setItem("devlink_custom_startups", JSON.stringify(INITIAL_STARTUPS));
+    localStorage.setItem("devlinkhub_custom_startups", JSON.stringify(INITIAL_STARTUPS));
     return INITIAL_STARTUPS;
   }
   
@@ -168,7 +168,7 @@ export async function getMergedStartups(): Promise<Startup[]> {
 
 export async function saveStartups(startups: Startup[]) {
   if (typeof window !== "undefined") {
-    localStorage.setItem("devlink_custom_startups", JSON.stringify(startups));
+    localStorage.setItem("devlinkhub_custom_startups", JSON.stringify(startups));
   }
 
   try {

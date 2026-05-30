@@ -22,7 +22,7 @@ export default function LoginPage() {
   // Fake telemetry feed for returning users
   const [telemetryLines, setTelemetryLines] = useState<string[]>([
     "INIT_REQ: Checking local cache for active tokens...",
-    "PING: Node devlink-auth-us-east-1 active."
+    "PING: Node devlinkhub-auth-us-east-1 active."
   ]);
 
   useEffect(() => {
@@ -101,12 +101,12 @@ export default function LoginPage() {
         <Link href="/" className="relative z-10 inline-flex items-center group w-fit">
           <div className="absolute inset-0 bg-[#00F0FF]/0 group-hover:bg-[#00F0FF]/15 blur-xl transition-all duration-500 rounded-full" />
           <img
-            src="/logos/DevLink_Text_Logo-white.png"
-            alt="DevLink"
+            src="/logos/DevLinkHub_Text_Logo-white.png"
+            alt="DevLinkHub"
             className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(0,240,255,0.1)] transition-all duration-500"
             onError={(e) => { 
               e.currentTarget.style.display = "none";
-              e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINK</span>')
+              e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINKHUB</span>')
             }}
           />
         </Link>
@@ -181,7 +181,7 @@ export default function LoginPage() {
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="w-full flex justify-between items-center md:hidden mb-12 relative z-10">
           <Link href="/" className="inline-flex items-center">
-            <img src="/logos/DevLink_Text_Logo-white.png" alt="DevLink" className="h-6 w-auto" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINK</span>') }} />
+            <img src="/logos/DevLinkHub_Text_Logo-white.png" alt="DevLinkHub" className="h-6 w-auto" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINKHUB</span>') }} />
           </Link>
           <Link href="/" className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400">
             <ArrowLeft size={16} />

@@ -46,7 +46,7 @@ export const INITIAL_PROJECTS: Project[] = [
     contributors: 12,
     status: "Active Sprint",
     color: "#00F0FF",
-    githubUrl: "https://github.com/devlink-labs/nexus-ai",
+    githubUrl: "https://github.com/devlinkhub-labs/nexus-ai",
     issues: [
       { id: "nexus-issue-1", title: "Implement peer gradient validation algorithm", difficulty: "Hard", tags: ["Rust", "P2P"], claimedBy: "" },
       { id: "nexus-issue-2", title: "Add Docker Compose setup for worker nodes", difficulty: "Easy", tags: ["Docker"], claimedBy: "" }
@@ -67,7 +67,7 @@ export const INITIAL_PROJECTS: Project[] = [
     contributors: 8,
     status: "Beta Maint",
     color: "#FF1CF7",
-    githubUrl: "https://github.com/devlink-labs/chainforge",
+    githubUrl: "https://github.com/devlinkhub-labs/chainforge",
     issues: [
       { id: "forge-issue-1", title: "Optimize zk-proof verification gas costs", difficulty: "Hard", tags: ["Solidity", "Cryptography"], claimedBy: "" },
       { id: "forge-issue-2", title: "Refactor bridge widget UI with Tailwind HSL", difficulty: "Medium", tags: ["TypeScript", "Tailwind"], claimedBy: "" }
@@ -88,7 +88,7 @@ export const INITIAL_PROJECTS: Project[] = [
     contributors: 24,
     status: "Production",
     color: "#00FFA3",
-    githubUrl: "https://github.com/devlink-labs/paystream",
+    githubUrl: "https://github.com/devlinkhub-labs/paystream",
     issues: [
       { id: "pay-issue-1", title: "Optimize Kafka consumer lag under spike load", difficulty: "Medium", tags: ["Kafka", "Rust"], claimedBy: "" }
     ],
@@ -108,7 +108,7 @@ export const INITIAL_PROJECTS: Project[] = [
     contributors: 45,
     status: "Active Dev",
     color: "#7B61FF",
-    githubUrl: "https://github.com/devlink-labs/auraui",
+    githubUrl: "https://github.com/devlinkhub-labs/auraui",
     issues: [
       { id: "aura-issue-1", title: "Resolve keyboard trap inside dynamic popover", difficulty: "Medium", tags: ["React", "Accessibility"], claimedBy: "" },
       { id: "aura-issue-2", title: "Document telemetry interaction hooks", difficulty: "Easy", tags: ["Markdown"], claimedBy: "" }
@@ -129,7 +129,7 @@ export const INITIAL_PROJECTS: Project[] = [
     contributors: 18,
     status: "Looking for Maintainers",
     color: "#FFB000",
-    githubUrl: "https://github.com/devlink-labs/edgestore",
+    githubUrl: "https://github.com/devlinkhub-labs/edgestore",
     issues: [
       { id: "edge-issue-1", title: "Build WASM builds pipeline using emscripten", difficulty: "Hard", tags: ["C++", "WASM"], claimedBy: "" }
     ],
@@ -149,7 +149,7 @@ export const INITIAL_PROJECTS: Project[] = [
     contributors: 6,
     status: "Experimental",
     color: "#00F0FF",
-    githubUrl: "https://github.com/devlink-labs/synthvoice",
+    githubUrl: "https://github.com/devlinkhub-labs/synthvoice",
     issues: [
       { id: "synth-issue-1", title: "Reduce model load sizes for mobile browsers", difficulty: "Hard", tags: ["TensorFlow.js", "AI"], claimedBy: "" }
     ],
@@ -175,9 +175,9 @@ export async function getMergedProjects(): Promise<Project[]> {
     return INITIAL_PROJECTS;
   }
   
-  const stored = localStorage.getItem("devlink_custom_projects");
+  const stored = localStorage.getItem("devlinkhub_custom_projects");
   if (!stored) {
-    localStorage.setItem("devlink_custom_projects", JSON.stringify(INITIAL_PROJECTS));
+    localStorage.setItem("devlinkhub_custom_projects", JSON.stringify(INITIAL_PROJECTS));
     return INITIAL_PROJECTS;
   }
   
@@ -190,13 +190,13 @@ export async function getMergedProjects(): Promise<Project[]> {
 
 export async function saveProjects(projects: Project[]) {
   if (typeof window !== "undefined") {
-    localStorage.setItem("devlink_custom_projects", JSON.stringify(projects));
+    localStorage.setItem("devlinkhub_custom_projects", JSON.stringify(projects));
   }
 
   try {
     const lastProj = projects[projects.length - 1];
     if (lastProj && (typeof lastProj.id === "string" && lastProj.id.startsWith("proj-"))) {
-      const storedUser = localStorage.getItem("devlink_auth_user");
+      const storedUser = localStorage.getItem("devlinkhub_auth_user");
       const user = storedUser ? JSON.parse(storedUser) : null;
       await fetch(`${API_BASE}/projects`, {
         method: "POST",

@@ -113,7 +113,7 @@ export default function DashboardPage() {
                   { name: "QuantumStore", role: "Maintainer", status: "Active", time: "2h ago" },
                   { name: "NexusAuth", role: "Contributor", status: "Review", time: "5h ago" },
                   { name: "EtherFlow", role: "Lead", status: "Active", time: "Yesterday" },
-                  { name: "DevLink UI", role: "Maintainer", status: "New", time: "2 days ago" },
+                  { name: "DevLinkHub UI", role: "Maintainer", status: "New", time: "2 days ago" },
                 ].map((proj, i) => (
                   <TableRow key={proj.name} className="group cursor-pointer">
                     <TableCell className="font-bold text-white group-hover:text-[var(--accent)] transition-colors">

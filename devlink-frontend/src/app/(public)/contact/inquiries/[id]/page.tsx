@@ -47,8 +47,8 @@ export default function InquiryDetailsPage() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
-      // Look for devlink auth user
-      const authUser = localStorage.getItem("devlink_auth_user");
+      // Look for devlinkhub auth user
+      const authUser = localStorage.getItem("devlinkhub_auth_user");
       if (authUser) {
         try {
           setCurrentUser(JSON.parse(authUser));
@@ -71,17 +71,17 @@ export default function InquiryDetailsPage() {
   const isAdmin = currentUser && (
     currentUser.username === "admin" || 
     currentUser.isAdmin === true || 
-    currentUser.email === "admin@devlink.dev"
+    currentUser.email === "admin@devlinkhub.dev"
   );
 
   const handleSimulateAdminLogin = () => {
     const adminPayload = {
       name: "Admin Coordinator",
       username: "admin",
-      email: "admin@devlink.dev",
+      email: "admin@devlinkhub.dev",
       isAdmin: true
     };
-    localStorage.setItem("devlink_auth_user", JSON.stringify(adminPayload));
+    localStorage.setItem("devlinkhub_auth_user", JSON.stringify(adminPayload));
     setCurrentUser(adminPayload);
   };
 
@@ -103,7 +103,7 @@ export default function InquiryDetailsPage() {
     try {
       const senderName = currentUser 
         ? `@${currentUser.username} (Staff)` 
-        : "DevLink Core Node";
+        : "DevLinkHub Core Node";
 
       const updated = await addInquiryReply(inquiry.id, senderName, replyText.trim());
       if (updated) {

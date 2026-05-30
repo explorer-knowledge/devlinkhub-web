@@ -33,7 +33,7 @@ export default function CollaborateBoardPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       getMergedProjects().then(setProjects);
-      const stored = localStorage.getItem("devlink_auth_user");
+      const stored = localStorage.getItem("devlinkhub_auth_user");
       if (stored) {
         setCurrentUser(JSON.parse(stored));
       }
@@ -99,7 +99,7 @@ export default function CollaborateBoardPage() {
         clearInterval(interval);
         
         // Save application log in localStorage
-        const customApps = localStorage.getItem("devlink_project_applications") || "[]";
+        const customApps = localStorage.getItem("devlinkhub_project_applications") || "[]";
         const appsList = JSON.parse(customApps);
         appsList.push({
           projectId: selectedProject.id,
@@ -109,7 +109,7 @@ export default function CollaborateBoardPage() {
           pitch: applyPitch,
           timestamp: Date.now()
         });
-        localStorage.setItem("devlink_project_applications", JSON.stringify(appsList));
+        localStorage.setItem("devlinkhub_project_applications", JSON.stringify(appsList));
 
         // Done
         setIsApplying(false);

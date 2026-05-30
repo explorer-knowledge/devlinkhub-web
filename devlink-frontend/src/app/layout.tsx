@@ -17,11 +17,11 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "DevLink — Premium Developer Community",
-    template: "%s | DevLink",
+    default: "DevLinkHub — Premium Developer Community",
+    template: "%s | DevLinkHub",
   },
   description:
-    "DevLink is the operating system for developers, startup founders, AI builders, and creators collaborating on real-world products, open-source systems, and next-generation startups.",
+    "DevLinkHub is the operating system for developers, startup founders, AI builders, and creators collaborating on real-world products, open-source systems, and next-generation startups.",
   keywords: [
     "developer community",
     "open source",
@@ -31,9 +31,9 @@ export const metadata: Metadata = {
     "startup",
     "AI builders",
   ],
-  authors: [{ name: "DevLink" }],
+  authors: [{ name: "DevLinkHub" }],
   openGraph: {
-    title: "DevLink — Premium Developer Community",
+    title: "DevLinkHub — Premium Developer Community",
     description: "Build. Collaborate. Ship. Grow.",
     type: "website",
   },

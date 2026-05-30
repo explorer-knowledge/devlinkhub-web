@@ -25,7 +25,7 @@ export default function OpenIssuesPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       getMergedProjects().then(setProjects);
-      const stored = localStorage.getItem("devlink_auth_user");
+      const stored = localStorage.getItem("devlinkhub_auth_user");
       if (stored) {
         setCurrentUser(JSON.parse(stored));
       }

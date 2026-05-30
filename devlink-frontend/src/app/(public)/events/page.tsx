@@ -85,7 +85,7 @@ function TerminalUI() {
   // Read username from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const authUser = localStorage.getItem("devlink_auth_user");
+      const authUser = localStorage.getItem("devlinkhub_auth_user");
       if (authUser) {
         try {
           const parsed = JSON.parse(authUser);
@@ -104,9 +104,9 @@ function TerminalUI() {
     if (stage !== "loading") return;
 
     const loadingTexts = [
-      "Connecting to npm registry.devlink.org...",
+      "Connecting to npm registry.devlinkhub.org...",
       "Resolving dependency tree...",
-      "Downloading devlink-hackathon-utils v1.4.2...",
+      "Downloading devlinkhub-hackathon-utils v1.4.2...",
       "Extracting tarballs...",
       "Installing peer dependencies...",
       "Compiling native packages...",
@@ -140,12 +140,12 @@ function TerminalUI() {
     if (stage !== "printing") return;
 
     const systemLogs = [
-      "✔ Installed devlink-hackathon-workshop-suite successfully.",
+      "✔ Installed devlinkhub-hackathon-workshop-suite successfully.",
       "✔ Linked library node configuration files.",
       "✔ Security audit passed: 0 vulnerabilities found.",
-      "✔ Connected to DevLink Core nodes on cluster devlink-mainnet-4.",
+      "✔ Connected to DevLinkHub Core nodes on cluster devlinkhub-mainnet-4.",
       "Initializing hackathon registry environment...",
-      "Starting DevLink interactive console..."
+      "Starting DevLinkHub interactive console..."
     ];
 
     let logIdx = 0;
@@ -219,7 +219,7 @@ function TerminalUI() {
           <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
         </div>
         <div className="text-xs text-zinc-500 select-none">
-          bash - {username}@devlink-core: ~/events
+          bash - {username}@devlinkhub-core: ~/events
         </div>
         <div className="w-12" /> {/* spacer */}
       </div>
@@ -231,7 +231,7 @@ function TerminalUI() {
           <div className="p-5 flex-1 flex flex-col justify-center space-y-4">
             <div className="flex items-center gap-2 text-pink-500 text-xs md:text-sm">
               <span>$</span>
-              <span>npm install --global devlink-hackathon-workshop-suite</span>
+              <span>npm install --global devlinkhub-hackathon-workshop-suite</span>
             </div>
             
             <div className="space-y-2 text-zinc-400 text-xs md:text-sm">
@@ -259,10 +259,10 @@ function TerminalUI() {
           <div className="p-5 flex-1 flex flex-col justify-center space-y-4">
             <div className="flex items-center gap-2 text-pink-500 text-xs md:text-sm">
               <span>$</span>
-              <span>npm install --global devlink-hackathon-workshop-suite</span>
+              <span>npm install --global devlinkhub-hackathon-workshop-suite</span>
             </div>
             <div className="text-zinc-500 text-xs md:text-sm">
-              ✔ Installed devlink-hackathon-workshop-suite v1.4.2.
+              ✔ Installed devlinkhub-hackathon-workshop-suite v1.4.2.
             </div>
 
             <div className="space-y-1 text-zinc-400 text-xs md:text-sm">
@@ -280,11 +280,11 @@ function TerminalUI() {
         {stage === "ready" && (
           <div className="p-6 flex-1 flex flex-col justify-center items-center text-center space-y-6">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#00FFFF] via-[#FF00FF] to-[#FFFF00] drop-shadow-[0_0_20px_rgba(0,255,255,0.9)] uppercase select-none animate-pulse">
-              DEVLINK HACKATHON & WORKSHOP
+              DEVLINKHUB HACKATHON & WORKSHOP
             </h2>
             
             <p className="text-zinc-300 font-light leading-relaxed max-w-3xl text-sm md:text-base px-4">
-              DevLink Hackathon & Workshop is the premier 48-hour global sprint for builders and creators.
+              DevLinkHub Hackathon & Workshop is the premier 48-hour global sprint for builders and creators.
               Collaborate on cutting-edge MVPs, attend technical masterclasses, and pitch directly to top venture partners.
             </p>
           </div>
@@ -294,7 +294,7 @@ function TerminalUI() {
       {/* ─── TERMINAL PROMPT FOOTER ─── */}
       <div className="px-4 py-3 bg-[#0D0D15] border-t border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2 overflow-hidden flex-1 mr-4">
-          <span className="text-[#00F0FF] shrink-0">{username}@devlink-terminal:~$</span>
+          <span className="text-[#00F0FF] shrink-0">{username}@devlinkhub-terminal:~$</span>
           {stage === "ready" ? (
             <div className="flex items-center text-white font-bold select-none truncate">
               <span>{typedText}</span>
@@ -1050,7 +1050,7 @@ export default function EventsPage() {
               </h2>
 
               <p className="text-lg text-zinc-400 font-light leading-relaxed max-w-lg">
-                We are seeking passionate student ambassadors and community leaders to steward local DevLink Nodes. Host hackathons, lead workshops, and build the builder culture in your local ecosystem.
+                We are seeking passionate student ambassadors and community leaders to steward local DevLinkHub Nodes. Host hackathons, lead workshops, and build the builder culture in your local ecosystem.
               </p>
 
               {/* Button & Meta */}

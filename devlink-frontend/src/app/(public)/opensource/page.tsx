@@ -36,7 +36,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 41,
     issues: 8,
     color: "#00F0FF",
-    githubUrl: "https://github.com/devlink/hyperion-cli"
+    githubUrl: "https://github.com/devlinkhub/hyperion-cli"
   },
   {
     id: 2,
@@ -48,7 +48,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 28,
     issues: 5,
     color: "#FF1CF7",
-    githubUrl: "https://github.com/devlink/hermes-state-relayer"
+    githubUrl: "https://github.com/devlinkhub/hermes-state-relayer"
   },
   {
     id: 3,
@@ -60,7 +60,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 67,
     issues: 12,
     color: "#00FFA3",
-    githubUrl: "https://github.com/devlink/echo-router"
+    githubUrl: "https://github.com/devlinkhub/echo-router"
   },
   {
     id: 4,
@@ -72,7 +72,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 112,
     issues: 19,
     color: "#7B61FF",
-    githubUrl: "https://github.com/devlink/neurocore-matrix"
+    githubUrl: "https://github.com/devlinkhub/neurocore-matrix"
   }
 ];
 
@@ -108,15 +108,15 @@ export default function OpenSourcePage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("devlink_opensource_repos");
+      const stored = localStorage.getItem("devlinkhub_opensource_repos");
       if (stored) {
         setRepos(JSON.parse(stored));
       } else {
         setRepos(INITIAL_REPOS);
-        localStorage.setItem("devlink_opensource_repos", JSON.stringify(INITIAL_REPOS));
+        localStorage.setItem("devlinkhub_opensource_repos", JSON.stringify(INITIAL_REPOS));
       }
 
-      const storedUser = localStorage.getItem("devlink_auth_user");
+      const storedUser = localStorage.getItem("devlinkhub_auth_user");
       if (storedUser) {
         setCurrentUser(JSON.parse(storedUser));
       }
@@ -182,13 +182,13 @@ export default function OpenSourcePage() {
           forks: 0,
           issues: 0,
           color: repoColor,
-          githubUrl: `https://github.com/${currentUser?.username || "devlink"}/${repoName.toLowerCase()}`
+          githubUrl: `https://github.com/${currentUser?.username || "devlinkhub"}/${repoName.toLowerCase()}`
         };
 
         const updated = [...repos, newRepo];
         setRepos(updated);
         if (typeof window !== "undefined") {
-          localStorage.setItem("devlink_opensource_repos", JSON.stringify(updated));
+          localStorage.setItem("devlinkhub_opensource_repos", JSON.stringify(updated));
         }
 
         setIsSubmitting(false);
@@ -211,7 +211,7 @@ export default function OpenSourcePage() {
     });
     setRepos(updated);
     if (typeof window !== "undefined") {
-      localStorage.setItem("devlink_opensource_repos", JSON.stringify(updated));
+      localStorage.setItem("devlinkhub_opensource_repos", JSON.stringify(updated));
     }
   };
 
@@ -255,7 +255,7 @@ export default function OpenSourcePage() {
             </h1>
             
             <p className="text-sm md:text-base text-zinc-400 max-w-xl mx-auto font-light leading-relaxed">
-              Browse DevLink core libraries and tool chains. Submit repositories, claim code bounties, or track contributions live on the ledger.
+              Browse DevLinkHub core libraries and tool chains. Submit repositories, claim code bounties, or track contributions live on the ledger.
             </p>
           </div>
 
@@ -397,7 +397,7 @@ export default function OpenSourcePage() {
               {/* Propose repo card */}
               <div className="bg-[#08080a] border border-white/5 rounded-3xl p-6 relative overflow-hidden group shadow-xl">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent pointer-events-none" />
-                <h3 className="text-sm font-bold text-white mb-1">Host Library on DevLink</h3>
+                <h3 className="text-sm font-bold text-white mb-1">Host Library on DevLinkHub</h3>
                 <p className="text-[11px] text-zinc-500 font-light mb-6">Register your open-source directory to enable star voting and issue bounties.</p>
                 
                 <button
