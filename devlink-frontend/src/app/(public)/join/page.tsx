@@ -45,7 +45,7 @@ export default function OnboardingPage() {
   useEffect(() => {
     const logs = {
       1: [
-        "Initializing DevLink secure connection...",
+        "Initializing DevLinkHub secure connection...",
         "Establishing handshake with global matrix...",
         "Awaiting user authentication vector..."
       ],
@@ -128,7 +128,7 @@ export default function OnboardingPage() {
         {/* Top Logo */}
         <Link href="/" className="relative z-10 inline-flex items-center group w-fit">
           <div className="absolute inset-0 bg-[#00F0FF]/0 group-hover:bg-[#00F0FF]/15 blur-xl transition-all duration-500 rounded-full" />
-          <img src="/logos/DevLink_Text_Logo-white.png" alt="DevLink" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(0,240,255,0.1)]" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINK</span>')}} />
+          <img src="/logos/DevLinkHub_Text_Logo-white.png" alt="DevLinkHub" className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(0,240,255,0.1)]" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINKHUB</span>')}} />
         </Link>
 
         {/* Middle Content (Terminal Mockup) */}
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
         {/* Mobile Header */}
         <div className="w-full flex justify-between items-center md:hidden p-6 relative z-10">
           <Link href="/" className="inline-flex items-center">
-            <img src="/logos/DevLink_Text_Logo-white.png" alt="DevLink" className="h-6 w-auto" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINK</span>') }} />
+            <img src="/logos/DevLinkHub_Text_Logo-white.png" alt="DevLinkHub" className="h-6 w-auto" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINKHUB</span>') }} />
           </Link>
           <div className="text-xs font-mono text-zinc-500">STEP {step}/3</div>
         </div>

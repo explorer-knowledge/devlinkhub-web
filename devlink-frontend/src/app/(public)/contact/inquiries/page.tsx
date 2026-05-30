@@ -39,7 +39,7 @@ export default function InquiriesDashboardPage() {
     };
     loadData();
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("devlink_auth_user");
+      const stored = localStorage.getItem("devlinkhub_auth_user");
       if (stored) {
         try {
           setCurrentUser(JSON.parse(stored));
@@ -66,10 +66,10 @@ export default function InquiriesDashboardPage() {
     const adminPayload = {
       name: "Admin Coordinator",
       username: "admin",
-      email: "admin@devlink.dev",
+      email: "admin@devlinkhub.dev",
       isAdmin: true
     };
-    localStorage.setItem("devlink_auth_user", JSON.stringify(adminPayload));
+    localStorage.setItem("devlinkhub_auth_user", JSON.stringify(adminPayload));
     setCurrentUser(adminPayload);
     const data = await getInquiries();
     setInquiries(data);
@@ -78,7 +78,7 @@ export default function InquiriesDashboardPage() {
   const isAdmin = currentUser && (
     currentUser.username === "admin" || 
     currentUser.isAdmin === true || 
-    currentUser.email === "admin@devlink.dev"
+    currentUser.email === "admin@devlinkhub.dev"
   );
 
   // Filter & Sort Logic
@@ -187,7 +187,7 @@ export default function InquiriesDashboardPage() {
               <ArrowLeft size={13} /> Return to Contact Page
             </Link>
             <div className="text-zinc-500 font-mono text-[10px]">
-              DEVLINK // SUPPORT // TELEMETRY_MATRIX
+              DEVLINKHUB // SUPPORT // TELEMETRY_MATRIX
             </div>
           </div>
 
@@ -196,7 +196,7 @@ export default function InquiriesDashboardPage() {
             <div className="space-y-2">
               <h1 className="text-4xl font-extrabold text-white tracking-tight">Inquiries Management</h1>
               <p className="text-sm text-zinc-400 font-light max-w-xl">
-                Browse and triage communication packets transmitted via the DevLink contact terminal.
+                Browse and triage communication packets transmitted via the DevLinkHub contact terminal.
               </p>
             </div>
             

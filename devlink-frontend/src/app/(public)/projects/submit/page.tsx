@@ -43,7 +43,7 @@ export default function SubmitProjectPage() {
   // Check authentication on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("devlink_auth_user");
+      const storedUser = localStorage.getItem("devlinkhub_auth_user");
       if (storedUser) {
         setIsAuthenticated(true);
         setUser(JSON.parse(storedUser));
@@ -163,7 +163,7 @@ export default function SubmitProjectPage() {
           <div className="space-y-2">
             <h2 className="text-xl font-bold text-white tracking-tight">Identity Handshake Required</h2>
             <p className="text-xs text-zinc-400 font-light leading-relaxed">
-              You must authenticate your developer profile in order to submit and register projects inside DevLink's decentralized matrix registry.
+              You must authenticate your developer profile in order to submit and register projects inside DevLinkHub's decentralized matrix registry.
             </p>
           </div>
 

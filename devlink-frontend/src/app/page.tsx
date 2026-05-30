@@ -564,7 +564,7 @@ export default function LandingPage() {
 
                 {/* Syntax Highlighted Code UI */}
                 <div className="font-mono text-[11px] leading-loose relative z-10">
-                  <div className="text-zinc-600 mb-1">{"// devlink-os / deploy.ts"}</div>
+                  <div className="text-zinc-600 mb-1">{"// devlinkhub-os / deploy.ts"}</div>
                   <div><span className="text-[#FF1CF7]">export const</span> <span className="text-white">{proj.title.toLowerCase()}</span> <span className="text-[#00F0FF]">=</span> {`{`}</div>
                   <div className="pl-4">
                     <span className="text-zinc-400">founder:</span> <span className="text-[#00FFA3]">"@{proj.author}"</span>,

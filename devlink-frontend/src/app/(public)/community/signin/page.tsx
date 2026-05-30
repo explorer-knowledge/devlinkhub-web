@@ -13,7 +13,7 @@ import {
 const EVENTS = [
   { title: "Syntax Weavers Hackathon", desc: "Collaborate on building complex state machines, parser engines, and UI layers under 48 hours.", type: "Sprint", date: "Nov 15-17", prize: "$10,000", attendees: 145, maxAttendees: 200, accent: "#7B61FF" },
   { title: "AI Agriculture Summit", desc: "Design autonomous agents that automate vertical farm scheduling and monitor crop telemetry.", type: "Ideathon", date: "Dec 02", prize: "$5,000", attendees: 84, maxAttendees: 150, accent: "#00FFA3" },
-  { title: "Open Source Contrib Night", desc: "Fix active bugs on core frontend libraries and earn DevLink bounty badges.", type: "Workshop", date: "Nov 22", prize: "Bounties", attendees: 192, maxAttendees: 300, accent: "#00F0FF" },
+  { title: "Open Source Contrib Night", desc: "Fix active bugs on core frontend libraries and earn DevLinkHub bounty badges.", type: "Workshop", date: "Nov 22", prize: "Bounties", attendees: 192, maxAttendees: 300, accent: "#00F0FF" },
   { title: "Founders Pitch Session", desc: "Early-stage startup teams pitch to a panel of venture capitalists and angels. Receive live feedback and raise pre-seed capital.", type: "Pitch", date: "Nov 20", prize: "Funding", attendees: 12, maxAttendees: 15, accent: "#F59E0B" }
 ];
 
@@ -62,7 +62,7 @@ function RegisterContent() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("devlink_auth_user");
+      const storedUser = localStorage.getItem("devlinkhub_auth_user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       } else {
@@ -101,14 +101,14 @@ function RegisterContent() {
   useEffect(() => {
     if (isSigningUp) {
       const allLogs = [
-        "Connecting to DevLink decentralized identity server...",
+        "Connecting to DevLinkHub decentralized identity server...",
         "Generating cryptographic keypair...",
         "Validating developer handle availability...",
         "Simulating GitHub OAuth webhook callback...",
         "Syncing developer index with regional nodes...",
         "Registering cryptographic identity in local storage...",
         "Simulating session authorization token...",
-        "Redirecting to DevLink community portal..."
+        "Redirecting to DevLinkHub community portal..."
       ];
       let i = 0;
       const interval = setInterval(() => {
@@ -122,9 +122,9 @@ function RegisterContent() {
           const userPayload = {
             name: signUpData.name || "Anonymous Builder",
             username: signUpData.username.replace('@', '') || "anonymous",
-            email: signUpData.email || "anon@devlink.com"
+            email: signUpData.email || "anon@devlinkhub.com"
           };
-          localStorage.setItem("devlink_auth_user", JSON.stringify(userPayload));
+          localStorage.setItem("devlinkhub_auth_user", JSON.stringify(userPayload));
           setUser(userPayload);
           
           // Automatically register them on the matcher board with their chosen details
@@ -154,10 +154,10 @@ function RegisterContent() {
               linkedin: "https://linkedin.com" 
             }
           };
-          const stored = localStorage.getItem("devlink_custom_builders");
+          const stored = localStorage.getItem("devlinkhub_custom_builders");
           const customList = stored ? JSON.parse(stored) : [];
           customList.push(newBuilder);
-          localStorage.setItem("devlink_custom_builders", JSON.stringify(customList));
+          localStorage.setItem("devlinkhub_custom_builders", JSON.stringify(customList));
 
           // Go to community page
           window.location.href = redirectParam;
@@ -178,7 +178,7 @@ function RegisterContent() {
       email: signInData.email
     };
     
-    localStorage.setItem("devlink_auth_user", JSON.stringify(userPayload));
+    localStorage.setItem("devlinkhub_auth_user", JSON.stringify(userPayload));
     setUser(userPayload);
     
     // Redirect to the target page or reload current
@@ -199,11 +199,11 @@ function RegisterContent() {
     if (isNaN(eventIndex)) return;
 
     // Save registered event index in localStorage
-    const stored = localStorage.getItem("devlink_registered_events");
+    const stored = localStorage.getItem("devlinkhub_registered_events");
     const currentList: number[] = stored ? JSON.parse(stored) : [];
     if (!currentList.includes(eventIndex)) {
       currentList.push(eventIndex);
-      localStorage.setItem("devlink_registered_events", JSON.stringify(currentList));
+      localStorage.setItem("devlinkhub_registered_events", JSON.stringify(currentList));
     }
     
     setSuccess(true);
@@ -215,11 +215,11 @@ function RegisterContent() {
     if (!idParam) return;
 
     // Save pitch in localStorage
-    const stored = localStorage.getItem("devlink_sent_pitches");
+    const stored = localStorage.getItem("devlinkhub_sent_pitches");
     const currentList: string[] = stored ? JSON.parse(stored) : [];
     if (!currentList.includes(idParam)) {
       currentList.push(idParam);
-      localStorage.setItem("devlink_sent_pitches", JSON.stringify(currentList));
+      localStorage.setItem("devlinkhub_sent_pitches", JSON.stringify(currentList));
     }
 
     setSuccess(true);
@@ -257,10 +257,10 @@ function RegisterContent() {
     };
 
     // Save custom builders in localStorage
-    const stored = localStorage.getItem("devlink_custom_builders");
+    const stored = localStorage.getItem("devlinkhub_custom_builders");
     const customList = stored ? JSON.parse(stored) : [];
     customList.push(newBuilder);
-    localStorage.setItem("devlink_custom_builders", JSON.stringify(customList));
+    localStorage.setItem("devlinkhub_custom_builders", JSON.stringify(customList));
 
     setSuccess(true);
   };
@@ -326,7 +326,7 @@ function RegisterContent() {
               <SpotlightCard className="p-8 flex flex-col justify-between h-full" accent="#7B61FF">
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-bold tracking-widest uppercase mb-6 text-zinc-400">
-                    <Terminal size={10} className="text-[#7B61FF]" /> DevLink Node Gateway
+                    <Terminal size={10} className="text-[#7B61FF]" /> DevLinkHub Node Gateway
                   </div>
                   
                   {isSigningUp ? (
@@ -755,7 +755,7 @@ function RegisterContent() {
                           required
                           value={pitchForm.discord}
                           onChange={(e) => setPitchForm({ ...pitchForm, discord: e.target.value })}
-                          placeholder="e.g. devlink#1204"
+                          placeholder="e.g. devlinkhub#1204"
                           className="w-full h-11 px-4 rounded-xl border border-white/10 bg-black text-xs text-white placeholder-zinc-700 focus:outline-none focus:border-white/20 transition-colors"
                         />
                       </div>
@@ -936,7 +936,7 @@ export default function RegisterPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-black text-white flex items-center justify-center font-mono text-xs">
-        Loading DevLink gateway telemetry...
+        Loading DevLinkHub gateway telemetry...
       </div>
     }>
       <RegisterContent />

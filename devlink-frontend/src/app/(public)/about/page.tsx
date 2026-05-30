@@ -36,10 +36,10 @@ const TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=400&h=400&fit=crop",
     handle: "pawan",
     role: "Founder & Community Lead",
-    bio: "Leading the vision, ecosystem strategy, and open-source direction behind DevLink. Focused on building a grassroots, collaborative network for developers, hobbyists, and open-source maintainers.",
+    bio: "Leading the vision, ecosystem strategy, and open-source direction behind DevLinkHub. Focused on building a grassroots, collaborative network for developers, hobbyists, and open-source maintainers.",
     tech: ["Community", "Open Source", "Strategy"],
     color: "#00F0FF",
-    profileCode: `class DevLinkCommunity {\n  constructor() {\n    this.founder = "Pawan Kushwaha";\n    this.mission = "Hack the future together";\n    this.isBuilding = true;\n  }\n  async scaleNetwork() {\n    return "community_node_established";\n  }\n}`,
+    profileCode: `class DevLinkHubCommunity {\n  constructor() {\n    this.founder = "Pawan Kushwaha";\n    this.mission = "Hack the future together";\n    this.isBuilding = true;\n  }\n  async scaleNetwork() {\n    return "community_node_established";\n  }\n}`,
     socials: { github: "https://github.com", twitter: "https://twitter.com", linkedin: "https://linkedin.com", instagram: "https://instagram.com" }
   },
   {
@@ -47,7 +47,7 @@ const TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
     handle: "prince",
     role: "Community Ops Lead",
-    bio: "Driving community operations, builder engagement, and peer-to-peer collaboration systems across DevLink. Working to create an active, high-signal, and welcoming environment for all skill levels.",
+    bio: "Driving community operations, builder engagement, and peer-to-peer collaboration systems across DevLinkHub. Working to create an active, high-signal, and welcoming environment for all skill levels.",
     tech: ["Operations", "Engagement", "Systems"],
     color: "#FF1CF7",
     profileCode: `class CommunityOperations {\n  constructor() {\n    this.lead = "Prince Kumar";\n    this.signalLevel = "high";\n  }\n  dispatchEngagement() {\n    return "peer_collaboration_active";\n  }\n}`,
@@ -58,7 +58,7 @@ const TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop",
     handle: "nilesh",
     role: "Events & Guild Lead",
-    bio: "Supporting local initiatives, builder coordination, hackathons, and growth programs within the DevLink network. Focused on strengthening grassroots collaboration and hacker culture.",
+    bio: "Supporting local initiatives, builder coordination, hackathons, and growth programs within the DevLinkHub network. Focused on strengthening grassroots collaboration and hacker culture.",
     tech: ["Coordination", "Hackathons", "Culture"],
     color: "#00FFA3",
     profileCode: `class BuilderGrowth {\n  constructor() {\n    this.lead = "Nilesh Verma";\n    this.initiative = "Hackathons & Meetups";\n  }\n  syncEvents() {\n    return "culture_strengthened";\n  }\n}`,
@@ -69,7 +69,7 @@ const TEAM: TeamMember[] = [
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
     handle: "kartik",
     role: "Tech & Infrastructure Lead",
-    bio: "Leading technical systems, hardware hacking initiatives, engineering workflows, and technology exploration for DevLink. Focused on open development infrastructure and core maintainer support.",
+    bio: "Leading technical systems, hardware hacking initiatives, engineering workflows, and technology exploration for DevLinkHub. Focused on open development infrastructure and core maintainer support.",
     tech: ["Hardware", "DevOps", "Infrastructure"],
     color: "#FFB000",
     profileCode: `class TechSystems {\n  constructor() {\n    this.lead = "Kartik Raj";\n    this.stack = ["Hardware", "DevOps", "Infrastructure"];\n  }\n  compileHardwareKernel() {\n    return "oss_node_online";\n  }\n}`,
@@ -82,7 +82,7 @@ const STORY_PHASES = [
     id: "phase-0",
     label: "January 2026",
     title: "The Beginning",
-    subtitle: "DevLink began as an early vision to create something beyond a normal coding community.",
+    subtitle: "DevLinkHub began as an early vision to create something beyond a normal coding community.",
     bullets: [
       "Not another noisy Discord server. Not another inactive group chat.",
       "A place where developers collaborate & side-projects take shape.",
@@ -121,7 +121,7 @@ const STORY_PHASES = [
     id: "phase-3",
     label: "Phase 03",
     title: "The Hacker Network",
-    subtitle: "DevLink expanded into more than a forum. It became a growing environment:",
+    subtitle: "DevLinkHub expanded into more than a forum. It became a growing environment:",
     bullets: [
       "Projects: Focus on real-world collaborative coding.",
       "Open Source: Public culture, shared ownership, and merged PRs.",
@@ -146,7 +146,7 @@ const STORY_PHASES = [
 ];
 
 const TIMELINE_EVENTS = [
-  { date: "January 2026", title: "DevLink idea initiated.", desc: "Observation of isolated builders stuck in tutorial purgatory." },
+  { date: "January 2026", title: "DevLinkHub idea initiated.", desc: "Observation of isolated builders stuck in tutorial purgatory." },
   { date: "February 2026", title: "Vision & culture setup.", desc: "Creating the community roadmap and visual identity specs." },
   { date: "March 2026", title: "Guild architecture.", desc: "Deploying interest-based guilds and peer matching boards." },
   { date: "April 2026", title: "Open Source integration.", desc: "Launching core contributor lists and public issues board." },
@@ -196,12 +196,12 @@ export default function AboutPage() {
             <motion.h1 variants={fadeUp} className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter text-white leading-[1.05] uppercase">
               About <br className="sm:hidden" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] via-[#7B61FF] to-[#FF1CF7]">
-                DevLink.
+                DevLinkHub.
               </span>
             </motion.h1>
             
             <motion.p variants={fadeUp} className="text-sm md:text-base font-mono tracking-widest text-zinc-500 uppercase mt-4">
-              The Story Behind DevLink // From Idea To A Developer Network
+              The Story Behind DevLinkHub // From Idea To A Developer Network
             </motion.p>
           </motion.div>
 
@@ -213,7 +213,7 @@ export default function AboutPage() {
             <motion.div variants={fadeUp} className="lg:col-span-5 space-y-4">
               <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">The Core Spark</span>
               <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
-                DevLink started with a simple, glaring observation:
+                DevLinkHub started with a simple, glaring observation:
               </h2>
             </motion.div>
             
@@ -372,7 +372,7 @@ export default function AboutPage() {
             <div>
               <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Leadership & Core Maintainers</span>
               <h2 className="text-3xl font-extrabold text-white mt-2 mb-3">Meet The Builders</h2>
-              <p className="text-sm md:text-base text-zinc-400 font-light max-w-2xl">The core maintainers constructing the DevLink ecosystem, building the open tools, and supporting the future builder network.</p>
+              <p className="text-sm md:text-base text-zinc-400 font-light max-w-2xl">The core maintainers constructing the DevLinkHub ecosystem, building the open tools, and supporting the future builder network.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">

@@ -43,7 +43,7 @@ function OnboardingContent() {
   // Check auth session
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("devlink_auth_user");
+      const storedUser = localStorage.getItem("devlinkhub_auth_user");
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
         setUser(parsed);
@@ -87,10 +87,10 @@ function OnboardingContent() {
     };
 
     // Save custom builders to localStorage
-    const stored = localStorage.getItem("devlink_custom_builders");
+    const stored = localStorage.getItem("devlinkhub_custom_builders");
     const customList = stored ? JSON.parse(stored) : [];
     customList.push(newBuilder);
-    localStorage.setItem("devlink_custom_builders", JSON.stringify(customList));
+    localStorage.setItem("devlinkhub_custom_builders", JSON.stringify(customList));
 
     setSuccess(true);
   };
@@ -190,7 +190,7 @@ function OnboardingContent() {
                 </div>
 
                 <div className="pt-8 font-mono text-[9px] text-zinc-600">
-                  SESSION KEY: devlink_auth_user • @{user.username}
+                  SESSION KEY: devlinkhub_auth_user • @{user.username}
                 </div>
               </SpotlightCard>
             </div>
@@ -341,7 +341,7 @@ export default function OnboardingPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-black text-white flex items-center justify-center font-mono text-xs">
-        Loading DevLink onboarding interface...
+        Loading DevLinkHub onboarding interface...
       </div>
     }>
       <OnboardingContent />

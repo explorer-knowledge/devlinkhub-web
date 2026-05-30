@@ -20,7 +20,7 @@ export interface Inquiry {
   replies: InquiryReply[];
 }
 
-const STORAGE_KEY = "devlink_contact_inquiries";
+const STORAGE_KEY = "devlinkhub_contact_inquiries";
 
 // Mock initial data if storage is empty
 const MOCK_INQUIRIES: Inquiry[] = [
@@ -30,7 +30,7 @@ const MOCK_INQUIRIES: Inquiry[] = [
     email: "schen@mit.edu",
     category: "PARTNERSHIPS",
     subject: "University Lab Collaboration Proposal",
-    message: "Hello DevLink team, we are interested in setting up a joint AI Hackathon and research incubator with MIT's EECS department. Let us know who we should sync with to draft the collaboration framework.",
+    message: "Hello DevLinkHub team, we are interested in setting up a joint AI Hackathon and research incubator with MIT's EECS department. Let us know who we should sync with to draft the collaboration framework.",
     organization: "MIT CSAIL",
     status: "New",
     timestamp: Date.now() - 3600000 * 24, // 1 day ago
@@ -42,14 +42,14 @@ const MOCK_INQUIRIES: Inquiry[] = [
     email: "alex@polygon.vc",
     category: "SPONSORSHIPS",
     subject: "Sponsoring summer developer tracks",
-    message: "We've been tracking DevLink's builder community for a while. We would love to sponsor your next ecosystem program and open-source hackathons. Do you have a sponsorship deck or pricing structures for Q3/Q4?",
+    message: "We've been tracking DevLinkHub's builder community for a while. We would love to sponsor your next ecosystem program and open-source hackathons. Do you have a sponsorship deck or pricing structures for Q3/Q4?",
     organization: "Polygon Ventures",
     status: "In Progress",
     timestamp: Date.now() - 3600000 * 12, // 12 hours ago
     replies: [
       {
         id: "rep-1",
-        sender: "DevLink System Node",
+        sender: "DevLinkHub System Node",
         text: "Hi Alex, thank you for reaching out! We are currently assembling our Q3 Hackathon sponsor guide and would be thrilled to talk. Our relations lead will reach out to you within 24 hours.",
         timestamp: Date.now() - 3600000 * 11
       }
@@ -68,7 +68,7 @@ const MOCK_INQUIRIES: Inquiry[] = [
     replies: [
       {
         id: "rep-2",
-        sender: "DevLink Core",
+        sender: "DevLinkHub Core",
         text: "Hey Elena! We noticed an API rate-limit issue with the GitHub keys API earlier today. We have resolved the timeout block. Could you try verifying your key signature again? Feel free to ping us if you face any issues.",
         timestamp: Date.now() - 3600000 * 2.5
       },

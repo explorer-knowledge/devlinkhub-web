@@ -35,13 +35,13 @@ const FOOTER_LINKS = [
       { label: "Leadership", href: "/leadership" },
       { label: "The Team", href: "/team" },
       { label: "Careers", href: "/careers" },
-      { label: "DevLink Blog", href: "/blog" },
+      { label: "DevLinkHub Blog", href: "/blog" },
     ],
   },
   {
     title: "Network",
     links: [
-      { label: "Join DevLink", href: "/join" },
+      { label: "Join DevLinkHub", href: "/join" },
       { label: "Apply for Access", href: "/apply" },
       { label: "Join Waitlist", href: "/waitlist" },
       { label: "Partners", href: "/partners" },
@@ -90,7 +90,7 @@ export default function HomeFooter() {
       {/* Cinematic Watermark */}
       <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none flex justify-center z-0 select-none opacity-80">
         <span className="text-[16vw] font-black tracking-tighter leading-none text-transparent bg-clip-text bg-gradient-to-b from-white/[0.04] to-transparent">
-          DEVLINK
+          DEVLINKHUB
         </span>
       </div>
 
@@ -115,7 +115,7 @@ export default function HomeFooter() {
                 </span>
               </div>
               <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
-                Get the DevLink digest.<br/>
+                Get the DevLinkHub digest.<br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00F0FF] to-[#7B61FF]">
                   Top projects, events & builders.
                 </span>
@@ -166,12 +166,12 @@ export default function HomeFooter() {
           <div className="col-span-2 md:col-span-4 lg:col-span-3 flex flex-col space-y-8 lg:pr-12">
             <Link href="/" className="inline-flex items-center group">
               <img
-                src="/logos/DevLink_Text_Logo-white.png"
-                alt="DevLink"
+                src="/logos/DevLinkHub_Text_Logo-white.png"
+                alt="DevLinkHub"
                 className="h-8 w-auto object-contain drop-shadow-[0_0_12px_rgba(0,240,255,0.2)] group-hover:drop-shadow-[0_0_24px_rgba(0,240,255,0.5)] transition-all duration-300"
                 onError={(e) => { 
                   e.currentTarget.style.display = "none"; 
-                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINK</span>')
+                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINKHUB</span>')
                 }}
               />
             </Link>
@@ -229,7 +229,7 @@ export default function HomeFooter() {
           
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10 w-full lg:w-auto">
             <p className="text-sm text-zinc-500 text-center md:text-left">
-              © {new Date().getFullYear()} DevLink Community. All rights reserved.
+              © {new Date().getFullYear()} DevLinkHub Community. All rights reserved.
             </p>
             
             {/* Legal Links Moved to Bottom Bar */}
@@ -242,11 +242,11 @@ export default function HomeFooter() {
             </div>
 
             <a
-              href="mailto:hello@devlink.community"
+              href="mailto:hello@devlinkhub.community"
               className="flex items-center gap-2 text-sm text-zinc-500 hover:text-white transition-colors group px-4 py-2 rounded-full border border-white/10 bg-white/[0.02] hover:bg-white/[0.05]"
             >
               <Mail size={14} className="group-hover:text-[#00F0FF] transition-colors" />
-              <span>hello@devlink.community</span>
+              <span>hello@devlinkhub.community</span>
             </a>
           </div>
 

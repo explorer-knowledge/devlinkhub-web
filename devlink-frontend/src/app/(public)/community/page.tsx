@@ -30,7 +30,7 @@ const GUILDS = [
 ];
 
 const FEED = [
-  { id: 1, type: "merge", user: "@alex_j", action: "merged PR #241 into devlink-core", time: "2 min ago", icon: GitCommit, color: "#7B61FF", details: "+1,204 lines, -34 lines. Core components refactored." },
+  { id: 1, type: "merge", user: "@alex_j", action: "merged PR #241 into devlinkhub-core", time: "2 min ago", icon: GitCommit, color: "#7B61FF", details: "+1,204 lines, -34 lines. Core components refactored." },
   { id: 2, type: "team", user: "Syntax Weavers", action: "formed a hackathon team", time: "15 min ago", icon: Users, color: "#F59E0B", details: "Roles filled: 2x Frontend, 1x AI. Looking for UX Designer." },
   { id: 3, type: "deploy", user: "@sarah_ux", action: "deployed CampusFlow to production", time: "1 hour ago", icon: Rocket, color: "#00FFA3", details: "Vercel edge network synced successfully." },
   { id: 4, type: "join", user: "@rishi_dev", action: "joined the AI Builders Guild", time: "2 hours ago", icon: Plus, color: "#FF1CF7", details: "Joined via invite link from @vikram." }
@@ -39,7 +39,7 @@ const FEED = [
 const PROJECTS = [
   { title: "Vaitra", desc: "Next-generation healthcare platform featuring intelligent doctor listings and real-time medicine tracking.", tech: ["Next.js", "FastAPI"], contributors: ["@pawan", "@sarah"], status: "Active", color: "#FF5F56" },
   { title: "Fasal Sathi", desc: "AI-driven precision agriculture system providing data-backed insights for Indian farmers.", tech: ["Python", "React"], contributors: ["SyntaxWeavers"], status: "Beta", color: "#00FFA3" },
-  { title: "DevLink Hub", desc: "The core open-source infrastructure powering the DevLink developer ecosystem and matchmaking.", tech: ["Next.js", "Prisma"], contributors: ["@alex", "@pawan"], status: "Live", color: "#00F0FF" }
+  { title: "DevLinkHub Hub", desc: "The core open-source infrastructure powering the DevLinkHub developer ecosystem and matchmaking.", tech: ["Next.js", "Prisma"], contributors: ["@alex", "@pawan"], status: "Live", color: "#00F0FF" }
 ];
 
 const EVENTS = [
@@ -117,19 +117,19 @@ const BUILDERS = [
 ];
 
 const RESOURCES = [
-  { title: "Ecosystem API Docs", desc: "Access DevLink REST and WebSocket APIs for building integrations.", icon: Code2, category: "API" },
+  { title: "Ecosystem API Docs", desc: "Access DevLinkHub REST and WebSocket APIs for building integrations.", icon: Code2, category: "API" },
   { title: "Startup Boilerplate", desc: "A pre-configured Next.js, Tailwind, and Prisma template.", icon: Rocket, category: "Code" },
   { title: "Guild Handbook", desc: "Learn how guilds operate, earn rewards, and schedule workshops.", icon: BookOpen, category: "Docs" },
   { title: "Brand Kit & Assets", desc: "Download logos, svg badges, and official style guidelines.", icon: LayoutTemplate, category: "Design" }
 ];
 
 const FAQS = [
-  { q: "What exactly is the DevLink Community?", a: "It's a multiplayer developer network where founders, engineers, and designers collaborate on real startups, open-source projects, and hackathons instead of learning in isolation." },
-  { q: "How do guilds work?", a: "Guilds are specialized micro-communities within DevLink. Joining a guild connects you with peers in your specific tech stack for knowledge sharing, architecture reviews, and team formation." },
+  { q: "What exactly is the DevLinkHub Community?", a: "It's a multiplayer developer network where founders, engineers, and designers collaborate on real startups, open-source projects, and hackathons instead of learning in isolation." },
+  { q: "How do guilds work?", a: "Guilds are specialized micro-communities within DevLinkHub. Joining a guild connects you with peers in your specific tech stack for knowledge sharing, architecture reviews, and team formation." },
   { q: "Can beginners join the ecosystem?", a: "Absolutely. We have dedicated learning paths, mentorship programs, and 'good first issue' tags on our open-source repositories to help you get started." },
-  { q: "Are there any membership fees?", a: "No, joining the DevLink Community and participating in open-source development is completely free. Some premium accelerators, localized node offices, and co-working resources may have separate applications or pricing." },
+  { q: "Are there any membership fees?", a: "No, joining the DevLinkHub Community and participating in open-source development is completely free. Some premium accelerators, localized node offices, and co-working resources may have separate applications or pricing." },
   { q: "How can I find a technical co-founder?", a: "You can use our 'Co-Founder Matcher' board, search for developers looking for teams, filter by expertise, and send them a pitch deck directly through the platform." },
-  { q: "How do I host a local Node event?", a: "Active members can apply to become Node Leads. Once approved, you can host local meetups, sprints, and startup pitch sessions in your city with support from the global DevLink network." }
+  { q: "How do I host a local Node event?", a: "Active members can apply to become Node Leads. Once approved, you can host local meetups, sprints, and startup pitch sessions in your city with support from the global DevLinkHub network." }
 ];
 
 // ─── 3D & MICRO-COMPONENTS ──────────────────────────────────────────────
@@ -238,7 +238,7 @@ function BuilderCard({
       case "Systems Engineer":
         return `fn main() -> Result<(), Error> {\n  let mut buffer = Vec::new();\n  unsafe {\n    let ptr = allocate(1024)?;\n    ptr.write(0xAA);\n  }\n  Ok(())\n}`;
       default:
-        return `const devlink = {\n  status: "available",\n  commitment: "fulltime",\n  role: "co-founder"\n};`;
+        return `const devlinkhub = {\n  status: "available",\n  commitment: "fulltime",\n  role: "co-founder"\n};`;
     }
   };
   
@@ -462,16 +462,16 @@ export default function CommunityEcosystemPage() {
   // Load initial states from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedEvents = localStorage.getItem("devlink_registered_events");
+      const storedEvents = localStorage.getItem("devlinkhub_registered_events");
       if (storedEvents) setRegisteredEvents(JSON.parse(storedEvents));
       
-      const storedPitches = localStorage.getItem("devlink_sent_pitches");
+      const storedPitches = localStorage.getItem("devlinkhub_sent_pitches");
       if (storedPitches) setSentPitches(JSON.parse(storedPitches));
       
-      const storedBuilders = localStorage.getItem("devlink_custom_builders");
+      const storedBuilders = localStorage.getItem("devlinkhub_custom_builders");
       if (storedBuilders) setCustomBuilders(JSON.parse(storedBuilders));
 
-      const storedUser = localStorage.getItem("devlink_auth_user");
+      const storedUser = localStorage.getItem("devlinkhub_auth_user");
       if (storedUser) setUser(JSON.parse(storedUser));
     }
   }, []);
@@ -479,29 +479,29 @@ export default function CommunityEcosystemPage() {
   // Save states to localStorage when they change
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("devlink_registered_events", JSON.stringify(registeredEvents));
+      localStorage.setItem("devlinkhub_registered_events", JSON.stringify(registeredEvents));
     }
   }, [registeredEvents]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("devlink_sent_pitches", JSON.stringify(sentPitches));
+      localStorage.setItem("devlinkhub_sent_pitches", JSON.stringify(sentPitches));
     }
   }, [sentPitches]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("devlink_custom_builders", JSON.stringify(customBuilders));
+      localStorage.setItem("devlinkhub_custom_builders", JSON.stringify(customBuilders));
     }
   }, [customBuilders]);
 
   const handleLogout = () => {
-    localStorage.removeItem("devlink_auth_user");
+    localStorage.removeItem("devlinkhub_auth_user");
     setUser(null);
   };
 
   const handleEventAction = (index: number) => {
-    const storedUser = localStorage.getItem("devlink_auth_user");
+    const storedUser = localStorage.getItem("devlinkhub_auth_user");
     if (!storedUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent(`/community/register?type=event&id=${index}`)}`;
     } else {
@@ -510,7 +510,7 @@ export default function CommunityEcosystemPage() {
   };
 
   const handlePitchAction = (builder: typeof BUILDERS[0]) => {
-    const storedUser = localStorage.getItem("devlink_auth_user");
+    const storedUser = localStorage.getItem("devlinkhub_auth_user");
     if (!storedUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent(`/community/register?type=pitch&id=${encodeURIComponent(builder.name)}`)}`;
     } else {
@@ -519,7 +519,7 @@ export default function CommunityEcosystemPage() {
   };
 
   const handleProfileClick = () => {
-    const storedUser = localStorage.getItem("devlink_auth_user");
+    const storedUser = localStorage.getItem("devlinkhub_auth_user");
     if (!storedUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent(`/onboarding`)}`;
     } else {
@@ -635,11 +635,11 @@ export default function CommunityEcosystemPage() {
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
-                  <span className="text-[10px] text-zinc-500 ml-2">devlink-agent v1.0.4</span>
+                  <span className="text-[10px] text-zinc-500 ml-2">devlinkhub-agent v1.0.4</span>
                 </div>
                 <div className="space-y-1.5">
-                  <p className="text-zinc-500">&gt; devlink --version</p>
-                  <p className="text-zinc-400">DevLink Core CLI v2.4.0-beta</p>
+                  <p className="text-zinc-500">&gt; devlinkhub --version</p>
+                  <p className="text-zinc-400">DevLinkHub Core CLI v2.4.0-beta</p>
                   <p className="text-zinc-500">&gt; status --nodes</p>
                   <p className="text-[#00F0FF]">✔ Bengaluru, Mumbai, SF, London nodes active</p>
                   <p className="text-[#FF1CF7]">⚡ Upcoming Sprint: Syntax Weavers Hackathon starts in 2 days</p>
@@ -781,7 +781,7 @@ export default function CommunityEcosystemPage() {
                   <button 
                     suppressHydrationWarning
                     onClick={() => {
-                      const storedUser = localStorage.getItem("devlink_auth_user");
+                      const storedUser = localStorage.getItem("devlinkhub_auth_user");
                       if (!storedUser) {
                         window.location.href = `/signin?redirect=${encodeURIComponent(`/onboarding`)}`;
                       } else {
@@ -822,7 +822,7 @@ export default function CommunityEcosystemPage() {
                 <div className="w-3.5 h-3.5 rounded-full bg-[#FF5F56]/80" />
                 <div className="w-3.5 h-3.5 rounded-full bg-[#FFBD2E]/80" />
                 <div className="w-3.5 h-3.5 rounded-full bg-[#27C93F]/80" />
-                <span className="ml-4 text-sm font-mono text-zinc-500">devlink-os ~/pulse --watch</span>
+                <span className="ml-4 text-sm font-mono text-zinc-500">devlinkhub-os ~/pulse --watch</span>
               </div>
 
               <div className="space-y-8 relative before:absolute before:inset-0 before:ml-[23px] before:h-full before:w-px before:bg-gradient-to-b before:from-[#00FFA3]/50 before:via-white/10 before:to-transparent">
@@ -1020,7 +1020,7 @@ export default function CommunityEcosystemPage() {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 leading-snug">{EVENTS[2].title}</h3>
                   <p className="text-xs text-zinc-400 font-light leading-relaxed mb-4">
-                    Learn how to submit PRs to major devlink open-source core modules.
+                    Learn how to submit PRs to major devlinkhub open-source core modules.
                   </p>
                 </div>
                 
@@ -1108,7 +1108,7 @@ export default function CommunityEcosystemPage() {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2 leading-snug">Host a Local Event</h3>
                   <p className="text-xs text-zinc-400 font-light leading-relaxed mb-4">
-                    Want to run a DevLink meetup or hackathon node in your city? Become a Node Lead.
+                    Want to run a DevLinkHub meetup or hackathon node in your city? Become a Node Lead.
                   </p>
                 </div>
                 
@@ -1195,7 +1195,7 @@ export default function CommunityEcosystemPage() {
                         <div>
                           <h3 className="text-lg font-bold text-white mb-1.5 tracking-tight">Join the Board</h3>
                           <p className="text-xs text-zinc-400 font-light leading-relaxed max-w-xl">
-                            List your skills, project equity, and bio so co-founders can pitch outreach ideas directly. Create your profile to join DevLink's verified matching pool.
+                            List your skills, project equity, and bio so co-founders can pitch outreach ideas directly. Create your profile to join DevLinkHub's verified matching pool.
                           </p>
                         </div>
                       </div>
@@ -1339,7 +1339,7 @@ export default function CommunityEcosystemPage() {
                   WebkitMaskImage: "radial-gradient(circle at center, transparent 20%, black 80%)" 
                 }}
               >
-                {`[LOG] Initializing DevLink cluster connection...\n[LOG] Synchronizing nodes: Berlin, Bhopal, Bangalore, SF...\n[LOG] Running structural compatibility model v4.2.1-prod...\n[LOG] Match rate optimization algorithm triggered.\n[LOG] Core contribution protocol: ONLINE.\n[LOG] Active builders in session: 15,482.\n[LOG] Mainnet block consensus achieved. Epoch 1042.\n[LOG] Webhooks active for: discord.gg/devlink-node.\n[LOG] Security credentials: JWT-SHA256 signature verified.\n[LOG] Listening for incoming pitches on socket port 8080...\n[LOG] Compiler target: ESNext.\n[LOG] Execution telemetry metrics: SUCCESS.\n[LOG] System health check: 100% stable.`}
+                {`[LOG] Initializing DevLinkHub cluster connection...\n[LOG] Synchronizing nodes: Berlin, Bhopal, Bangalore, SF...\n[LOG] Running structural compatibility model v4.2.1-prod...\n[LOG] Match rate optimization algorithm triggered.\n[LOG] Core contribution protocol: ONLINE.\n[LOG] Active builders in session: 15,482.\n[LOG] Mainnet block consensus achieved. Epoch 1042.\n[LOG] Webhooks active for: discord.gg/devlinkhub-node.\n[LOG] Security credentials: JWT-SHA256 signature verified.\n[LOG] Listening for incoming pitches on socket port 8080...\n[LOG] Compiler target: ESNext.\n[LOG] Execution telemetry metrics: SUCCESS.\n[LOG] System health check: 100% stable.`}
               </pre>
 
               <div className="relative z-10 flex flex-col items-center space-y-8">

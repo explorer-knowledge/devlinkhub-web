@@ -61,7 +61,7 @@ export default function StartupsPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       getMergedStartups().then(setStartups);
-      const stored = localStorage.getItem("devlink_auth_user");
+      const stored = localStorage.getItem("devlinkhub_auth_user");
       if (stored) {
         setCurrentUser(JSON.parse(stored));
       }
@@ -146,7 +146,7 @@ export default function StartupsPage() {
         clearInterval(interval);
         
         // Save job application state
-        const stored = localStorage.getItem("devlink_job_applications") || "[]";
+        const stored = localStorage.getItem("devlinkhub_job_applications") || "[]";
         const applications = JSON.parse(stored);
         applications.push({
           jobId: activeJob.id,
@@ -156,7 +156,7 @@ export default function StartupsPage() {
           coverLetter: applyCover,
           timestamp: Date.now()
         });
-        localStorage.setItem("devlink_job_applications", JSON.stringify(applications));
+        localStorage.setItem("devlinkhub_job_applications", JSON.stringify(applications));
 
         // Clear states
         setIsApplying(false);

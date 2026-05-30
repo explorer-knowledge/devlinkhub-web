@@ -41,7 +41,7 @@ export default function ProjectDetailsPage() {
   // Load project details
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const authUser = localStorage.getItem("devlink_auth_user");
+      const authUser = localStorage.getItem("devlinkhub_auth_user");
       if (authUser) {
         setCurrentUser(JSON.parse(authUser));
       }
@@ -122,7 +122,7 @@ export default function ProjectDetailsPage() {
         clearInterval(interval);
         
         // Save application log in localStorage
-        const customApps = localStorage.getItem("devlink_project_applications") || "[]";
+        const customApps = localStorage.getItem("devlinkhub_project_applications") || "[]";
         const appsList = JSON.parse(customApps);
         appsList.push({
           projectId: project?.id,
@@ -132,7 +132,7 @@ export default function ProjectDetailsPage() {
           pitch: applyPitch,
           timestamp: Date.now()
         });
-        localStorage.setItem("devlink_project_applications", JSON.stringify(appsList));
+        localStorage.setItem("devlinkhub_project_applications", JSON.stringify(appsList));
 
         // Done
         setIsApplying(false);

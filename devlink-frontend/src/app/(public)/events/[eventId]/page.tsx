@@ -64,7 +64,7 @@ export default function EventDetailsPage() {
   // Load event details and local auth user
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const authUser = localStorage.getItem("devlink_auth_user");
+      const authUser = localStorage.getItem("devlinkhub_auth_user");
       if (authUser) {
         setCurrentUser(JSON.parse(authUser));
       }
@@ -92,7 +92,7 @@ export default function EventDetailsPage() {
     setIsRSVPing(true);
 
     const logSteps = type === "register" ? [
-      "Connecting to DevLink core node...",
+      "Connecting to DevLinkHub core node...",
       "Resolving developer credentials for @" + currentUser.username + "...",
       "Allocating capacity slot for: " + event?.title + "...",
       "Generating unique cryptographically signed ticket...",
