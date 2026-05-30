@@ -196,8 +196,6 @@ export async function saveProjects(projects: Project[]) {
   try {
     const lastProj = projects[projects.length - 1];
     if (lastProj && (typeof lastProj.id === "string" && lastProj.id.startsWith("proj-"))) {
-      const storedUser = localStorage.getItem("devlink_auth_user");
-      const user = storedUser ? JSON.parse(storedUser) : null;
       await fetch(`${API_BASE}/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -209,7 +207,7 @@ export async function saveProjects(projects: Project[]) {
           tech: lastProj.tech,
           color: lastProj.color,
           githubUrl: lastProj.githubUrl,
-          username: user?.username || "alex_j",
+          // Auth token must be attached by calling component via Authorization header
         }),
       });
     }

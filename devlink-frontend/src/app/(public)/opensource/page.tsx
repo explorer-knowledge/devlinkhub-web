@@ -10,6 +10,7 @@ import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
+import { useAuth } from "@/context/AuthContext";
 
 
 interface OSRepo {
@@ -104,7 +105,7 @@ export default function OpenSourcePage() {
   const [repoColor, setRepoColor] = useState("#00F0FF");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitLogs, setSubmitLogs] = useState<string[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -114,11 +115,6 @@ export default function OpenSourcePage() {
       } else {
         setRepos(INITIAL_REPOS);
         localStorage.setItem("devlink_opensource_repos", JSON.stringify(INITIAL_REPOS));
-      }
-
-      const storedUser = localStorage.getItem("devlink_auth_user");
-      if (storedUser) {
-        setCurrentUser(JSON.parse(storedUser));
       }
     }
 
@@ -143,7 +139,7 @@ export default function OpenSourcePage() {
   };
 
   const handleProposeClick = () => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent("/opensource")}`;
       return;
     }
@@ -182,7 +178,7 @@ export default function OpenSourcePage() {
           forks: 0,
           issues: 0,
           color: repoColor,
-          githubUrl: `https://github.com/${currentUser?.username || "devlink"}/${repoName.toLowerCase()}`
+          githubUrl: `https://github.com/${localUser?.username || firebaseUser?.email?.split("@")[0] || "devlink"}/${repoName.toLowerCase()}`
         };
 
         const updated = [...repos, newRepo];

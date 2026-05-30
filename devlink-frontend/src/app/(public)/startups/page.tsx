@@ -12,6 +12,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedStartups, saveStartups, Startup, StartupJob } from "@/utils/startupsData";
+import { useAuth } from "@/context/AuthContext";
 
 const SECTORS = ["All", "AI", "Web3", "SaaS", "DevTools", "BioTech"];
 const STAGES = ["All Stages", "Pre-seed", "Seed", "Series A", "Bootstrapped"];
@@ -29,7 +30,7 @@ export default function StartupsPage() {
   const [selectedSector, setSelectedSector] = useState("All");
   const [selectedStage, setSelectedStage] = useState("All Stages");
   const [onlyHiring, setOnlyHiring] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
 
   // Detail Modal state
   const [activeStartup, setActiveStartup] = useState<Startup | null>(null);
@@ -59,13 +60,7 @@ export default function StartupsPage() {
 
   // Initialize data on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      getMergedStartups().then(setStartups);
-      const stored = localStorage.getItem("devlink_auth_user");
-      if (stored) {
-        setCurrentUser(JSON.parse(stored));
-      }
-    }
+    getMergedStartups().then(setStartups);
   }, []);
 
   // Compute launchpad statistics
@@ -99,7 +94,7 @@ export default function StartupsPage() {
   });
 
   const handleRegisterClick = () => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent("/startups")}`;
       return;
     }
@@ -107,7 +102,7 @@ export default function StartupsPage() {
   };
 
   const handleApplyClick = (job: StartupJob) => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent("/startups")}`;
       return;
     }
@@ -152,7 +147,7 @@ export default function StartupsPage() {
           jobId: activeJob.id,
           role: activeJob.role,
           startupName: activeStartup.name,
-          username: currentUser?.username,
+          username: localUser?.username || firebaseUser?.email || "user",
           coverLetter: applyCover,
           timestamp: Date.now()
         });
@@ -213,9 +208,9 @@ export default function StartupsPage() {
           color: regColor,
           logoText: regName.slice(0, 2).toUpperCase(),
           founder: {
-            name: currentUser?.name || "Anonymous",
-            avatar: (currentUser?.name || "AN").slice(0, 2).toUpperCase(),
-            handle: currentUser?.username || "anonymous"
+            name: localUser?.name || firebaseUser?.displayName || "Anonymous",
+            avatar: (localUser?.name || firebaseUser?.displayName || "AN").slice(0, 2).toUpperCase(),
+            handle: localUser?.username || firebaseUser?.email || "anonymous"
           },
           jobs: newJobs
         };

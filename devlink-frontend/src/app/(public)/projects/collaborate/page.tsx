@@ -12,11 +12,12 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedProjects, Project, ProjectOpening } from "@/utils/projectsData";
+import { useAuth } from "@/context/AuthContext";
 
 export default function CollaborateBoardPage() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
   
   // Filters
   const [selectedCommitment, setSelectedCommitment] = useState("All");
@@ -31,13 +32,7 @@ export default function CollaborateBoardPage() {
   const [isApplying, setIsApplying] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      getMergedProjects().then(setProjects);
-      const stored = localStorage.getItem("devlink_auth_user");
-      if (stored) {
-        setCurrentUser(JSON.parse(stored));
-      }
-    }
+    getMergedProjects().then(setProjects);
   }, []);
 
   // Extract all openings from all projects
@@ -68,7 +63,7 @@ export default function CollaborateBoardPage() {
   });
 
   const handleApplyClick = (project: Project, role: string) => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       router.push(`/signin?redirect=/projects/collaborate`);
       return;
     }
@@ -104,7 +99,7 @@ export default function CollaborateBoardPage() {
         appsList.push({
           projectId: selectedProject.id,
           projectName: selectedProject.name,
-          username: currentUser?.username,
+          username: localUser?.username || firebaseUser?.email || "user",
           role: selectedRole,
           pitch: applyPitch,
           timestamp: Date.now()

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "../styles/globals.css";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,7 +59,9 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col antialiased bg-[#030303] text-white">
-        <LayoutWrapper>{children}</LayoutWrapper>
+        <AuthProvider>
+          <LayoutWrapper>{children}</LayoutWrapper>
+        </AuthProvider>
       </body>
     </html>
   );

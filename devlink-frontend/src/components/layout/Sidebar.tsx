@@ -7,6 +7,7 @@ import {
   Trophy, Bell, Settings, Code2, ChevronRight, LogOut,
   Zap, GitBranch, Users
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
   { label: "Overview",      href: "/dashboard",              icon: LayoutDashboard },
@@ -21,6 +22,12 @@ const bottomItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { localUser, firebaseUser, logout } = useAuth();
+  const router = require("next/navigation").useRouter();
+
+  const userName = localUser?.name || firebaseUser?.displayName || "User";
+  const userRole = localUser?.role || "Developer";
+  const initial = userName.charAt(0).toUpperCase();
 
   return (
     <aside className="hidden lg:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r border-[var(--border)] bg-[var(--surface)]">
@@ -37,11 +44,11 @@ export default function Sidebar() {
       {/* User quick card */}
       <Link href="/dashboard/profile" className="mx-3 mt-4 mb-[10px] p-3 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] flex items-center gap-3 hover:bg-white/5 transition-colors group cursor-pointer">
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#3ABEFF] to-[#60A5FA] flex items-center justify-center text-black font-bold text-sm">
-          A
+          {initial}
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-white truncate group-hover:text-[#3ABEFF] transition-colors">Alex Chen</p>
-          <p className="text-xs text-[var(--muted)] truncate">Full-Stack Dev</p>
+          <p className="text-sm font-semibold text-white truncate group-hover:text-[#3ABEFF] transition-colors">{userName}</p>
+          <p className="text-xs text-[var(--muted)] truncate">{userRole}</p>
         </div>
         <ChevronRight size={14} className="text-[var(--muted)] ml-auto shrink-0 group-hover:translate-x-1 transition-transform" />
       </Link>
@@ -93,7 +100,7 @@ export default function Sidebar() {
             <span className="truncate">{label}</span>
           </Link>
         ))}
-        <button className="flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-red-400 hover:text-red-300 hover:bg-[rgba(248,113,113,0.08)]">
+        <button onClick={async () => { await logout(); router.push("/signin"); }} className="flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-red-400 hover:text-red-300 hover:bg-[rgba(248,113,113,0.08)]">
           <LogOut size={18} className="shrink-0" />
           <span className="truncate">Sign Out</span>
         </button>

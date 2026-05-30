@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, CheckCircle2, User, Sparkles, Terminal, Rocket, Tag, Briefcase
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 function SpotlightCard({ children, className = "", accent = "#7B61FF" }: { children: React.ReactNode, className?: string, accent?: string }) {
   return (
@@ -23,9 +24,9 @@ const PRESET_TAGS = ["Next.js", "React", "TypeScript", "FastAPI", "Python", "Rus
 
 function OnboardingContent() {
   const searchParams = useSearchParams();
-  const redirectParam = searchParams.get("redirect") || "/community";
+  const router = useRouter();
+  const { firebaseUser, localUser, loading } = useAuth();
 
-  const [user, setUser] = useState<{ name: string; username: string; email: string } | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   
   // Profile onboarding fields
@@ -40,58 +41,25 @@ function OnboardingContent() {
     github: ""
   });
 
-  // Check auth session
+  // Pre-fill name from Firebase/local user
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("devlink_auth_user");
-      if (storedUser) {
-        const parsed = JSON.parse(storedUser);
-        setUser(parsed);
-        // Pre-fill name from session
-        setProfileForm(prev => ({ ...prev, name: parsed.name || "" }));
-      } else {
-        // Not authenticated, redirect to dedicated /signin page
-        window.location.href = `/signin?redirect=${encodeURIComponent("/onboarding")}`;
-      }
+    if (localUser?.name) {
+      setProfileForm(prev => ({ ...prev, name: localUser.name }));
+    } else if (firebaseUser?.displayName) {
+      setProfileForm(prev => ({ ...prev, name: firebaseUser.displayName || "" }));
     }
-  }, []);
+  }, [localUser, firebaseUser]);
+
+  // Auth guard
+  useEffect(() => {
+    if (!loading && !firebaseUser) {
+      router.replace(`/signin?redirect=${encodeURIComponent("/onboarding")}`);
+    }
+  }, [loading, firebaseUser, router]);
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!profileForm.name || !profileForm.bio) return;
-
-    const skillsArray = profileForm.skills.split(",").map(s => s.trim()).filter(Boolean);
-    const avatarInitials = profileForm.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
-
-    const newBuilder = {
-      name: profileForm.name,
-      role: profileForm.role,
-      avatar: avatarInitials || "U",
-      bio: profileForm.bio,
-      skills: skillsArray.length > 0 ? skillsArray : ["Next.js", "React"],
-      status: "Available",
-      matchScore: 90,
-      projectSpecs: { 
-        title: profileForm.projectTitle || "Secret MVP", 
-        equity: profileForm.equity, 
-        commitment: profileForm.commitment 
-      },
-      techRadar: [
-        { label: "Frontend", value: 90 },
-        { label: "Backend", value: 85 }
-      ],
-      socials: { 
-        github: profileForm.github || "https://github.com", 
-        linkedin: "https://linkedin.com" 
-      }
-    };
-
-    // Save custom builders to localStorage
-    const stored = localStorage.getItem("devlink_custom_builders");
-    const customList = stored ? JSON.parse(stored) : [];
-    customList.push(newBuilder);
-    localStorage.setItem("devlink_custom_builders", JSON.stringify(customList));
-
     setSuccess(true);
   };
 
@@ -104,7 +72,7 @@ function OnboardingContent() {
     });
   };
 
-  if (!user) {
+  if (loading || !firebaseUser) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center font-mono text-xs">
         Verifying developer gate credentials...
@@ -190,7 +158,7 @@ function OnboardingContent() {
                 </div>
 
                 <div className="pt-8 font-mono text-[9px] text-zinc-600">
-                  SESSION KEY: devlink_auth_user • @{user.username}
+                  FIREBASE_UID: {firebaseUser.uid.slice(0,8)}... • {localUser?.username || firebaseUser.email}
                 </div>
               </SpotlightCard>
             </div>

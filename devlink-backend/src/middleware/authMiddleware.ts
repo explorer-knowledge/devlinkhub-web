@@ -1,14 +1,21 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { createHash } from "crypto";
-import redis, { CacheKeys } from "../db/redisClient.js";
+import admin from "../config/firebaseAdmin.js";
+import redis from "../db/redisClient.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "devlink_secret_signature_key_2026";
+// ─── AuthRequest ──────────────────────────────────────────────────────────────
 
 export interface AuthRequest extends Request {
-  user?: { userId: string };
-  token?: string;  // raw token, stored for LogoutController to blacklist
+  user?: {
+    uid: string;          // Firebase UID
+    email?: string;
+    name?: string;
+    picture?: string;
+  };
 }
+
+// ─── authenticateToken ────────────────────────────────────────────────────────
+// Verifies the Firebase ID token sent in the Authorization: Bearer <token> header.
+// On success, attaches the decoded token payload to req.user.
 
 export const authenticateToken = async (
   req: AuthRequest,
@@ -19,33 +26,33 @@ export const authenticateToken = async (
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    res.status(401).json({ error: "Token required" });
+    res.status(401).json({ error: "Authorization token required" });
     return;
   }
 
-  // ── 1. Verify JWT signature ─────────────────────────────────────────────────
-  let decoded: { userId: string };
+  // ─── Check Token Blacklist ─────────────────────────────────────────────────
   try {
-    decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
-  } catch {
-    res.status(403).json({ error: "Invalid token" });
-    return;
-  }
-
-  // ── 2. Check Redis blacklist (logout invalidation) ──────────────────────────
-  try {
-    const tokenHash = createHash("sha256").update(token).digest("hex");
-    const isBlacklisted = await redis.exists(CacheKeys.tokenBlacklist(tokenHash));
+    const isBlacklisted = await redis.get(`blacklist:token:${token}`);
     if (isBlacklisted) {
-      res.status(401).json({ error: "Token has been revoked. Please log in again." });
+      res.status(401).json({ error: "Token has been revoked/logged out." });
       return;
     }
-  } catch (redisErr) {
-    // If Redis is down, fail open — don't block legitimate users
-    console.error("Auth middleware Redis error:", redisErr);
+  } catch (err) {
+    console.error("Token blacklist check error:", err);
+    // Fail open if Redis is down
   }
 
-  req.user = decoded;
-  req.token = token;  // pass raw token to LogoutController
-  next();
+  try {
+    const decoded = await admin.auth().verifyIdToken(token);
+    req.user = {
+      uid: decoded.uid,
+      email: decoded.email,
+      name: decoded.name,
+      picture: decoded.picture,
+    };
+    next();
+  } catch (err: any) {
+    console.error("Firebase token verification failed:", err.message);
+    res.status(403).json({ error: "Invalid or expired token" });
+  }
 };

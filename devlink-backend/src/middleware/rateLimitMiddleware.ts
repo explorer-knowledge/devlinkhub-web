@@ -61,16 +61,4 @@ export const globalRateLimiter = createRateLimiter({
   maxRequests: RATE_LIMIT_MAX,
 });
 
-// ─── Auth-specific rate limiter ────────────────────────────────────────────────
-// Applied only to POST /login and POST /register: 10 requests per 15 minutes per IP.
-// Prevents brute-force login and registration spam.
 
-export const authRateLimiter = createRateLimiter({
-  keyFn: (req) => {
-    const ip = (req.headers["x-forwarded-for"] as string || req.ip || "unknown").split(",")[0].trim();
-    return CacheKeys.rateLimitAuth(ip);
-  },
-  windowSec: 15 * 60,  // 15 minutes
-  maxRequests: 10,
-  message: "Too many login attempts. Please try again in 15 minutes.",
-});

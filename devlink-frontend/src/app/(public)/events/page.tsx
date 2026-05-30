@@ -13,6 +13,7 @@ import {
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { FEATURED_EVENT, UPCOMING_EVENTS, PAST_EVENTS } from "@/utils/eventsData";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── UTILITY COMPONENTS ─────────────────────────────────────────────
 
@@ -82,22 +83,13 @@ function TerminalUI() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [stage, typedText]);
 
-  // Read username from localStorage
+  const { localUser, firebaseUser } = useAuth();
+
+  // Set username from Firebase auth
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const authUser = localStorage.getItem("devlink_auth_user");
-      if (authUser) {
-        try {
-          const parsed = JSON.parse(authUser);
-          if (parsed.username) {
-            setUsername(parsed.username);
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-  }, []);
+    if (localUser?.username) setUsername(localUser.username);
+    else if (firebaseUser?.email) setUsername(firebaseUser.email.split("@")[0]);
+  }, [localUser, firebaseUser]);
 
   // Simulating npm downloading packages
   useEffect(() => {

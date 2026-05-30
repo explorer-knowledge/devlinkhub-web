@@ -432,19 +432,12 @@ export async function toggleEventRSVP(eventId: string): Promise<boolean> {
   localStorage.setItem("devlink_registered_events", JSON.stringify(registered));
 
   try {
-    const storedUser = localStorage.getItem("devlink_auth_user");
-    const user = storedUser ? JSON.parse(storedUser) : null;
-    if (user?.username) {
-      const res = await fetch(`${API_BASE}/events/${eventId}/rsvp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: user.username }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        return data.registered;
-      }
-    }
+    // Auth token must be passed by the calling component (not available in utility files)
+    // This function only handles optimistic localStorage state; real RSVP is done from components with getToken()
+    await fetch(`${API_BASE}/events/${eventId}/rsvp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (e) {
     console.error("Failed to sync RSVP with backend:", e);
   }

@@ -1,11 +1,17 @@
+"use client";
+
 import Sidebar from "@/components/layout/Sidebar";
 import { Bell, Search, Settings, HelpCircle } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { localUser, firebaseUser } = useAuth();
+  const initial = (localUser?.name || firebaseUser?.displayName || "User").charAt(0).toUpperCase();
+
   return (
     <div className="flex h-screen bg-[var(--bg)] overflow-hidden">
       <Sidebar />
@@ -35,7 +41,7 @@ export default function DashboardLayout({
             <div className="divider-v h-6 w-px bg-[var(--border)] mx-2" />
             <button className="flex items-center gap-2 pl-2 group">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#3ABEFF] to-[#60A5FA] flex items-center justify-center text-black font-bold text-xs">
-                A
+                {initial}
               </div>
             </button>
           </div>

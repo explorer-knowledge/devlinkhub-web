@@ -11,6 +11,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getInquiries, Inquiry, clearAllInquiries, saveInquiriesList } from "@/utils/inquiriesData";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORY_COLORS: Record<string, string> = {
   PARTNERSHIPS: "#00F0FF",
@@ -28,7 +29,7 @@ export default function InquiriesDashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [selectedStatus, setSelectedStatus] = useState("ALL");
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { localUser, loading } = useAuth();
 
   // Load inquiries on mount
   useEffect(() => {
@@ -38,17 +39,9 @@ export default function InquiriesDashboardPage() {
       setInquiries(data);
     };
     loadData();
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("devlink_auth_user");
-      if (stored) {
-        try {
-          setCurrentUser(JSON.parse(stored));
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
   }, []);
+
+  const isAdmin = !loading && localUser?.role === "Administrator";
 
   const handleRefresh = async () => {
     const data = await getInquiries();
@@ -62,24 +55,7 @@ export default function InquiriesDashboardPage() {
     }
   };
 
-  const handleSimulateAdminLogin = async () => {
-    const adminPayload = {
-      name: "Admin Coordinator",
-      username: "admin",
-      email: "admin@devlink.dev",
-      isAdmin: true
-    };
-    localStorage.setItem("devlink_auth_user", JSON.stringify(adminPayload));
-    setCurrentUser(adminPayload);
-    const data = await getInquiries();
-    setInquiries(data);
-  };
 
-  const isAdmin = currentUser && (
-    currentUser.username === "admin" || 
-    currentUser.isAdmin === true || 
-    currentUser.email === "admin@devlink.dev"
-  );
 
   // Filter & Sort Logic
   const filteredInquiries = inquiries.filter((inq) => {
@@ -140,17 +116,17 @@ export default function InquiriesDashboardPage() {
               <span className="text-[10px] font-mono text-red-400 uppercase tracking-widest block">Firewall Shield Active</span>
               <h2 className="text-xl font-bold text-white tracking-tight">Access Restricted</h2>
               <p className="text-xs text-zinc-500 leading-relaxed font-light">
-                This terminal is cataloged under secure coordinator operations. Standard builder nodes are not authorized to view the communications telemetry matrix.
+                This terminal is cataloged under secure coordinator operations. Administrator Firebase credentials are required to access the communications telemetry matrix.
               </p>
             </div>
 
             <div className="flex flex-col gap-3 pt-2">
-              <button 
-                onClick={handleSimulateAdminLogin}
-                className="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-mono text-xs font-bold transition-all cursor-pointer shadow-[0_4px_20px_rgba(239,68,68,0.15)] active:scale-98 border-none"
+              <Link 
+                href="/signin"
+                className="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-mono text-xs font-bold transition-all cursor-pointer shadow-[0_4px_20px_rgba(239,68,68,0.15)] active:scale-98 text-center"
               >
-                [ ELEVATE SESSION TO ADMIN ]
-              </button>
+                [ SIGN IN AS ADMINISTRATOR ]
+              </Link>
               
               <Link 
                 href="/contact"

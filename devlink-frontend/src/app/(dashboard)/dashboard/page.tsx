@@ -9,8 +9,12 @@ import {
   Calendar, MessageSquare, Terminal, Activity
 } from "lucide-react";
 import { motion, Variants } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 export default function DashboardPage() {
+  const { localUser, firebaseUser } = useAuth();
+
+  const userName = localUser?.name || firebaseUser?.displayName?.split(" ")[0] || "User";
   // Advanced Animation Variants
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -47,7 +51,7 @@ export default function DashboardPage() {
             <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted)]">System Online</p>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-[var(--highlight)]">Alex</span>
+            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent)] to-[var(--highlight)]">{userName}</span>
           </h1>
           <p className="text-[var(--muted)] mt-1 text-sm md:text-base">Here's the telemetry on your projects today.</p>
         </div>

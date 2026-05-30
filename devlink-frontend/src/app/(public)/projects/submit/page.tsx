@@ -9,6 +9,7 @@ import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getMergedProjects, saveProjects, Project } from "@/utils/projectsData";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORIES = ["AI/ML", "Web3", "FinTech", "Open Source", "Infrastructure"];
 const ACCENT_COLORS = [
@@ -25,8 +26,8 @@ const PRESET_TECH = [
 ];
 
 export default function SubmitProjectPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const { firebaseUser, localUser, loading: authLoading } = useAuth();
+  const isAuthenticated = authLoading ? null : !!firebaseUser;
   
   const [name, setName] = useState("");
   const [category, setCategory] = useState("AI/ML");
@@ -39,19 +40,6 @@ export default function SubmitProjectPage() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitLogs, setSubmitLogs] = useState<string[]>([]);
-
-  // Check authentication on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("devlink_auth_user");
-      if (storedUser) {
-        setIsAuthenticated(true);
-        setUser(JSON.parse(storedUser));
-      } else {
-        setIsAuthenticated(false);
-      }
-    }
-  }, []);
 
   const toggleTech = (t: string) => {
     setTech(prev => 
@@ -227,7 +215,7 @@ export default function SubmitProjectPage() {
             </Link>
             <div className="flex items-center gap-1.5 text-zinc-500 font-mono text-xs bg-white/5 border border-white/10 px-3 py-1.5 rounded-full">
               <UserCheck size={12} className="text-[#00FFA3]" />
-              <span>Session: {user?.username}</span>
+              <span>Session: {localUser?.username || firebaseUser?.email || "User"}</span>
             </div>
           </div>
 

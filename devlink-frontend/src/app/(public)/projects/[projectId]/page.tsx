@@ -12,6 +12,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedProjects, saveProjects, Project, ProjectIssue } from "@/utils/projectsData";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function ProjectDetailsPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
 
   // Dynamic Updates state
   const [timeline, setTimeline] = useState<Array<{ date: string, text: string }>>([
@@ -40,34 +41,28 @@ export default function ProjectDetailsPage() {
 
   // Load project details
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const authUser = localStorage.getItem("devlink_auth_user");
-      if (authUser) {
-        setCurrentUser(JSON.parse(authUser));
+    getMergedProjects().then((all) => {
+      const matched = all.find(p => String(p.id) === String(projectId));
+      if (matched) {
+        setProject(matched);
       }
-
-      getMergedProjects().then((all) => {
-        const matched = all.find(p => String(p.id) === String(projectId));
-        if (matched) {
-          setProject(matched);
-        }
-        setLoading(false);
-      });
-    }
+      setLoading(false);
+    });
   }, [projectId]);
 
   // Handle claiming an issue
   const handleClaimIssue = (issueId: string) => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       router.push(`/signin?redirect=/projects/${projectId}`);
       return;
     }
 
     if (!project) return;
 
+    const username = localUser?.username || firebaseUser.email || "user";
     const updatedIssues = project.issues?.map(issue => {
       if (issue.id === issueId) {
-        return { ...issue, claimedBy: currentUser.username };
+        return { ...issue, claimedBy: username };
       }
       return issue;
     }) || [];
@@ -127,7 +122,7 @@ export default function ProjectDetailsPage() {
         appsList.push({
           projectId: project?.id,
           projectName: project?.name,
-          username: currentUser?.username,
+          username: localUser?.username || firebaseUser?.email || "user",
           role: applyRole,
           pitch: applyPitch,
           timestamp: Date.now()
@@ -374,7 +369,7 @@ export default function ProjectDetailsPage() {
                       <button 
                         suppressHydrationWarning
                         onClick={() => {
-                          if (!currentUser) {
+                          if (!firebaseUser) {
                             router.push(`/signin?redirect=/projects/${projectId}`);
                           } else {
                             setApplyRole(opening.role);

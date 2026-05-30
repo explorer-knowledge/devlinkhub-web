@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { saveInquiry } from "@/utils/inquiriesData";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── UTILITY COMPONENTS ─────────────────────────────────────────────\
 const DiscordIcon = ({ size = 24, color = "currentColor", className = "" }) => (
@@ -74,29 +75,12 @@ const FORM_CATEGORIES = [
 // ─── MAIN PAGE ─────────────────────────────────────────────────────
 
 export default function ContactPage() {
+  const { localUser } = useAuth();
+  const isAdmin = localUser?.role === "Administrator";
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [createdId, setCreatedId] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("devlink_auth_user");
-      if (stored) {
-        try {
-          setCurrentUser(JSON.parse(stored));
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-  }, []);
-
-  const isAdmin = currentUser && (
-    currentUser.username === "admin" ||
-    currentUser.isAdmin === true ||
-    currentUser.email === "admin@devlink.dev"
-  );
 
   const [formData, setFormData] = useState({
     name: "",

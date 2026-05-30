@@ -52,17 +52,17 @@ export const CACHE_TTL = {
 
 // ─── Cache Key Namespace Helpers ──────────────────────────────────────────────
 export const CacheKeys = {
-  eventsAll:       () => "cache:events:all",
-  eventById:       (id: string) => `cache:events:${id}`,
-  projectsAll:     () => "cache:projects:all",
-  projectById:     (id: string) => `cache:projects:${id}`,
-  startupsAll:     () => "cache:startups:all",
-  buildersAll:     () => "cache:builders:all",
-  userProfile:     (userId: string) => `cache:user:${userId}`,
-  tokenBlacklist:  (hash: string) => `blacklist:token:${hash}`,
-  rsvpLock:        (eventId: string) => `rsvp:lock:${eventId}`,
-  rateLimitIp:     (ip: string) => `ratelimit:ip:${ip}`,
-  rateLimitAuth:   (ip: string) => `ratelimit:auth:${ip}`,
+  eventsAll:   () => "cache:events:all",
+  eventById:   (id: string) => `cache:events:${id}`,
+  projectsAll: () => "cache:projects:all",
+  projectById: (id: string) => `cache:projects:${id}`,
+  startupsAll: () => "cache:startups:all",
+  buildersAll: () => "cache:builders:all",
+  userProfile: (userId: string) => `cache:user:${userId}`,
+  rsvpLock:    (eventId: string) => `rsvp:lock:${eventId}`,
+  rateLimitIp: (ip: string) => `ratelimit:ip:${ip}`,
+  syncLock:    (uid: string) => `sync:lock:${uid}`,
+  tokenBlacklist: (token: string) => `blacklist:token:${token}`,
 } as const;
 
 export default redis;

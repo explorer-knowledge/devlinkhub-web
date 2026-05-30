@@ -10,6 +10,7 @@ import {
   BookOpen, Map, Linkedin, Instagram, ExternalLink, Shield, Laptop,
   Trophy, Search, UserPlus
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── DATA PAYLOADS ──────────────────────────────────────────────────
 
@@ -457,7 +458,7 @@ export default function CommunityEcosystemPage() {
   // Custom interactive states for Co-Founder Matcher
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [customBuilders, setCustomBuilders] = useState<typeof BUILDERS>([]);
-  const [user, setUser] = useState<{ name: string; username: string; email: string } | null>(null);
+  const { firebaseUser, localUser, logout } = useAuth();
 
   // Load initial states from localStorage
   useEffect(() => {
@@ -470,9 +471,6 @@ export default function CommunityEcosystemPage() {
       
       const storedBuilders = localStorage.getItem("devlink_custom_builders");
       if (storedBuilders) setCustomBuilders(JSON.parse(storedBuilders));
-
-      const storedUser = localStorage.getItem("devlink_auth_user");
-      if (storedUser) setUser(JSON.parse(storedUser));
     }
   }, []);
 
@@ -495,32 +493,28 @@ export default function CommunityEcosystemPage() {
     }
   }, [customBuilders]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("devlink_auth_user");
-    setUser(null);
+  const handleLogout = async () => {
+    await logout();
   };
 
   const handleEventAction = (index: number) => {
-    const storedUser = localStorage.getItem("devlink_auth_user");
-    if (!storedUser) {
-      window.location.href = `/signin?redirect=${encodeURIComponent(`/community/register?type=event&id=${index}`)}`;
+    if (!firebaseUser) {
+      window.location.href = `/signin?redirect=${encodeURIComponent(`/community/signin?type=event&id=${index}`)}`;
     } else {
-      window.location.href = `/community/register?type=event&id=${index}`;
+      window.location.href = `/community/signin?type=event&id=${index}`;
     }
   };
 
   const handlePitchAction = (builder: typeof BUILDERS[0]) => {
-    const storedUser = localStorage.getItem("devlink_auth_user");
-    if (!storedUser) {
-      window.location.href = `/signin?redirect=${encodeURIComponent(`/community/register?type=pitch&id=${encodeURIComponent(builder.name)}`)}`;
+    if (!firebaseUser) {
+      window.location.href = `/signin?redirect=${encodeURIComponent(`/community/signin?type=pitch&id=${encodeURIComponent(builder.name)}`)}`;
     } else {
-      window.location.href = `/community/register?type=pitch&id=${encodeURIComponent(builder.name)}`;
+      window.location.href = `/community/signin?type=pitch&id=${encodeURIComponent(builder.name)}`;
     }
   };
 
   const handleProfileClick = () => {
-    const storedUser = localStorage.getItem("devlink_auth_user");
-    if (!storedUser) {
+    if (!firebaseUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent(`/onboarding`)}`;
     } else {
       window.location.href = `/onboarding`;
@@ -590,14 +584,14 @@ export default function CommunityEcosystemPage() {
               </motion.p>
               
               <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-6">
-                {user ? (
+                {firebaseUser ? (
                   <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-5 py-3.5 rounded-full backdrop-blur-md shadow-2xl">
                     <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#00F0FF] to-[#7B61FF] flex items-center justify-center text-white font-bold font-mono text-xs">
-                      {user.name.split(" ").map(n => n[0]).join("").toUpperCase()}
+                      {(localUser?.name || firebaseUser.displayName || "U").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)}
                     </div>
                     <div className="flex flex-col text-left">
-                      <span className="text-xs text-white font-bold leading-tight">{user.name}</span>
-                      <span className="text-[10px] text-zinc-500 font-mono">@{user.username}</span>
+                      <span className="text-xs text-white font-bold leading-tight">{localUser?.name || firebaseUser.displayName || "Builder"}</span>
+                      <span className="text-[10px] text-zinc-500 font-mono">@{localUser?.username || firebaseUser.email}</span>
                     </div>
                     <button 
                       suppressHydrationWarning
@@ -781,8 +775,7 @@ export default function CommunityEcosystemPage() {
                   <button 
                     suppressHydrationWarning
                     onClick={() => {
-                      const storedUser = localStorage.getItem("devlink_auth_user");
-                      if (!storedUser) {
+                      if (!firebaseUser) {
                         window.location.href = `/signin?redirect=${encodeURIComponent(`/onboarding`)}`;
                       } else {
                         window.location.href = `/onboarding`;

@@ -8,28 +8,27 @@ generator client {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  name         String?
-  username     String?  @unique
-  email        String   @unique
-  passwordHash String?
-  firstName    String?
-  lastName     String?
-  provider     String?  // 'local', 'google', 'github'
-  providerId   String?  // OAuth provider user ID
-  role         String   @default("Fullstack Developer")
-  githubUrl    String?
-  avatar       String?
-  bio          String?
-  skills       String?  // JSON string array of skills
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(uuid())
+  firebaseUid String?  @unique               // Firebase UID — primary auth identity (nullable for migration safety)
+  email       String   @unique
+  username    String?  @unique
+  name        String?
+  firstName   String?
+  lastName    String?
+  provider    String?  @default("firebase")  // 'firebase'
+  role        String   @default("Fullstack Developer")
+  githubUrl   String?
+  avatar      String?
+  bio         String?
+  skills      String?  // JSON string array of skills
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
-  projects     Project[]
-  rsvps        EventRSVP[]
-  pitchesSent  Pitch[]    @relation("PitchesSent")
-  pitchesRecv  Pitch[]    @relation("PitchesReceived")
+  projects    Project[]
+  rsvps       EventRSVP[]
+  pitchesSent Pitch[]    @relation("PitchesSent")
+  pitchesRecv Pitch[]    @relation("PitchesReceived")
 
   @@map("users")
 }

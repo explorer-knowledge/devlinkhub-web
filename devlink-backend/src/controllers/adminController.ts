@@ -1,46 +1,39 @@
 import { Request, Response } from "express";
 import prisma from "../db/prismaInstance.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import admin from "../config/firebaseAdmin.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "devlink_secret_signature_key_2026";
-
-// ─── POST /api/admin/auth/login ──────────────────────────────────────────────
+// ─── POST /api/admin/auth/login ───────────────────────────────────────────────
+// Expects: Authorization: Bearer <Firebase ID token>
+// The Firebase user must have role=Administrator in the local DB.
 
 export const adminLogin = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, password } = req.body;
+    const authHeader = req.headers["authorization"];
+    const idToken = authHeader && authHeader.split(" ")[1];
 
-    if (!username) {
-      res.status(400).json({ error: "Username is required." });
+    if (!idToken) {
+      res.status(401).json({ error: "Firebase ID token required in Authorization header." });
       return;
     }
 
-    const user = await prisma.user.findUnique({ where: { username } });
+    // Verify the Firebase token
+    const decoded = await admin.auth().verifyIdToken(idToken);
+
+    // Find the local user by Firebase UID
+    const user = await prisma.user.findFirst({ where: { firebaseUid: decoded.uid } });
 
     if (!user || user.role !== "Administrator") {
-      res.status(401).json({ error: "Unauthorized. Admin credentials required." });
+      res.status(403).json({ error: "Forbidden. Admin role required." });
       return;
     }
 
-    if (!user.passwordHash) {
-      res.status(401).json({ error: "Admin account has no password set." });
-      return;
-    }
-
-    const valid = await bcrypt.compare(password, user.passwordHash);
-    if (!valid) {
-      res.status(401).json({ error: "Invalid password" });
-      return;
-    }
-
-    const token = jwt.sign(
-      { userId: user.id, id: user.id, username: user.username, email: user.email, isAdmin: true },
-      JWT_SECRET
-    );
-    res.json({ token, success: true });
+    res.json({
+      success: true,
+      user: { id: user.id, username: user.username, email: user.email, role: user.role },
+    });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    console.error("Admin login error:", error.message);
+    res.status(401).json({ error: "Invalid or expired token." });
   }
 };
 

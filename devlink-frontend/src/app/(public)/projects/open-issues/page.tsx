@@ -12,24 +12,19 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedProjects, saveProjects, Project, ProjectIssue } from "@/utils/projectsData";
+import { useAuth } from "@/context/AuthContext";
 
 export default function OpenIssuesPage() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
   
   // Filters
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      getMergedProjects().then(setProjects);
-      const stored = localStorage.getItem("devlink_auth_user");
-      if (stored) {
-        setCurrentUser(JSON.parse(stored));
-      }
-    }
+    getMergedProjects().then(setProjects);
   }, []);
 
   // Extract all issues
@@ -53,16 +48,17 @@ export default function OpenIssuesPage() {
 
   // Claim issue logic
   const handleClaimIssue = (projectId: string | number, issueId: string) => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       router.push(`/signin?redirect=/projects/open-issues`);
       return;
     }
 
+    const username = localUser?.username || firebaseUser.email || "user";
     const updatedProjects = projects.map(p => {
       if (String(p.id) === String(projectId)) {
         const updatedIssues = p.issues?.map(issue => {
           if (issue.id === issueId) {
-            return { ...issue, claimedBy: currentUser.username };
+            return { ...issue, claimedBy: username };
           }
           return issue;
         }) || [];
