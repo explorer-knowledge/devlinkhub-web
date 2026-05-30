@@ -8,8 +8,6 @@ import {
   ArrowLeft, Calendar, Mail, Building2, ShieldAlert, 
   Trash2, Send, CheckCircle2, AlertCircle, Clock, Info, User, Reply
 } from "lucide-react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { 
   getInquiryById, 
@@ -139,7 +137,6 @@ export default function InquiryDetailsPage() {
   if (mounted && !isAdmin) {
     return (
       <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans flex flex-col">
-        <Navbar />
         <main className="flex-1 flex items-center justify-center pt-24 pb-20 px-6 z-10 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-red-500/[0.04] blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
           
@@ -179,8 +176,7 @@ export default function InquiryDetailsPage() {
             </div>
           </motion.div>
         </main>
-        <Footer />
-      </div>
+        </div>
     );
   }
 
@@ -213,8 +209,6 @@ export default function InquiryDetailsPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
-      <Navbar />
-
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         
         {/* Glow behind layout */}
@@ -465,7 +459,6 @@ export default function InquiryDetailsPage() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+      </div>
   );
 }

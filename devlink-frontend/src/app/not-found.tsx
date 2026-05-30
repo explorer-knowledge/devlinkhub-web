@@ -5,9 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { TerminalSquare, Home, ArrowLeft } from "lucide-react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-
 export default function NotFound() {
   const router = useRouter();
 
@@ -29,8 +26,6 @@ export default function NotFound() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
-      <Navbar />
-      
       <main className="flex-1 flex flex-col items-center justify-center relative overflow-hidden pt-24 pb-12">
         
         {/* --- Background Ambient Layers --- */}
@@ -137,7 +132,6 @@ export default function NotFound() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+      </div>
   );
 }

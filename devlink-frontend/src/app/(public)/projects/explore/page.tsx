@@ -7,8 +7,6 @@ import {
   Search, Cpu, Code2, Database, ShieldAlert, Award 
 } from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedProjects, Project } from "@/utils/projectsData";
 
@@ -69,8 +67,6 @@ export default function ExploreProjectsPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
-      <Navbar />
-      
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] max-w-[1200px] h-[500px] bg-[#FF1CF7]/[0.03] blur-[150px] rounded-full mix-blend-screen pointer-events-none" />
 

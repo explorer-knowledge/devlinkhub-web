@@ -10,8 +10,6 @@ import {
   Cpu, FileCode, Check, Play, X, User
 } from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import { getEventById, getUserRegisteredEvents, toggleEventRSVP, Event } from "@/utils/eventsData";
 
 // ─── LOCAL UTILITY COMPONENT ─────────────────────────────────────────
@@ -157,8 +155,6 @@ export default function EventDetailsPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
-      <Navbar />
-
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         {/* Background Accent glow */}
         <div 

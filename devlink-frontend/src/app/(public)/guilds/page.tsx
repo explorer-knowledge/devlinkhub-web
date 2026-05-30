@@ -1,5 +1,3 @@
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import { Container } from "@/components/layout/Container";
 import { Card, CardBody } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,8 +16,6 @@ export default function GuildsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      
       <main className="flex-1 pt-32 pb-20">
         <Container>
           <div className="text-center max-w-3xl mx-auto space-y-6 mb-20">
@@ -94,7 +90,6 @@ export default function GuildsPage() {
         </Container>
       </main>
 
-      <Footer />
-    </div>
+      </div>
   );
 }

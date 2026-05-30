@@ -8,8 +8,6 @@ import {
   Code2, Users, Briefcase, DollarSign, Cpu, Globe2, Database, ShieldAlert, Award
 } from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedStartups, saveStartups, Startup, StartupJob } from "@/utils/startupsData";
 
@@ -241,8 +239,6 @@ export default function StartupsPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
-      <Navbar />
-      
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         
         {/* Decorative glows */}
@@ -934,7 +930,6 @@ export default function StartupsPage() {
         )}
       </AnimatePresence>
 
-      <Footer />
-    </div>
+      </div>
   );
 }

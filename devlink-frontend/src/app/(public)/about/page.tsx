@@ -8,9 +8,6 @@ import {
   Terminal, ShieldCheck, Heart, Code2, Play, Compass, CheckCircle2,
   Github, Twitter, Linkedin, Instagram, ExternalLink
 } from "lucide-react";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-
 // --- INTERFACES & DATA ---
 
 interface TeamMember {
@@ -170,8 +167,6 @@ export default function AboutPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col overflow-hidden">
-      <Navbar />
-
       <main className="flex-1 flex flex-col relative pt-32 pb-24 z-10">
         
         {/* --- Background Ambient Layers --- */}
@@ -548,7 +543,6 @@ export default function AboutPage() {
         </div>
       </main>
 
-      <Footer />
-    </div>
+      </div>
   );
 }
