@@ -159,7 +159,7 @@ export const INITIAL_PROJECTS: Project[] = [
   }
 ];
 
-const API_BASE = "http://localhost:10000/api";
+const API_BASE = `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"}/api`;
 
 export async function getMergedProjects(): Promise<Project[]> {
   try {
