@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevLinkHub — Multiplayer Developer Ecosystem</title>
+  <meta name="description" content="Connect with developer cohorts across college years, build real-world products, host hackathons, workshops, and share configs.">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- CDNs for visual tools -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- GLOBAL EFFECTS LAYERS -->
+  <div class="noise-texture" aria-hidden="true"></div>
+  <div class="dot-grid" aria-hidden="true"></div>
+  <div class="bg-ambient-orb orb-cyan" aria-hidden="true"></div>
+  <div class="bg-ambient-orb orb-violet" aria-hidden="true"></div>
+
+  <!-- SVG Liquid Displacement Filters -->
+  <svg class="hero-water-displacement" style="position:absolute; width:0; height:0;" aria-hidden="true">
+    <defs>
+      <filter id="liquid-filter">
+        <feTurbulence id="liquid-turbulence" type="fractalNoise" baseFrequency="0.02 0.06" numOctaves="2" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <svg class="resources-displacement" style="position:absolute; width:0; height:0;" aria-hidden="true">
+    <defs>
+      <filter id="liquid-filter-res">
+        <feTurbulence id="liquid-turbulence-res" type="fractalNoise" baseFrequency="0.03 0.05" numOctaves="2" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="35" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- NAVBAR -->
+  <nav class="frosted-nav">
+    <a href="#" class="nav-brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--cyan); filter:drop-shadow(0 0 8px rgba(0,245,255,0.4))">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+      <span>DevLink<span class="mono">Hub</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="#pillars">Mission</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#community">Community</a></li>
+    </ul>
+    <a href="#cta-join" class="btn-primary" style="padding: 10px 24px;">Join the Hub</a>
+    <button class="hamburger" aria-label="Open Navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-nav-panel">
+    <button class="close-mobile">&times;</button>
+    <a href="#">Home</a>
+    <a href="#pillars">Mission</a>
+    <a href="#events">Events</a>
+    <a href="#resources">Resources</a>
+    <a href="#community">Community</a>
+    <a href="#cta-join" class="btn-primary" style="margin-top: 1rem;">Join the Hub</a>
+  </div>
+
+  <!-- S1: HERO -->
+  <section class="hero" id="hero">
+    <div id="particles-js" class="hero-canvas" aria-hidden="true"></div>
+    
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="live-dot"></span>
+          <span>1,204 BUILDERS ONLINE</span>
+        </div>
+        <h1 class="hero-title">
+          <span>The Multiplayer</span>
+          <span class="grad-cyan-purple">Developers</span>
+          <span class="pink-text">Ecosystem.</span>
+        </h1>
+        <p class="hero-sub">
+          DevLinkHub unites college developers across all years to design, develop, and deploy production-grade software together. Zero generic theory — pure, unadulterated execution.
+        </p>
+        <div class="hero-btns">
+          <a href="#pillars" class="btn-primary">Explore Projects &rarr;</a>
+          <a href="#cta-join" class="btn-secondary">Join Community</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <!-- Morphing Decorative SVG Blob -->
+        <svg class="hero-morph-blob" viewBox="0 0 100 100" style="filter: url(#liquid-filter)">
+          <defs>
+            <linearGradient id="blob-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--cyan)" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="var(--violet)" stop-opacity="0.6" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#blob-grad)">
+            <animate attributeName="d" 
+                     dur="18s" 
+                     repeatCount="indefinite"
+                     values="
+                       M25,-38 C39,-34 48,-21 51,-6 C54,9 51,26 41,37 C31,48 14,53 -2,56 C-18,59 -33,60 -43,51 C-53,42 -58,23 -57,6 C-56,-11 -49,-26 -38,-33 C-27,-40 -11,-39 25,-38 Z;
+                       M21,-35 C35,-32 44,-20 48,-5 C52,10 51,28 40,39 C29,50 8,54 -10,54 C-28,54 -43,50 -51,40 C-59,30 -60,10 -57,-7 C-54,-24 -47,-38 -35,-42 C-23,-46 -8,-40 21,-35 Z;
+                       M25,-38 C39,-34 48,-21 51,-6 C54,9 51,26 41,37 C31,48 14,53 -2,56 C-18,59 -33,60 -43,51 C-53,42 -58,23 -57,6 C-56,-11 -49,-26 -38,-33 C-27,-40 -11,-39 25,-38 Z
+                     " />
+          </path>
+        </svg>
+
+        <!-- Floating Notifications Stack -->
+        <div class="floating-notif-cards">
+          <div class="glass-panel notif-card notif-card-1">
+            <div class="notif-head">
+              <span class="mono" style="color:var(--cyan)">#GIT_COMMIT</span>
+              <span class="notif-dot cyan"></span>
+            </div>
+            <div>PR #142 Merged by @alex_j</div>
+          </div>
+          <div class="glass-panel notif-card notif-card-2">
+            <div class="notif-head">
+              <span class="mono" style="color:var(--violet)">#REPOSITORY</span>
+              <span class="notif-dot purple"></span>
+            </div>
+            <div>Repo Forked by @sarah_dev</div>
+          </div>
+          <div class="glass-panel notif-card notif-card-3">
+            <div class="notif-head">
+              <span class="mono" style="color:var(--neon-green)">#AUTHENTICATED</span>
+              <span class="notif-dot green"></span>
+            </div>
+            <div>OAuth Verified: Node-Staging</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE TICKER -->
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker-track">
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> @arjun_dev shipped TaskFlow v2.1</div>
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> Guild #WebOps staging servers active</div>
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> Commits surged: +340 this afternoon</div>
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> PR #89 validated in memsafe-rust</div>
+      <!-- Duplicate for infinite track -->
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> @arjun_dev shipped TaskFlow v2.1</div>
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> Guild #WebOps staging servers active</div>
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> Commits surged: +340 this afternoon</div>
+      <div class="ticker-item"><span class="t-symbol">&gt;</span> PR #89 validated in memsafe-rust</div>
+    </div>
+  </div>
+
+  <!-- S2: STATS STRIP -->
+  <section class="stats-strip">
+    <div class="stats-grid-asym">
+      <div class="glass-panel stat-box">
+        <div class="stat-icon">&#128101;</div>
+        <div class="stat-num" data-target="500">0</div>
+        <div class="stat-desc">Developers</div>
+      </div>
+      <div class="glass-panel stat-box">
+        <div class="stat-icon">&#128293;</div>
+        <div class="stat-num" data-target="30">0</div>
+        <div class="stat-desc">Hackathons</div>
+      </div>
+      <div class="glass-panel stat-box">
+        <div class="stat-icon">&#128196;</div>
+        <div class="stat-num" data-target="100">0</div>
+        <div class="stat-desc">Resources</div>
+      </div>
+      <div class="glass-panel stat-box">
+        <div class="stat-icon">&#9889;</div>
+        <div class="stat-num" data-target="20">0</div>
+        <div class="stat-desc">Workshops</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S3: WHAT WE DO (BENTO) -->
+  <section class="pillars" id="pillars">
+    <div class="section-wrapper">
+      <span class="section-tag">&lt;mission /&gt;</span>
+      <h2 class="section-heading-lg">Our Mission</h2>
+
+      <div class="bento-pillars-grid">
+        <!-- Large Card -->
+        <div class="glass-panel bento-card--large">
+          <div class="pillar-inner">
+            <span class="pillar-badge cyan">BUILD</span>
+            <div class="pillar-desc-block">
+              <h3>Ship Real-World Products</h3>
+              <p>Forget standard exercises. We organize collaborative cohorts to design, write, deploy, and scale tools that serve real communities. Build your actual portfolio with active production databases, secure APIs, and production Docker pipelines.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Small Card 1 -->
+        <div class="glass-panel">
+          <div class="pillar-inner">
+            <span class="pillar-badge violet">CONNECT</span>
+            <div class="pillar-desc-block">
+              <h3>Year-1 to Final Year</h3>
+              <p>Bridge the gap. Network directly with seniors working in tech companies and connect with freshmen starting their roadmap. Peer mentoring redefined.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Small Card 2 -->
+        <div class="glass-panel">
+          <div class="pillar-inner">
+            <span class="pillar-badge green">LEARN</span>
+            <div class="pillar-desc-block">
+              <h3>Master Through Doing</h3>
+              <p>No endless slide decks or pre-recorded tutorials. We run intense sprints, active code reviews, and live production staging classes daily.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S4: STICKY SPLIT SCREEN -->
+  <section class="split-section-outer" style="background:var(--bg-darker); border-top: 1px solid var(--glass-border);">
+    <div class="split-section" style="display: grid; grid-template-columns: 1.2fr 1fr; max-width:1300px; margin:0 auto;">
+      
+      <!-- STICKY LEFT COLUMN -->
+      <div class="split-left" style="position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 4rem;">
+        <span class="mono" style="font-size:11px; letter-spacing:0.15em; margin-bottom:1.5rem">// ROADMAP_EXECUTION</span>
+        <h2 style="font-size:2.8rem; font-weight:900; line-height:1.2; margin-bottom:3rem; color:#fff">How We Build.</h2>
+        
+        <!-- Step 1 Info -->
+        <div class="split-step" data-step="1" style="margin-bottom: 2.5rem; display:flex; gap:1.5rem; align-items:flex-start">
+          <div class="split-step-num mono" style="font-size:3rem; font-weight:900; line-height:1; color:rgba(255,255,255,0.08); transition:color 0.3s">01</div>
+          <div>
+            <h4 style="font-size:1.15rem; font-weight:700; color:#fff; margin-bottom:0.5rem">Join Specialized Guilds</h4>
+            <p style="color:var(--white-secondary); font-size:13px; max-width:320px">Align with a cohort of builders matching your tech interests — systems, AI, web, mobile, or cloud infrastructure.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 Info -->
+        <div class="split-step" data-step="2" style="margin-bottom: 2.5rem; display:flex; gap:1.5rem; align-items:flex-start">
+          <div class="split-step-num mono" style="font-size:3rem; font-weight:900; line-height:1; color:rgba(255,255,255,0.08); transition:color 0.3s">02</div>
+          <div>
+            <h4 style="font-size:1.15rem; font-weight:700; color:#fff; margin-bottom:0.5rem">Form Sandbox Teams</h4>
+            <p style="color:var(--white-secondary); font-size:13px; max-width:320px">Find developer co-founders from first to fourth year. Establish your stack, sandbox environments, and API structures.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 Info -->
+        <div class="split-step" data-step="3" style="display:flex; gap:1.5rem; align-items:flex-start">
+          <div class="split-step-num mono" style="font-size:3rem; font-weight:900; line-height:1; color:rgba(255,255,255,0.08); transition:color 0.3s">03</div>
+          <div>
+            <h4 style="font-size:1.15rem; font-weight:700; color:#fff; margin-bottom:0.5rem">Ship Production Builds</h4>
+            <p style="color:var(--white-secondary); font-size:13px; max-width:320px">Run automated staging suites, perform robust code audits, and launch production-grade software to college servers.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCROLLING RIGHT COLUMN -->
+      <div class="split-right" style="padding: 10rem 4rem; display: flex; flex-direction: column; gap: 8rem; justify-content: center;">
+        
+        <!-- Panel 1 -->
+        <div class="glass-panel split-terminal" data-step="1" style="transition: opacity 0.4s; opacity:0.3;">
+          <div class="code-window-bar">
+            <span style="width:10px; height:10px; border-radius:50%; background:#ff5f56"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#ffbd2e"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#27c93f"></span>
+            <span class="mono" style="font-size:11px; margin-left:10px; color:rgba(255,255,255,0.3)">guild_sync.sh</span>
+          </div>
+          <div style="padding:1.5rem 2rem; background:rgba(0,0,0,0.35); font-family:var(--font-mono); font-size:12px; line-height:1.8">
+            <div style="color:var(--cyan)">$ dlh join --guild frontend_architects</div>
+            <div style="color:var(--white-secondary)">[STAGE-1] Fetching active guild metadata...</div>
+            <div style="color:var(--white-secondary)">[STAGE-2] Connecting to WebSocket pool: wss://sync.devlinkhub.org</div>
+            <div style="color:var(--neon-green)">✓ Successfully synchronized. Staged in active registry.</div>
+            <div style="color:var(--white-secondary)">Registered Active Builders: 342 in circle.</div>
+          </div>
+        </div>
+
+        <!-- Panel 2 -->
+        <div class="glass-panel split-terminal" data-step="2" style="transition: opacity 0.4s; opacity:0.3;">
+          <div class="code-window-bar">
+            <span style="width:10px; height:10px; border-radius:50%; background:#ff5f56"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#ffbd2e"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#27c93f"></span>
+            <span class="mono" style="font-size:11px; margin-left:10px; color:rgba(255,255,255,0.3)">team_resolve.py</span>
+          </div>
+          <div style="padding:1.5rem 2rem; background:rgba(0,0,0,0.35); font-family:var(--font-mono); font-size:12px; line-height:1.8">
+            <div style="color:var(--cyan)">$ python3 team_match.py --size 4 --stack web</div>
+            <div style="color:var(--white-secondary)">Analyzing active profiles...</div>
+            <div style="color:var(--white-secondary)">Found match in timezone GMT+5:30.</div>
+            <div style="color:var(--white-primary)">Team Resolved:</div>
+            <div style="color:var(--violet)">  [Leader] @alex_j (NextJS, Docker)</div>
+            <div style="color:var(--violet)">  [Backend] @sarah_dev (NodeJS, Postgres)</div>
+            <div style="color:var(--violet)">  [Systems] @harsh_sys (Go, Gin, Redis)</div>
+            <div style="color:var(--neon-green)">✓ Dynamic workspace generated: /sandbox/byteforce</div>
+          </div>
+        </div>
+
+        <!-- Panel 3 -->
+        <div class="glass-panel split-terminal" data-step="3" style="transition: opacity 0.4s; opacity:0.3;">
+          <div class="code-window-bar">
+            <span style="width:10px; height:10px; border-radius:50%; background:#ff5f56"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#ffbd2e"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#27c93f"></span>
+            <span class="mono" style="font-size:11px; margin-left:10px; color:rgba(255,255,255,0.3)">stage_deploy.rs</span>
+          </div>
+          <div style="padding:1.5rem 2rem; background:rgba(0,0,0,0.35); font-family:var(--font-mono); font-size:12px; line-height:1.8">
+            <div style="color:var(--cyan)">$ cargo deploy --release --target staging-main</div>
+            <div style="color:var(--white-secondary)">Compiling stage_deploy v0.1.0...</div>
+            <div style="color:var(--white-secondary)">Running unit suites... success.</div>
+            <div style="color:var(--white-secondary)">Running static security audits... all vulnerabilities: 0.</div>
+            <div style="color:var(--white-secondary)">Pushing image to registry...</div>
+            <div style="color:var(--neon-green)">✓ Successfully deployed to staging.devlinkhub.org/byteforce</div>
+            <div style="color:var(--cyan)">Response code: 200 OK. Response time: 24ms.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- S5: EVENTS (MASONRY) -->
+  <section class="events" id="events">
+    <div class="section-wrapper">
+      <span class="section-tag">&gt; upcoming_events</span>
+      <h2 class="section-heading-lg">Central Hub Calendar</h2>
+
+      <div class="events-masonry">
+        <!-- Event Card 1 (Wide Featured) -->
+        <div class="glass-panel event-card--wide" style="height: 380px;">
+          <div class="event-inner">
+            <div>
+              <span class="event-cat">HACKATHON</span>
+              <h3 class="event-title" style="margin-top: 1rem; font-size: 2.2rem;">DevHacks 2025</h3>
+              <p style="margin-top: 1rem; color:var(--white-secondary); font-size: 14px; max-width: 500px;">The flagship, 48-hour online/offline developer marathon. Team up, conceptualize a production build, deploy it, and win cash prizes of ₹10,000+.</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end">
+              <div class="event-meta">
+                <div>📍 ONLINE + CAMPUS</div>
+                <div>⏱ OCT 14 - OCT 16, 2025</div>
+              </div>
+              <a href="#cta-join" class="btn-primary">Register Now</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Card 2 -->
+        <div class="glass-panel" style="height: 380px;">
+          <div class="event-inner">
+            <div>
+              <span class="event-cat" style="color:var(--violet)">WORKSHOP</span>
+              <h3 class="event-title" style="margin-top: 1rem;">Go Microservices</h3>
+              <p style="margin-top: 0.75rem; color:var(--white-secondary); font-size: 13px;">Master clean architecture patterns in Go, set up CORS middleware, JWT authentication, and deploy to Docker networks.</p>
+            </div>
+            <div style="margin-top:auto">
+              <div class="event-meta" style="margin-bottom:1.5rem">
+                <div>📍 COMPUTER LAB 3</div>
+                <div>⏱ SEP 24, 2025 · 4:00 PM</div>
+              </div>
+              <a href="#cta-join" class="btn-secondary" style="width:100%; justify-content:center">Book Spot</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Card 3 -->
+        <div class="glass-panel" style="height: 360px;">
+          <div class="event-inner">
+            <div>
+              <span class="event-cat" style="color:var(--cyan)">TECH TALK</span>
+              <h3 class="event-title" style="margin-top: 1rem;">GenAI &amp; Vector DBs</h3>
+              <p style="margin-top: 0.75rem; color:var(--white-secondary); font-size: 13px;">Understanding Large Language Models, embeddings, LangChain logic, and vector search engines like Pinecone and Qdrant.</p>
+            </div>
+            <div style="margin-top:auto">
+              <div class="event-meta" style="margin-bottom:1.5rem">
+                <div>📍 SEMINAR HALL 1</div>
+                <div>⏱ OCT 02, 2025 · 2:00 PM</div>
+              </div>
+              <a href="#cta-join" class="btn-secondary" style="width:100%; justify-content:center">Register &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Card 4 -->
+        <div class="glass-panel" style="height: 360px;">
+          <div class="event-inner">
+            <div>
+              <span class="event-cat" style="color:var(--pink)">MEETUP</span>
+              <h3 class="event-title" style="margin-top: 1rem;">Open Source Mixer</h3>
+              <p style="margin-top: 0.75rem; color:var(--white-secondary); font-size: 13px;">Mix with active maintainers, learn standard Git PR protocols, and find active repos to claim your first merged pull request.</p>
+            </div>
+            <div style="margin-top:auto">
+              <div class="event-meta" style="margin-bottom:1.5rem">
+                <div>📍 CAMPUS GREEN</div>
+                <div>⏱ OCT 09, 2025 · 5:00 PM</div>
+              </div>
+              <a href="#cta-join" class="btn-secondary" style="width:100%; justify-content:center">RSVP</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Card 5 -->
+        <div class="glass-panel" style="height: 360px;">
+          <div class="event-inner">
+            <div>
+              <span class="event-cat">WORKSHOP</span>
+              <h3 class="event-title" style="margin-top: 1rem;">Docker Staging</h3>
+              <p style="margin-top: 0.75rem; color:var(--white-secondary); font-size: 13px;">Containers, persistent volumes, environment orchestration, and managing local multi-service networks with Docker Compose.</p>
+            </div>
+            <div style="margin-top:auto">
+              <div class="event-meta" style="margin-bottom:1.5rem">
+                <div>📍 ONLINE / DISCORD</div>
+                <div>⏱ OCT 11, 2025 · 7:00 PM</div>
+              </div>
+              <a href="#cta-join" class="btn-secondary" style="width:100%; justify-content:center">Book Spot</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- S6: CODE PLAYGROUND -->
+  <section class="code-playground-sec" style="padding:8rem 2rem; position:relative; z-index:10; background:var(--bg-deep); border-bottom: 1px solid var(--glass-border)">
+    <div class="section-wrapper" style="display:grid; grid-template-columns:1fr 1.2fr; gap:4rem; align-items:center">
+      <div>
+        <span class="section-tag">// SKILL_PLAYGROUND</span>
+        <h2 class="section-heading-lg" style="margin-bottom:1.5rem">Tabbed Code Playground.</h2>
+        <p style="color:var(--white-secondary); font-size:15px; line-height:1.7; margin-bottom:2.5rem">Interact with specialized syntax engines directly inside DevLinkHub's mock environment. Toggle through our SDK setups to view live interface configurations across multiple frameworks.</p>
+        
+        <div class="code-tabs-toggles" style="display:flex; flex-direction:column; gap:0.5rem">
+          <button class="glass-panel code-tab-trigger active" data-lang="js" onclick="selectCodeLanguage('js')" style="padding:1rem; text-align:left; cursor:pointer; font-family:var(--font-mono); font-size:13px; color:#fff">
+            &gt; Node/JavaScript Integration
+          </button>
+          <button class="glass-panel code-tab-trigger" data-lang="python" onclick="selectCodeLanguage('python')" style="padding:1rem; text-align:left; cursor:pointer; font-family:var(--font-mono); font-size:13px; color:#fff">
+            &gt; Python CLI Agent
+          </button>
+          <button class="glass-panel code-tab-trigger" data-lang="rust" onclick="selectCodeLanguage('rust')" style="padding:1rem; text-align:left; cursor:pointer; font-family:var(--font-mono); font-size:13px; color:#fff">
+            &gt; Rust Memory Safe Module
+          </button>
+          <button class="glass-panel code-tab-trigger" data-lang="go" onclick="selectCodeLanguage('go')" style="padding:1rem; text-align:left; cursor:pointer; font-family:var(--font-mono); font-size:13px; color:#fff">
+            &gt; Go Microservices SDK
+          </button>
+        </div>
+      </div>
+
+      <!-- Code Window Panel -->
+      <div class="glass-panel" style="border-radius:24px; box-shadow:var(--specular), 0 20px 60px rgba(0,0,0,0.6)">
+        <div class="code-window-bar">
+          <span style="width:10px; height:10px; border-radius:50%; background:#ff5f56"></span>
+          <span style="width:10px; height:10px; border-radius:50%; background:#ffbd2e"></span>
+          <span style="width:10px; height:10px; border-radius:50%; background:#27c93f"></span>
+          <span class="mono" style="font-size:11px; margin-left:10px; color:rgba(255,255,255,0.3)">main_playground.js</span>
+        </div>
+        <pre class="modal-code-block" id="playground-code-render" style="margin-top:0; border-radius:0 0 24px 24px; padding:2rem">
+// DevLinkHub SDK setup
+import { DevLinkHub } from '@devlinkhub/core';
+
+const hub = new DevLinkHub({
+  token: process.env.DLH_SECRET,
+  guild: 'FrontendArchitects'
+});
+
+hub.on('ship', (project) => {
+  console.log(`🚀 Project shipped: ${project.name}`);
+});</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- S7: RESOURCE HUB (SCATTERED GRID + WATER FLUID) -->
+  <section class="resources" id="resources">
+    <div class="section-wrapper">
+      <div style="text-align:center; margin-bottom:5rem">
+        <span class="section-tag">&lt;resources_repository /&gt;</span>
+        <h2 class="section-heading-lg" style="margin-bottom:0.75rem">Everything You Need. One Place.</h2>
+        <p style="color:var(--white-secondary); font-size:15px">Stop wandering endless directories. Start building with standardized templates.</p>
+      </div>
+
+      <div class="scattered-hub-grid">
+        
+        <!-- Tile 1 -->
+        <div class="glass-panel" onclick="openCodeModal('Next.js + Tailwind Starter', '// Clone Setup\nnpx -y create-next-app@latest my-starter --typescript --tailwind\ncd my-starter\nnpm install @devlinkhub/core\n\n// Next.js Staged Config\nmodule.exports = {\n  reactStrictMode: true,\n  images: { domains: [\'devlinkhub.org\'] },\n};')">
+          <div class="tile-inner">
+            <div class="tile-icon">&#128187;</div>
+            <div>
+              <h3 class="tile-name">Next.js + Tailwind</h3>
+              <a href="javascript:void(0)" class="tile-link">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 2 -->
+        <div class="glass-panel" onclick="openCodeModal('Vite + React Core Template', '// Vite Rapid Core Setup\nnpm create vite@latest my-app -- --template react-ts\ncd my-app\nnpm install zustand tailwindcss postcss autoprefixer\n\n// custom hooks setup\nexport const useActiveUser = () => {\n  return { handle: \'@alex_j\', authenticated: true };\n};')">
+          <div class="tile-inner">
+            <div class="tile-icon" style="color:var(--violet)">&#9881;</div>
+            <div>
+              <h3 class="tile-name">Vite + React Core</h3>
+              <a href="javascript:void(0)" class="tile-link" style="color:var(--violet)">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 3 -->
+        <div class="glass-panel" onclick="openCodeModal('Go + Gin REST API Seed', '// Go Gin API Seed\npackage main\nimport \"github.com/gin-gonic/gin\"\n\nfunc main() {\n  r := gin.Default()\n  r.GET(\"/api/health\", func(c *gin.Context) {\n    c.JSON(200, gin.H{\"status\": \"operational\"})\n  })\n  r.Run(\":8080\")\n}')">
+          <div class="tile-inner">
+            <div class="tile-icon" style="color:var(--neon-green)">&#128225;</div>
+            <div>
+              <h3 class="tile-name">Go + Gin REST API</h3>
+              <a href="javascript:void(0)" class="tile-link" style="color:var(--neon-green)">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 4 -->
+        <div class="glass-panel" onclick="openCodeModal('DevLinkHub CLI Tooling', '// Local CLI installation\nnpm install -g @devlinkhub/cli\n\n// Commands available\n$ dlh login\n$ dlh sync --dir ./\n$ dlh deploy --stage prod')">
+          <div class="tile-inner">
+            <div class="tile-icon">&#128180;</div>
+            <div>
+              <h3 class="tile-name">DevLinkHub CLI</h3>
+              <a href="javascript:void(0)" class="tile-link">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 5 -->
+        <div class="glass-panel" onclick="openCodeModal('Docker Compose Presets', '# Multi-Container staging setup\nversion: \'3.8\'\nservices:\n  web:\n    image: devlinkhub/node-staging:latest\n    ports:\n      - \"3000:3000\"\n  db:\n    image: postgres:15\n    environment:\n      POSTGRES_DB: dlh_staging\n    volumes:\n      - pgdata:/var/lib/postgresql/data\nvolumes:\n  pgdata:')">
+          <div class="tile-inner">
+            <div class="tile-icon" style="color:var(--violet)">&#128203;</div>
+            <div>
+              <h3 class="tile-name">Docker Composers</h3>
+              <a href="javascript:void(0)" class="tile-link" style="color:var(--violet)">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 6 -->
+        <div class="glass-panel" onclick="openCodeModal('GitHub Actions Pipelines', '# CI/CD validation flow\nname: DevLinkHub CI\non: [push]\njobs:\n  audit:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - name: Code Security Audit\n        run: npm run audit-security')">
+          <div class="tile-inner">
+            <div class="tile-icon" style="color:var(--neon-green)">&#128640;</div>
+            <div>
+              <h3 class="tile-name">GitHub CD Actions</h3>
+              <a href="javascript:void(0)" class="tile-link" style="color:var(--neon-green)">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 7 -->
+        <div class="glass-panel" onclick="openCodeModal('DSA roadmap models', '// Big O, Data Structures & Algorithms staging models\nimport { Graph } from \'@devlinkhub/dsa\';\n\nconst graph = new Graph();\ngraph.addNode(\'@arjun\');\ngraph.addNode(\'@sarah\');\ngraph.addEdge(\'@arjun\', \'@sarah\');\nconsole.log(graph.hasPath(\'@arjun\', \'@sarah\')); // true')">
+          <div class="tile-inner">
+            <div class="tile-icon">&#128202;</div>
+            <div>
+              <h3 class="tile-name">DSA Cheat Roadmap</h3>
+              <a href="javascript:void(0)" class="tile-link">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tile 8 -->
+        <div class="glass-panel" onclick="openCodeModal('Systems Design presets', '# Microservices Systems Architecture models\n- High availability database replication patterns\n- Distributed Redis memory caching staging strategies\n- Horizontal microservices cluster scaling protocols')">
+          <div class="tile-inner">
+            <div class="tile-icon" style="color:var(--violet)">&#128161;</div>
+            <div>
+              <h3 class="tile-name">System Design Maps</h3>
+              <a href="javascript:void(0)" class="tile-link" style="color:var(--violet)">Explore Setup &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- S8: COMMUNITY STRIP & TESTIMONIALS -->
+  <section class="community" id="community">
+    <div class="shifting-ambient-gradient"></div>
+    <div class="section-wrapper">
+      <div style="text-align:center; margin-bottom:5rem; position:relative; z-index:10">
+        <span class="section-tag">&lt;network_circles /&gt;</span>
+        <h2 class="section-heading-lg" style="margin-bottom:0.75rem">Unified Community Circles</h2>
+        <p style="color:var(--white-secondary); font-size:15px">Built by college developers, for college developers.</p>
+      </div>
+
+      <div class="community-grid">
+        
+        <!-- Bento 1 -->
+        <div class="glass-panel">
+          <div class="comm-inner">
+            <h3 class="comm-title">Freshman to Senior</h3>
+            <p class="comm-desc">A structured ecosystem that matches first-year beginners directly with third/fourth-year student engineers actively interning at top companies.</p>
+          </div>
+        </div>
+
+        <!-- Bento 2 -->
+        <div class="glass-panel testimonial-card">
+          <div class="comm-inner">
+            <p class="testi-quote">"DevLinkHub completely changed how I build. I was doing simple class assignments, but here I teamed up to deploy an actual college scheduler."</p>
+            <div class="testi-author">
+              <div class="testi-avatar"></div>
+              <div>
+                <div class="mono" style="font-size:11px">@rahul_sharma</div>
+                <div class="testi-meta">Year 2 CSE · Web dev</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento 3 -->
+        <div class="glass-panel">
+          <div class="comm-inner">
+            <h3 class="comm-title">Production Portfolio</h3>
+            <p class="comm-desc">No basic landing page templates. We align cohorts to build tools, maintain staging domains, audit configurations, and ship actual projects.</p>
+          </div>
+        </div>
+
+        <!-- Bento 4 -->
+        <div class="glass-panel testimonial-card">
+          <div class="comm-inner">
+            <p class="testi-quote">"DevHacks hackathon was intense. 48 hours of solid coding, and matching with a systems engineer helped us validate our backend scaling."</p>
+            <div class="testi-author">
+              <div class="testi-avatar"></div>
+              <div>
+                <div class="mono" style="font-size:11px">@priya_patel</div>
+                <div class="testi-meta">Year 3 IT · AI Guild</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento 5 -->
+        <div class="glass-panel">
+          <div class="comm-inner">
+            <h3 class="comm-title">Staging Servers Pool</h3>
+            <p class="comm-desc">Every member gets access to staging server environments, custom subdomains, deployment pipelines, and shared Postgres pools.</p>
+          </div>
+        </div>
+
+        <!-- Bento 6 -->
+        <div class="glass-panel testimonial-card">
+          <div class="comm-inner">
+            <p class="testi-quote">"Accessing standard GitHub workflows and Go Gin APIs in the Resource Hub allowed us to bootstrap our research project in 1 hour."</p>
+            <div class="testi-author">
+              <div class="testi-avatar"></div>
+              <div>
+                <div class="mono" style="font-size:11px">@harsh_v</div>
+                <div class="testi-meta">Year 4 ECE · DevOps</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- S9: JOIN CTA (JSON FORM) -->
+  <section class="cta-join" id="cta-join">
+    <div class="bg-ambient-orb orb-violet" style="opacity:0.3; bottom:5%; left:20%" aria-hidden="true"></div>
+    
+    <div class="cta-join-inner">
+      <h2 class="cta-title-massive">Ready to Build<br>Something Real?</h2>
+      <p class="cta-subtext">Join DevLinkHub. Staged configurations are waiting. Register below using our dynamic compiler.</p>
+
+      <!-- Highly Engineered JSON Form -->
+      <div class="glass-panel json-form-panel">
+        <div class="json-header-strip">
+          <div style="display:flex; gap:6px">
+            <span style="width:10px; height:10px; border-radius:50%; background:#ff5f56"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#ffbd2e"></span>
+            <span style="width:10px; height:10px; border-radius:50%; background:#27c93f"></span>
+          </div>
+          <span class="mono" style="font-size:11px; color:rgba(255,255,255,0.4)">register_config.json</span>
+        </div>
+
+        <div class="json-editor">
+          <span class="brace">{</span><br>
+          &nbsp;&nbsp;<span class="key">"handle"</span>: <span class="brace">"</span><input type="text" id="reg-name" class="json-input-field" placeholder="@rahul_codes" required><span class="brace">"</span>,<br>
+          &nbsp;&nbsp;<span class="key">"email"</span>: <span class="brace">"</span><input type="email" id="reg-email" class="json-input-field" placeholder="rahul@cse.edu" required><span class="brace">"</span>,<br>
+          &nbsp;&nbsp;<span class="key">"stack"</span>: <span class="brace">"</span><input type="text" id="reg-stack" class="json-input-field" placeholder="Go / NextJS / Rust" required><span class="brace">"</span>,<br>
+          &nbsp;&nbsp;<span class="key">"sandbox_staging"</span>: <span class="mono" style="color:var(--neon-green)">true</span>,<br>
+          &nbsp;&nbsp;<span class="key">"staged_status"</span>: <span class="mono" style="color:var(--pink)">"pending_validation"</span><br>
+          <span class="brace">}</span>
+
+          <button id="reg-submit-btn" class="btn-primary json-submit-trigger">
+            Execute &amp; Join &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="frosted-footer">
+    <div class="footer-inner">
+      <div class="footer-brand-col">
+        <a href="#" class="nav-brand" style="margin-bottom: 1rem">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--cyan)">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <span>DevLink<span class="mono">Hub</span></span>
+        </a>
+        <p>A multiplayer developer ecosystem designed for college cohorts. Connect, build sandboxes, audit protocols, and deploy staging software together.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Navigation</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#pillars">Mission</a></li>
+          <li><a href="#events">Events</a></li>
+          <li><a href="#resources">Resources</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Channels</h4>
+        <ul>
+          <li><a href="https://discord.gg/devlinkhub" target="_blank">Discord Server</a></li>
+          <li><a href="https://github.com/devlinkhuborg" target="_blank">GitHub Org</a></li>
+          <li><a href="mailto:support@devlinkhub.org">Support Email</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title">Tech Guilds</h4>
+        <ul>
+          <li><a href="javascript:void(0)">Frontend Architects</a></li>
+          <li><a href="javascript:void(0)">Systems &amp; Rust</a></li>
+          <li><a href="javascript:void(0)">GenAI &amp; Agents</a></li>
+          <li><a href="javascript:void(0)">DevOps &amp; Cloud</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 DevLinkHub. Built by developers, for developers.</span>
+      <span>Staged: Production-Stable v2.1.0</span>
+    </div>
+  </footer>
+
+  <!-- CENTRAL CODE VIEW MODAL -->
+  <div class="modal-overlay" id="central-modal">
+    <div class="glass-panel modal-card">
+      <div class="modal-inner">
+        <button class="modal-close-btn" onclick="closeCodeModal()">&times;</button>
+        <span class="mono" style="font-size:10px; letter-spacing:0.18em">// RESOURCE_PREVIEW</span>
+        <h3 id="modal-title" style="font-size:1.6rem; color:#fff; margin-top:0.5rem; margin-bottom:1.5rem">
+          Setup: <span id="modal-title-span" class="grad-cyan-purple">Next.js Starter</span>
+        </h3>
+        
+        <pre class="modal-code-block" id="modal-code-display">// code snippet loading...</pre>
+        
+        <button class="btn-primary" onclick="closeCodeModal()" style="margin-top:2rem; width:100%; justify-content:center">
+          Close Window
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
