@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevLinkHub — Multiplayer Developer Ecosystem</title>
+  <meta name="description" content="A tech developer community for college students. Connect across years, ship real-world projects, workshops, and shared resources.">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- CDNs for advanced interactive mechanics -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- GLOBAL EFFECTS LAYERS (Depth Layer 0) -->
+  <div class="noise-texture" aria-hidden="true"></div>
+  <div class="dot-pattern" aria-hidden="true"></div>
+  
+  <div class="ambient-blob blob-cyan" style="top: -10%; left: -10%;" aria-hidden="true"></div>
+  <div class="ambient-blob blob-violet" style="top: 40%; right: -10%;" aria-hidden="true"></div>
+  <div class="ambient-blob blob-green" style="bottom: -10%; left: 20%;" aria-hidden="true"></div>
+
+  <!-- STICKY FROSTED NAVBAR (Depth Layer 4) -->
+  <nav class="frosted-navbar">
+    <a href="#" class="brand-wrapper">
+      <svg class="brand-node-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5">
+        <circle cx="12" cy="5" r="3" fill="var(--bg-primary)" />
+        <circle cx="5" cy="18" r="3" fill="var(--bg-primary)" />
+        <circle cx="19" cy="18" r="3" fill="var(--bg-primary)" />
+        <line x1="12" y1="8" x2="6.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
+        <line x1="12" y1="8" x2="17.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
+        <line x1="8" y1="18" x2="16" y2="18" stroke="var(--accent-violet)" stroke-width="1.5" />
+      </svg>
+      <span class="brand-title">DevLink<span class="mono">Hub</span></span>
+    </a>
+    
+    <ul class="navbar-links">
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="#pillars">Mission</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#community">Community</a></li>
+    </ul>
+
+    <div class="nav-right-actions">
+      <div class="badge-devs-online">
+        <span class="pulsing-dot"></span>
+        <span>&gt; 47 devs online</span>
+      </div>
+      <a href="#boot-cta" class="btn-primary" style="padding: 10px 24px;">Join Hub &rarr;</a>
+    </div>
+
+    <button class="hamburger-btn" aria-label="Open navigation drawer">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE NAVIGATION DRAWER OVERLAY -->
+  <div class="mobile-drawer">
+    <button class="close-drawer">&times;</button>
+    <a href="#">Home</a>
+    <a href="#pillars">Mission</a>
+    <a href="#events">Events</a>
+    <a href="#resources">Resources</a>
+    <a href="#community">Community</a>
+    <a href="#boot-cta" class="btn-primary" style="margin-top: 1.5rem;">Join Hub</a>
+  </div>
+
+  <!-- SECTION 1: HERO SECTION -->
+  <section class="hero-wrapper" id="home">
+    <div id="particles-js" class="hero-particles-bg" aria-hidden="true"></div>
+    <canvas id="water-flow-mesh" class="hero-water-bg" aria-hidden="true"></canvas>
+
+    <div class="hero-inner-grid">
+      <div class="hero-text-block">
+        <span class="hero-eyebrow">&lt; devlinkhub.init() &gt;</span>
+        <h1 class="hero-headline">
+          <span style="color: var(--accent-cyan)">BUILD.</span>
+          <span>CONNECT.</span>
+          <span style="color: var(--accent-violet)">LEARN.</span>
+        </h1>
+        <p class="hero-subtitle">
+          DevLinkHub connects college developers to build real-world projects, solve real problems, and grow together. Zero standard theory — pure multiplayer execution.
+        </p>
+        <div class="hero-btns">
+          <a href="#pillars" class="btn-primary">Explore Projects &rarr;</a>
+          <a href="#boot-cta" class="btn-secondary">Join Community</a>
+        </div>
+      </div>
+
+      <!-- Foreground tilted mock card -->
+      <div class="hero-visual-block" aria-hidden="true">
+        
+        <!-- Breathing Gradient Liquid Blob sit behind card (Depth Layer 0) -->
+        <svg style="position:absolute; width:120%; height:120%; z-index:0; opacity:0.25; mix-blend-mode:screen; filter:blur(10px)">
+          <defs>
+            <radialGradient id="hero-blob-grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="var(--accent-cyan)" />
+              <stop offset="65%" stop-color="var(--accent-violet)" />
+              <stop offset="100%" stop-color="transparent" />
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="45" fill="url(#hero-blob-grad)">
+            <animate attributeName="r" values="40;45;40" dur="8s" repeatCount="indefinite" />
+          </circle>
+        </svg>
+
+        <div class="glass-card hero-visual-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 16px;">
+            <div style="display:flex; gap:6px">
+              <span class="pulsing-dot" style="background:#ff5f56; box-shadow:none"></span>
+              <span class="pulsing-dot" style="background:#ffbd2e; box-shadow:none"></span>
+              <span class="pulsing-dot" style="background:#27c93f; box-shadow:none"></span>
+            </div>
+            <span class="mono" style="font-size:10px; color:rgba(255,255,255,0.4)">sdk_init.rs</span>
+          </div>
+
+          <pre class="mono" style="font-size:11px; line-height:1.8; color:rgba(255,255,255,0.85); overflow:hidden; flex:1">
+<span style="color:var(--accent-pink)">fn</span> <span style="color:var(--accent-cyan)">stage_nodes</span>() -> <span style="color:var(--accent-violet)">Result</span>&lt;(), Error&gt; {
+    <span style="color:var(--accent-pink)">let</span> hub = DevLinkHub::connect(<span style="color:var(--accent-green)">"gmt+5:30"</span>)?;
+    <span style="color:var(--accent-pink)">let</span> staged = hub.guild(<span style="color:var(--accent-green)">"web_ops"</span>).compile()?;
+    
+    <span style="color:var(--accent-cyan)">println!</span>(<span style="color:var(--accent-green)">"✓ staged in registry: {:?}"</span>, staged);
+    <span style="color:var(--accent-pink)">Ok</span>(())
+}</pre>
+          
+          <div style="border-top:1px solid var(--glass-border); padding-top:12px; display:flex; justify-content:space-between; align-items:center; font-family:var(--font-mono); font-size:9px; color:var(--accent-green)">
+            <span>// staged status: active</span>
+            <span>v2.1 Stable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-indicator">
+      <span>&gt; scroll to explore</span>
+      <div class="scroll-chevron"></div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: LIVE TERMINAL STRIP -->
+  <div class="live-strip-wrap" aria-hidden="true">
+    <div class="live-strip-track">
+      <div class="strip-item">&gt; hackathon_season.start()</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; new_member joined: @rahul_dev</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; workshop: React + Node.js registered 42 students</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; resource_hub.fetch('DSA') &rarr; 200 OK</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; community.size++ &rarr; 501 developers</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; techtalk scheduled: System Design @ Thursday</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; git push origin main ✓</div>
+      <!-- Duplicate for looping continuous track -->
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; hackathon_season.start()</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; new_member joined: @rahul_dev</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; workshop: React + Node.js registered 42 students</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; resource_hub.fetch('DSA') &rarr; 200 OK</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; community.size++ &rarr; 501 developers</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; techtalk scheduled: System Design @ Thursday</div>
+      <div class="strip-separator">——</div>
+      <div class="strip-item">&gt; git push origin main ✓</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: WHAT WE DO — THREE PILLARS (BENTO) -->
+  <section class="pillars-section" id="pillars">
+    <div class="section-wrapper">
+      <span class="section-head-mono">&gt; mission.execute()</span>
+      <h2 class="section-title-display">What DevLinkHub Does</h2>
+
+      <div class="bento-pillars-grid">
+        <!-- Large Bento Card (Left) -->
+        <div class="glass-card pillar-card pillar-card--large">
+          
+          <!-- Liquid Gradient Blob behind card -->
+          <svg style="position:absolute; width:150%; height:150%; z-index:-1; opacity:0.18; top:-25%; left:-25%; filter:blur(12px)">
+            <defs>
+              <radialGradient id="pillar-blob-grad-1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="var(--accent-cyan)" />
+                <stop offset="100%" stop-color="transparent" />
+              </radialGradient>
+            </defs>
+            <circle cx="75" cy="75" r="70" fill="url(#pillar-blob-grad-1)" />
+          </svg>
+
+          <div>
+            <h3 class="pillar-title cyan">BUILD.</h3>
+            <p class="pillar-body" style="font-size:16px">
+              Ship production-grade systems that solve real problems. No toy templates or simple landing pages. Build your active database clusters, secure JWT gateways, and robust dockerized microservices networks under active peer reviews.
+            </p>
+          </div>
+          
+          <div class="tech-tag-row">
+            <span class="tech-tag">React</span>
+            <span class="tech-tag">NodeJS</span>
+            <span class="tech-tag">Go / Gin</span>
+            <span class="tech-tag">Rust</span>
+            <span class="tech-tag">Docker</span>
+            <span class="tech-tag">Postgres</span>
+          </div>
+        </div>
+
+        <!-- Top Right Bento Card -->
+        <div class="glass-card pillar-card">
+          <div>
+            <h3 class="pillar-title violet" style="font-size:38px">CONNECT.</h3>
+            <p class="pillar-body">
+              Bridge the technical gap. Establish peer connections from freshman CSE starters to final-year student engineers holding active tech offers.
+            </p>
+          </div>
+          
+          <div class="pillar-icon-wrap" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Bottom Right Bento Card -->
+        <div class="glass-card pillar-card">
+          <div>
+            <h3 class="pillar-title green" style="font-size:38px">LEARN.</h3>
+            <p class="pillar-body">
+              Participate in dynamic sandbox workshops, intense campus micro-hackathons, technical system architecture talks, and staging reviews.
+            </p>
+          </div>
+          
+          <div class="pillar-icon-wrap" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="2" style="filter:drop-shadow(0 0 8px rgba(57,255,20,0.3))">
+              <polyline points="4 17 10 11 4 5" />
+              <line x1="12" y1="19" x2="20" y2="19" />
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: STATS SECTION (STAGGERED TRANSLATES) -->
+  <section class="stats-section">
+    <div class="section-wrapper">
+      <div class="stats-asym-strip">
+        
+        <!-- Stat Box 1 -->
+        <div class="glass-card stat-glass-box">
+          <div class="stat-icon-glow">&#128101;</div>
+          <div class="stat-number-display grad-cyan-violet" data-target="500">0</div>
+          <div class="stat-label-mono">Developers</div>
+        </div>
+
+        <!-- Stat Box 2 -->
+        <div class="glass-card stat-glass-box" style="border-color: rgba(124, 58, 237, 0.25)">
+          <div class="stat-icon-glow" style="color:var(--accent-violet)">&#128293;</div>
+          <div class="stat-number-display" style="color:var(--accent-violet)" data-target="30">0</div>
+          <div class="stat-label-mono">Hackathons</div>
+        </div>
+
+        <!-- Stat Box 3 -->
+        <div class="glass-card stat-glass-box" style="border-color: rgba(57, 255, 20, 0.25)">
+          <div class="stat-icon-glow" style="color:var(--accent-green)">&#128196;</div>
+          <div class="stat-number-display" style="color:var(--accent-green)" data-target="100">0</div>
+          <div class="stat-label-mono">Resources</div>
+        </div>
+
+        <!-- Stat Box 4 -->
+        <div class="glass-card stat-glass-box" style="border-color: rgba(244, 114, 182, 0.25)">
+          <div class="stat-icon-glow" style="color:var(--accent-pink)">&#9889;</div>
+          <div class="stat-number-display" style="color:var(--accent-pink)" data-target="20">0</div>
+          <div class="stat-label-mono">Workshops</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: EVENTS SECTION (ASYMMETRIC MASONRY) -->
+  <section class="events-section" id="events">
+    <div class="section-wrapper">
+      <span class="section-head-mono">[ upcoming_events ]</span>
+      <h2 class="section-title-display">Tech Staging Calendar</h2>
+
+      <div class="events-asym-grid">
+        
+        <!-- Featured Event Card (2-row span) -->
+        <div class="glass-card event-glass-card event-glass-card--featured">
+          
+          <!-- Liquid Morphing Blob Behind -->
+          <svg style="position:absolute; width:130%; height:130%; z-index:-1; opacity:0.2; bottom:-10%; left:-10%; filter:blur(10px)">
+            <defs>
+              <radialGradient id="featured-blob-grad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="var(--accent-cyan)" />
+                <stop offset="70%" stop-color="var(--accent-violet)" />
+                <stop offset="100%" stop-color="transparent" />
+              </radialGradient>
+            </defs>
+            <circle cx="65" cy="65" r="55" fill="url(#featured-blob-grad)" />
+          </svg>
+
+          <div>
+            <span class="event-category-badge hackathon">HACKATHON</span>
+            <h3 class="event-title-display" style="font-size: 2.2rem; margin-top: 1.5rem">DevHacks 2025</h3>
+            <p class="event-time-place">⏱ OCT 14 - OCT 16, 2025 · 📍 ONLINE + LAB 4</p>
+            <p class="event-desc-small" style="font-size: 14px; margin-top: 1.25rem">
+              DevLinkHub's premier 48-hour staging sprint. Form cross-functional teams, bootstrap actual APIs, dockerize databases, and present staged working servers to panels.
+            </p>
+          </div>
+
+          <div class="featured-countdown-wrapper">
+            <div class="featured-countdown-title">SYSTEM COMPILING IN:</div>
+            <div class="featured-timer-digits" id="featured-event-countdown">
+              03 : 14 : 22 : 09
+            </div>
+          </div>
+
+          <div class="event-bottom-registry" style="margin-top: 2rem">
+            <div class="event-progress-wrap">
+              <span>Staged Registry</span>
+              <span>84/100 Seats Filled</span>
+            </div>
+            <div class="event-progress-bar">
+              <div class="event-progress-fill" style="width: 84%"></div>
+            </div>
+            <a href="#boot-cta" class="btn-primary" style="justify-content:center; margin-top:0.75rem">Register Staging &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Event Card 2 -->
+        <div class="glass-card event-glass-card">
+          <div>
+            <span class="event-category-badge workshop">WORKSHOP</span>
+            <h3 class="event-title-display">Microservices in Go</h3>
+            <p class="event-time-place">⏱ SEP 24, 2025 · 📍 LAB 3</p>
+            <p class="event-desc-small">
+              Learn microservices clean architecture, set up middleware endpoints, implement DB layers, and orchestrate Docker environments.
+            </p>
+          </div>
+          
+          <div class="event-bottom-registry">
+            <div class="event-progress-wrap">
+              <span>Staged Slots</span>
+              <span>42/50 Booked</span>
+            </div>
+            <div class="event-progress-bar">
+              <div class="event-progress-fill" style="width: 84%; background:var(--accent-violet)"></div>
+            </div>
+            <a href="#boot-cta" class="btn-secondary" style="justify-content:center">Reserve Seat</a>
+          </div>
+        </div>
+
+        <!-- Event Card 3 -->
+        <div class="glass-card event-glass-card">
+          <div>
+            <span class="event-category-badge talk">TECH TALK</span>
+            <h3 class="event-title-display">AI &amp; Embeddings</h3>
+            <p class="event-time-place">⏱ OCT 02, 2025 · 📍 AUDITORIUM</p>
+            <p class="event-desc-small">
+              Understanding vector databases, prompt staging mechanics, Retrieval Augmented Generation pipelines, and Qdrant scaling.
+            </p>
+          </div>
+          
+          <div class="event-bottom-registry">
+            <div class="event-progress-wrap">
+              <span>Staged Slots</span>
+              <span>112/150 Booked</span>
+            </div>
+            <div class="event-progress-bar">
+              <div class="event-progress-fill" style="width: 74%; background:var(--accent-cyan)"></div>
+            </div>
+            <a href="#boot-cta" class="btn-secondary" style="justify-content:center">Reserve Seat</a>
+          </div>
+        </div>
+
+        <!-- Event Card 4 -->
+        <div class="glass-card event-glass-card">
+          <div>
+            <span class="event-category-badge gathering">MEETUP</span>
+            <h3 class="event-title-display">Open Source Sync</h3>
+            <p class="event-time-place">⏱ OCT 09, 2025 · 📍 CAMPUS GREEN</p>
+            <p class="event-desc-small">
+              Mix with active open-source contributors, learn Git branching conventions, and stage your very first repository pull request.
+            </p>
+          </div>
+          
+          <div class="event-bottom-registry">
+            <div class="event-progress-wrap">
+              <span>Staged Slots</span>
+              <span>24/40 Booked</span>
+            </div>
+            <div class="event-progress-bar">
+              <div class="event-progress-fill" style="width: 60%; background:var(--accent-pink)"></div>
+            </div>
+            <a href="#boot-cta" class="btn-secondary" style="justify-content:center">Reserve Seat</a>
+          </div>
+        </div>
+
+        <!-- Event Card 5 -->
+        <div class="glass-card event-glass-card">
+          <div>
+            <span class="event-category-badge workshop">WORKSHOP</span>
+            <h3 class="event-title-display">Docker Staging</h3>
+            <p class="event-time-place">⏱ OCT 11, 2025 · 📍 ONLINE / DISCORD</p>
+            <p class="event-desc-small">
+              Set up shared node workspaces, handle dynamic environment volume binds, orchestrate networks, and configure Nginx routing.
+            </p>
+          </div>
+          
+          <div class="event-bottom-registry">
+            <div class="event-progress-wrap">
+              <span>Staged Slots</span>
+              <span>48/50 Booked</span>
+            </div>
+            <div class="event-progress-bar">
+              <div class="event-progress-fill" style="width: 96%; background:var(--accent-green)"></div>
+            </div>
+            <a href="#boot-cta" class="btn-secondary" style="justify-content:center">Reserve Seat</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: RESOURCE HUB (WATER DISPLACEMENT CANVAS + FLOATING TILES) -->
+  <section class="resources-section" id="resources">
+    <canvas id="water-flow-mesh-res" class="resources-water-canvas" aria-hidden="true"></canvas>
+
+    <div class="section-wrapper">
+      <div style="text-align:center; margin-bottom:5rem; position:relative; z-index:10">
+        <h2 class="section-title-display" style="font-size: 5.5rem; margin-bottom: 0.5rem">Stop Wandering.</h2>
+        <p style="font-family: var(--font-mono); color: var(--accent-cyan); font-size:16px">// Every resource. One place.</p>
+      </div>
+
+      <div class="resource-tiles-grid">
+        
+        <!-- Tile 1 (Featured) -->
+        <div class="glass-card resource-tile-card featured-tile" onclick="window.parent.openCodeModal('DSA Cheat Roadmap', '// DSA staged cheatsheet\nimport { Graph } from \'@devlinkhub/dsa\';\n\nconst graph = new Graph();\ngraph.addNode(\'A\');\ngraph.addNode(\'B\');\ngraph.addEdge(\'A\', \'B\');\nconsole.log(graph.hasPath(\'A\', \'B\')); // true')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling DSA...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display">&#128187;</div>
+          <div>
+            <h3 class="tile-title">DSA &amp; Algorithms</h3>
+            <a href="javascript:void(0)" class="tile-anchor">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Tile 2 -->
+        <div class="glass-card resource-tile-card depth-under" onclick="window.parent.openCodeModal('System Design Core Model', '# Systems Architecture models\n- High availability database replication patterns\n- Distributed Redis caching staging strategies\n- Horizontal microservices cluster scaling protocols')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling SystemDesign...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display" style="color:var(--accent-violet)">&#9881;</div>
+          <div>
+            <h3 class="tile-title">System Design</h3>
+            <a href="javascript:void(0)" class="tile-anchor" style="color:var(--accent-violet)">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Tile 3 -->
+        <div class="glass-card resource-tile-card" onclick="window.parent.openCodeModal('Frontend Dev Setup', '// Frontend architectural starter\nnpx create-next-app@latest my-starter --ts --tailwind\ncd my-starter\nnpm install @devlinkhub/core')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling Frontend...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display" style="color:var(--accent-green)">&#128180;</div>
+          <div>
+            <h3 class="tile-title">Frontend Dev</h3>
+            <a href="javascript:void(0)" class="tile-anchor" style="color:var(--accent-green)">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Tile 4 -->
+        <div class="glass-card resource-tile-card" onclick="window.parent.openCodeModal('Backend REST API Seed', '// Go REST API Gin boilerplate\npackage main\nimport \"github.com/gin-gonic/gin\"\n\nfunc main() {\n  r := gin.Default()\n  r.GET(\"/api/health\", func(c *gin.Context) {\n    c.JSON(200, gin.H{\"status\": \"operational\"})\n  })\n  r.Run(\":8080\")\n}')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling Backend...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display" style="color:var(--accent-pink)">&#128225;</div>
+          <div>
+            <h3 class="tile-title">Backend Dev</h3>
+            <a href="javascript:void(0)" class="tile-anchor" style="color:var(--accent-pink)">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Tile 5 (Featured) -->
+        <div class="glass-card resource-tile-card featured-tile" onclick="window.parent.openCodeModal('DevOps Compose Presets', '# Multi-container orchestrators\nversion: \'3.8\'\nservices:\n  web:\n    image: devlinkhub/node-staging:latest\n    ports:\n      - \"3000:3000\"\n  db:\n    image: postgres:15\n    environment:\n      POSTGRES_DB: staging_pool')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling DevOps...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display">&#128640;</div>
+          <div>
+            <h3 class="tile-title">DevOps &amp; Cloud</h3>
+            <a href="javascript:void(0)" class="tile-anchor">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Tile 6 -->
+        <div class="glass-card resource-tile-card depth-under" onclick="window.parent.openCodeModal('Open Source Sync Pipelines', '# Git workflows\n- Cloned repository staging configurations\n- Setup upstream active trackers\n- Staged code linting prior to pull request dispatches')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling OpenSource...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display" style="color:var(--accent-violet)">&#128203;</div>
+          <div>
+            <h3 class="tile-title">Open Source</h3>
+            <a href="javascript:void(0)" class="tile-anchor" style="color:var(--accent-violet)">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Tile 7 -->
+        <div class="glass-card resource-tile-card" onclick="window.parent.openCodeModal('Interview Prep Cheat Roadmap', '# Technical interview models\n- Staged time/space complexity analysis guidelines\n- Basic algorithmic patterns (sliding window, graph traversal)\n- Systems scaling and sharding interviews presets')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling InterviewPrep...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display" style="color:var(--accent-green)">&#128202;</div>
+          <div>
+            <h3 class="tile-title">Interview Prep</h3>
+            <a href="javascript:void(0)" class="tile-anchor" style="color:var(--accent-green)">Explore &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Tile 8 (Featured) -->
+        <div class="glass-card resource-tile-card featured-tile" onclick="window.parent.openCodeModal('AI & Machine Learning Agent Core', '// LangChain LLM integration setup\nimport { LLMChain } from \'@devlinkhub/agents\';\n\nconst agent = new LLMChain({ model: \'gemini-pro\' });\nconst response = await agent.dispatch(\'initialize community\');')">
+          <div class="tile-loading-mask">
+            <span>&gt; compiling GenAI...</span>
+            <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
+          </div>
+          <div class="tile-icon-display" style="color:var(--accent-pink)">&#128161;</div>
+          <div>
+            <h3 class="tile-title">AI &amp; Machine Learning</h3>
+            <a href="javascript:void(0)" class="tile-anchor" style="color:var(--accent-pink)">Explore &rarr;</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: COMMUNITY SECTION -->
+  <section class="community-section" id="community">
+    
+    <!-- Shifting Gradient Background (Depth Layer 0) -->
+    <div class="shifting-gradient-community" style="position:absolute; inset:0; z-index:0; opacity:0.15; background:linear-gradient(135deg, #030510 0%, #0d0724 50%, #030510 100%); background-size:200% 200%; pointer-events:none;" aria-hidden="true"></div>
+
+    <div class="section-wrapper">
+      <div style="text-align:center; margin-bottom:5rem; position:relative; z-index:10">
+        <h2 class="section-title-display">
+          <span>Built by Developers.</span><br>
+          <span style="color: var(--accent-cyan)">For Developers.</span>
+        </h2>
+      </div>
+
+      <div class="community-bento-grid">
+        
+        <!-- Bento Card 1 (Full width row) -->
+        <div class="glass-card comm-bento-card--full">
+          <div class="comm-card-inner" style="flex-direction:row; align-items:center; gap:3rem; flex-wrap:wrap">
+            <div style="max-width:600px">
+              <span class="mono" style="font-size:11px; color:var(--accent-cyan)">// COMMUNITY_CIRCLE</span>
+              <h3 class="comm-headline" style="font-size:1.8rem; margin-top:0.5rem">From Year 1 to Final Year — everyone has a seat</h3>
+              <p class="comm-text-desc" style="font-size:14px; margin-top:0.75rem">No matter where you stand in your developer journey. Freshmen CSS starters pair program with fourth-year seniors staging enterprise microservices daily. Peer mentorship built on active execution.</p>
+            </div>
+            
+            <div style="flex:1; display:flex; justify-content:center" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="1.5" style="filter:drop-shadow(0 0 10px rgba(0,245,255,0.4))">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Card 2 (Testimonial Card) -->
+        <div class="glass-card testimonial-stack-card">
+          <div class="comm-card-inner">
+            <p class="testimonial-quote">"DevLinkHub connects you with developers who actually ship. Our dynamic peer match connected me with a Systems Senior to scale my staging DB."</p>
+            <div class="testimonial-author-block">
+              <div class="author-avatar"></div>
+              <div>
+                <div class="author-handle-mono mono">@rahul_sharma</div>
+                <div class="mono" style="font-size:9px; color:var(--white-secondary)">Year 2 CSE · WebOps</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Card 3 -->
+        <div class="glass-card">
+          <div class="comm-card-inner">
+            <div>
+              <span class="mono" style="font-size:10px; color:var(--accent-violet)">// BUILD_SANDBOXES</span>
+              <h3 class="comm-headline" style="margin-top:0.5rem">Real Mentorship</h3>
+              <p class="comm-text-desc" style="margin-top:0.5rem">Forget simple Discord channels with dead archives. Connect during sandbox stages, run unit tests, audit code snippets, and review active releases.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Card 4 -->
+        <div class="glass-card">
+          <div class="comm-card-inner">
+            <div>
+              <span class="mono" style="font-size:10px; color:var(--accent-green)">// PORTFOLIO_STAGED</span>
+              <h3 class="comm-headline" style="margin-top:0.5rem">Ship in College</h3>
+              <p class="comm-text-desc" style="margin-top:0.5rem">Build working portfolios. Own staged subdomains, deploy database stacks, configure routers, and showcase working projects to tech companies.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Card 5 (Testimonial Card) -->
+        <div class="glass-card testimonial-stack-card" style="border-left-color: var(--accent-green)">
+          <div class="comm-card-inner">
+            <p class="testimonial-quote">"The Go microservices workshop and shared resources in the repo allowed our project team to deploy our backend server in CSE Lab in 1 hour."</p>
+            <div class="testimonial-author-block">
+              <div class="author-avatar"></div>
+              <div>
+                <div class="author-handle-mono mono" style="color:var(--accent-green)">@priya_patel</div>
+                <div class="mono" style="font-size:9px; color:var(--white-secondary)">Year 3 IT · AI Guild</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Card 6 -->
+        <div class="glass-card">
+          <div class="comm-card-inner">
+            <div>
+              <span class="mono" style="font-size:10px; color:var(--accent-pink)">// LIVE_SANDBOX</span>
+              <h3 class="comm-headline" style="margin-top:0.5rem">Collaboration First</h3>
+              <p class="comm-text-desc" style="margin-top:0.5rem">We encourage pair programming cohorts, dynamic group sandboxes, interactive code reviews, and shared packages staging prior to server pushes.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Card 7 (Testimonial Card) -->
+        <div class="glass-card testimonial-stack-card" style="border-left-color: var(--accent-pink)">
+          <div class="comm-card-inner">
+            <p class="testimonial-quote">"DevHacks staging was stellar. 48 hours of pure collaborative execution. It felt like shipping systems inside a high-growth startup."</p>
+            <div class="testimonial-author-block">
+              <div class="author-avatar"></div>
+              <div>
+                <div class="author-handle-mono mono" style="color:var(--accent-pink)">@harsh_v</div>
+                <div class="mono" style="font-size:9px; color:var(--white-secondary)">Year 4 CSE · Systems</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: BOOT SEQUENCE & JOIN CTA -->
+  <section class="boot-cta-section" id="boot-cta">
+    <div class="ambient-blob blob-violet" style="bottom:-10%; right:20%; opacity:0.3" aria-hidden="true"></div>
+
+    <div class="section-wrapper">
+      <!-- Boot Sequence Console -->
+      <div class="boot-sequence-console">
+        <div class="boot-line">&gt; initializing DevLinkHub...</div>
+        <div class="boot-line">&gt; loading community modules... ✓</div>
+        <div class="boot-line">&gt; connecting developer nodes... ✓</div>
+        <div class="boot-line">&gt; hackathon engine: READY ✓</div>
+        <div class="boot-line">&gt; resource hub: ONLINE ✓</div>
+        <div class="boot-line">&gt; awaiting new member...</div>
+        <div class="boot-progress-wrap">
+          <div class="boot-pbar-fill"></div>
+        </div>
+        <div class="boot-line" style="color:var(--accent-cyan); font-weight:700; margin-top: 1rem">&gt; Welcome to DevLinkHub. Ready to build?</div>
+      </div>
+
+      <!-- Animated CTA Block -->
+      <div class="staged-cta-block">
+        <h2 class="section-title-display" style="font-size:4.5rem; margin-bottom: 2rem">Ready to Build<br>Something Real?</h2>
+        <a href="https://discord.gg/devlinkhub" target="_blank" class="btn-primary cta-massive-button">
+          Join DevLinkHub &rarr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSISTENT FLOATING TERMINAL OVERLAY (Depth Layer 4) -->
+  <div class="persistent-terminal minimized">
+    <div class="terminal-window-header">
+      <div class="terminal-window-dots">
+        <span class="t-dot t-dot--red"></span>
+        <span class="t-dot t-dot--yellow"></span>
+        <span class="t-dot t-dot--green"></span>
+      </div>
+      <span class="mono" style="font-size:10px; color:var(--white-secondary)">devlinkhub_console.sh</span>
+      <button class="terminal-minimize-btn" aria-label="Minimize terminal window">&#9652;</button>
+    </div>
+    
+    <div class="terminal-console-body" id="terminal-console-render">
+      <!-- Live logs staging terminal lines -->
+      <span class="blinking-caret"></span>
+    </div>
+  </div>
+
+  <!-- CENTRAL CODE PREVIEW MODAL (Depth Layer 4) -->
+  <div class="modal-overlay" id="central-modal">
+    <div class="glass-card modal-card" style="max-width: 600px; width: 100%;">
+      <div class="modal-inner">
+        <button class="modal-close-btn" onclick="closeCodeModal()">&times;</button>
+        <span class="mono" style="font-size:10px; letter-spacing:0.18em">// RESOURCE_COMPILER</span>
+        <h3 id="modal-title" style="font-size:1.6rem; color:#fff; margin-top:0.5rem; margin-bottom:1.5rem">
+          Staged: <span id="modal-title-span" class="grad-cyan-violet">Next.js Starter</span>
+        </h3>
+        
+        <pre class="modal-code-block" id="modal-code-display">// compiling syntax assets...</pre>
+        
+        <button class="btn-primary" onclick="closeCodeModal()" style="margin-top:2rem; width:100%; justify-content:center">
+          Close Staging Window
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER (Depth Layer 4) -->
+  <footer class="frosted-footer-bar">
+    <div class="footer-inner-cols">
+      <div class="footer-brand-column">
+        <a href="#" class="brand-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5">
+            <circle cx="12" cy="5" r="3" fill="var(--bg-primary)" />
+            <circle cx="5" cy="18" r="3" fill="var(--bg-primary)" />
+            <circle cx="19" cy="18" r="3" fill="var(--bg-primary)" />
+            <line x1="12" y1="8" x2="6.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
+            <line x1="12" y1="8" x2="17.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
+            <line x1="8" y1="18" x2="16" y2="18" stroke="var(--accent-violet)" stroke-width="1.5" />
+          </svg>
+          <span class="brand-title">DevLink<span class="mono">Hub</span></span>
+        </a>
+        <p>A tech developer community designed for college cohorts. Connect across academic years, pair program on sandbox instances, audit dependencies, and launch production builds.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title-mono">Navigation</h4>
+        <ul class="footer-links-list">
+          <li><a href="#">Home</a></li>
+          <li><a href="#pillars">Mission</a></li>
+          <li><a href="#events">Events</a></li>
+          <li><a href="#resources">Resources</a></li>
+          <li><a href="#community">Community</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title-mono">Channels</h4>
+        <ul class="footer-links-list">
+          <li><a href="https://discord.gg/devlinkhub" target="_blank">Discord Server</a></li>
+          <li><a href="https://github.com/devlinkhuborg" target="_blank">GitHub Org</a></li>
+          <li><a href="mailto:support@devlinkhub.org">Support Email</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title-mono">Connect</h4>
+        <div class="footer-social-row" aria-hidden="true">
+          <!-- Discord SVG -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.0765.0765 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+          <!-- GitHub SVG -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom-strip">
+      <span>&copy; 2025 DevLinkHub — Built by developers, for developers.</span>
+      <span>Staged: Production-Stable v2.1.0</span>
+    </div>
+  </footer>
+
+  <!-- DYNAMIC LOGICS LOAD -->
+  <script src="js/main.js"></script>
+</body>
+</html>
