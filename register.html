@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevLinkHub Hackathon 2026 | Team Registration</title>
+  <meta name="description" content="Register your team for the DevLinkHub Hackathon 2026. Build, connect, and win in a premium, glassmorphic developer terminal environment.">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="../new/css/register.css">
+  
+  <!-- GSAP Animation Library CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+  <!-- HTML5 Canvas Water wave background mesh -->
+  <canvas id="water-canvas"></canvas>
+  
+  <!-- SVG noise texture filter overlay -->
+  <svg class="noise-overlay" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <filter id="noiseFilter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
+  </svg>
+
+  <!-- Background Liquid Morphing Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Sticky Header Navbar -->
+  <header class="navbar" id="top-nav">
+    <div class="nav-logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="3"></circle>
+        <circle cx="6" cy="12" r="3"></circle>
+        <circle cx="18" cy="12" r="3"></circle>
+        <circle cx="12" cy="19" r="3"></circle>
+        <line x1="12" y1="8" x2="6" y2="12"></line>
+        <line x1="12" y1="8" x2="18" y2="12"></line>
+        <line x1="12" y1="16" x2="6" y2="12"></line>
+        <line x1="12" y1="16" x2="18" y2="12"></line>
+      </svg>
+      <span>DevLinkHub</span>
+    </div>
+    <div class="nav-tag" id="hackathon-tag">&gt; hackathon_2026</div>
+  </header>
+
+  <!-- Content Container -->
+  <main class="app-container">
+    
+    <!-- Main Card -->
+    <article class="registration-card" id="form-card">
+      
+      <!-- Card Header -->
+      <header class="card-header">
+        <div class="header-tag">&gt; hackathon.register()</div>
+        <h1 class="header-title">Register Your Team</h1>
+        <p class="header-subtitle">Join DevLinkHub Hackathon 2026 &mdash; Build. Connect. Win.</p>
+        
+        <div id="autosave-badge" class="autosave-badge">⚡ Autosave ON</div>
+        <div class="header-divider"></div>
+      </header>
+
+      <!-- Registration Form Body (Not using HTML form submit, handles via JS click handler) -->
+      <section class="form-body">
+        
+        <!-- Field 1: Team Name -->
+        <div class="form-group">
+          <label class="section-label" for="team-name-input">&gt; team_name</label>
+          <div class="input-wrapper">
+            <input type="text" id="team-name-input" class="text-input" placeholder="e.g. ByteForce, NullPointers..." maxlength="30" autocomplete="off">
+            <div id="team-name-status" class="input-status-icon"></div>
+            <span id="char-count" class="char-count">0/30</span>
+          </div>
+          <div id="team-name-error" class="validation-message"></div>
+        </div>
+
+        <!-- Field 2: Number of Team Members -->
+        <div class="form-group">
+          <label class="section-label">&gt; team_size.select()</label>
+          <div class="section-subtext">// price remains same regardless of team size</div>
+          <div class="size-selector-row">
+            <button type="button" class="size-btn" data-size="1"><span class="size-num">1</span></button>
+            <button type="button" class="size-btn" data-size="2"><span class="size-num">2</span></button>
+            <button type="button" class="size-btn" data-size="3"><span class="size-num">3</span></button>
+            <button type="button" class="size-btn" data-size="4"><span class="size-num">4</span></button>
+          </div>
+        </div>
+
+        <!-- Field 4: Team Member configuration buttons (dynamic) -->
+        <div class="form-group">
+          <label class="section-label">&gt; team_members.init()</label>
+          <div id="dynamic-members-list" class="dynamic-members-list">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Field 5: Submit Button -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <div id="summary-pill" class="summary-pill" style="display: none;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span id="summary-text">&gt; team: [name] &mdash; leader: [name] &mdash; members: [N] &mdash; status: READY</span>
+          </div>
+          <button type="button" id="submit-btn" class="submit-btn disabled" style="pointer-events: none;">&gt; complete all details to proceed</button>
+        </div>
+
+      </section>
+      
+    </article>
+
+  </main>
+
+  <!-- Team Configuration Modal Overlay -->
+  <dialog id="modal-overlay" class="modal-overlay">
+    <div id="modal-panel" class="modal-panel">
+      
+      <!-- Close Button -->
+      <button type="button" id="modal-close-btn" class="modal-close-btn" aria-label="Close modal">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- Modal Header -->
+      <header class="modal-header">
+        <h2 id="modal-title" class="modal-title">Team Leader Details</h2>
+        <div id="modal-subtitle" class="modal-subtitle">&gt; fill in your credentials</div>
+      </header>
+
+      <!-- Modal Form Fields -->
+      <div class="modal-fields">
+        
+        <!-- Field: Name -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="section-label" for="modal-name-input">&gt; Name</label>
+          <input type="text" id="modal-name-input" class="text-input" placeholder="Full Name" autocomplete="off">
+          <div id="modal-name-error" class="validation-message"></div>
+        </div>
+
+        <!-- Field: College -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="section-label" for="modal-college-input">&gt; college_name</label>
+          <input type="text" id="modal-college-input" class="text-input" placeholder="Your College / University" autocomplete="off">
+          <div id="modal-college-error" class="validation-message"></div>
+        </div>
+
+        <!-- Field: Phone (Indian) -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="section-label" for="modal-phone-input">&gt; mobile_number</label>
+          <input type="tel" id="modal-phone-input" class="text-input" placeholder="+91 XXXXX XXXXX" autocomplete="off">
+          <div id="modal-phone-error" class="validation-message"></div>
+        </div>
+
+        <!-- Field: Email -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="section-label" for="modal-email-input">&gt; email_address</label>
+          <input type="email" id="modal-email-input" class="text-input" placeholder="name@college.edu" autocomplete="off">
+          <div id="modal-email-error" class="validation-message"></div>
+        </div>
+
+      </div>
+
+      <!-- Action Button -->
+      <button type="button" id="modal-save-btn" class="modal-save-btn">Save Changes &rarr;</button>
+
+    </div>
+  </dialog>
+
+  <!-- Success Overlay -->
+  <div id="success-overlay" class="modal-overlay" style="display: none;">
+    <div class="modal-panel success-card" style="text-align: center; max-width: 500px;">
+      <div style="margin-bottom: 20px;">
+        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="var(--accent-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 10px rgba(57,255,20,0.5));">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="16 12 12 8 8 12"></polyline>
+          <line x1="12" y1="16" x2="12" y2="8"></line>
+        </svg>
+      </div>
+      <h2 class="modal-title" style="font-family: 'Space Grotesk', sans-serif; font-size: 28px; margin-bottom: 10px;">Registration Complete</h2>
+      <p class="modal-subtitle" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-bottom: 24px; color: var(--accent-green);">&gt; network.payload: received_successfully</p>
+      
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; margin-bottom: 24px; color: rgba(255,255,255,0.7);">
+        <div>&gt; STATUS: ENROLLED</div>
+        <div>&gt; HACKATHON: DEVLINKHUB_2026</div>
+        <div>&gt; TICKET: DLH-849204</div>
+        <div style="margin-top: 10px; color: var(--accent-cyan);">// check leader email for confirmation and team discord invite payload</div>
+      </div>
+      
+      <button type="button" id="restart-btn" class="modal-save-btn" style="background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet)); border-color: rgba(255,255,255,0.1);">[ Open New Registration ]</button>
+    </div>
+  </div>
+
+  <!-- Terminal strip at bottom of viewport -->
+  <footer class="terminal-strip" id="bottom-terminal">
+    <div class="marquee-container">
+      <div class="marquee-content">
+        <span>&gt; registration.open()</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; team_slots: 48 remaining</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; hackathon.date: loading...</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; devlinkhub.init() &#10003;</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; secure_connection: established</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; form.autosave: ACTIVE &#10003;</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <!-- Duplicated for seamless loop -->
+        <span>&gt; registration.open()</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; team_slots: 48 remaining</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; hackathon.date: loading...</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; devlinkhub.init() &#10003;</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; secure_connection: established</span><span class="marquee-sep">&mdash;&mdash;</span>
+        <span>&gt; form.autosave: ACTIVE &#10003;</span><span class="marquee-sep">&mdash;&mdash;</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Slide-in Container -->
+  <div id="toast-container" class="toast-container">
+    <div class="toast-card" id="toast-card-el">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent-green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span id="toast-text">⚡ Previous session restored — your details are back</span>
+    </div>
+  </div>
+
+  <!-- JavaScript file -->
+  <script src="../new/js/register.js"></script>
+</body>
+</html>
