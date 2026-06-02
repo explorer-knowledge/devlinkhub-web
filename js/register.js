@@ -82,14 +82,27 @@ function initCanvasWave() {
   let width = canvas.width = window.innerWidth;
   let height = canvas.height = window.innerHeight;
   let time = 0;
-  const spacing = 45; // Grid spacing in px
+  const spacing = 70; // Grid spacing in px (increased from 45 for performance)
   
+  // Debounced resize listener to avoid layout reflows
+  let resizeTimer;
   window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }, 150);
   });
   
-  function draw() {
+  let lastTime = 0;
+  function draw(timestamp) {
+    const currentTime = timestamp || performance.now();
+    if (currentTime - lastTime < 33) { // 30fps cap
+      requestAnimationFrame(draw);
+      return;
+    }
+    lastTime = currentTime;
+    
     ctx.clearRect(0, 0, width, height);
     
     const cols = Math.ceil(width / spacing) + 1;
@@ -154,7 +167,7 @@ function initCanvasWave() {
     requestAnimationFrame(draw);
   }
   
-  draw();
+  requestAnimationFrame(draw);
 }
 
 /* ==========================================

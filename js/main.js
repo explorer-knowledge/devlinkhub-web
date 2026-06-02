@@ -156,13 +156,8 @@ function initParticlesBackground() {
 /* --- Utilities, Scrolls, Drawer overlays --- */
 function initUtilities() {
   const nav = document.querySelector('nav.frosted-navbar');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 80) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
-    }
-  });
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('.navbar-links a');
 
   // Mobile Drawer Toggle
   const ham = document.querySelector('.hamburger-btn');
@@ -177,15 +172,20 @@ function initUtilities() {
     });
   }
 
-  // Underline Active Page Link Highlights on scroll
-  const sections = document.querySelectorAll('section');
-  const navLinks = document.querySelectorAll('.navbar-links a');
+  let scrollTicking = false;
 
-  window.addEventListener('scroll', () => {
+  function handleScroll() {
+    // 1. Navbar shrink
+    if (window.scrollY > 80) {
+      if (nav) nav.classList.add('scrolled');
+    } else {
+      if (nav) nav.classList.remove('scrolled');
+    }
+
+    // 2. Active section highlights
     let current = '';
     sections.forEach(sec => {
       const top = sec.offsetTop;
-      const height = sec.clientHeight;
       if (window.scrollY >= (top - 180)) {
         current = sec.getAttribute('id') || '';
       }
@@ -197,7 +197,20 @@ function initUtilities() {
         link.classList.add('active');
       }
     });
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        handleScroll();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
   });
+
+  // Initial trigger
+  handleScroll();
 }
 
 /* --- Canvas Water Flow Hypnotic Sine Waves (Option A) --- */
@@ -206,22 +219,55 @@ function initWaterCanvas() {
   const canvasRes = document.getElementById('water-flow-mesh-res');
   if (!canvas) return;
 
-  function renderWaveGrid(cv) {
+  const grids = [];
+
+  function registerGrid(cv) {
     const ctx = cv.getContext('2d');
     let width = cv.width = cv.parentElement.clientWidth;
     let height = cv.height = cv.parentElement.clientHeight;
 
-    window.addEventListener('resize', () => {
-      width = cv.width = cv.parentElement.clientWidth;
-      height = cv.height = cv.parentElement.clientHeight;
-    });
+    const gridInfo = {
+      cv,
+      ctx,
+      get width() { return width; },
+      set width(val) { width = val; cv.width = val; },
+      get height() { return height; },
+      set height(val) { height = val; cv.height = val; },
+      frame: 0,
+      lastTime: 0
+    };
+    grids.push(gridInfo);
+    return gridInfo;
+  }
 
-    let frame = 0;
-    const spacing = 45; // Grid point spacing
-    const amplitude = 12; // Wave height
-    const frequency = 0.007; // Wave frequency
+  const grid1 = registerGrid(canvas);
+  const grid2 = canvasRes ? registerGrid(canvasRes) : null;
 
-    function animate() {
+  // Single debounced resize listener to avoid layout reflow
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      grids.forEach(g => {
+        g.width = g.cv.parentElement.clientWidth;
+        g.height = g.cv.parentElement.clientHeight;
+      });
+    }, 150);
+  });
+
+  const spacing = 70; // Grid point spacing (was 45)
+  const amplitude = 12; // Wave height
+  const frequency = 0.007; // Wave frequency
+
+  function animate(timestamp) {
+    const time = timestamp || performance.now();
+    grids.forEach(g => {
+      if (time - g.lastTime < 33) { // 30fps cap
+        return;
+      }
+      g.lastTime = time;
+
+      const { ctx, width, height } = g;
       ctx.clearRect(0, 0, width, height);
       ctx.strokeStyle = 'rgba(0, 245, 255, 0.12)';
       ctx.lineWidth = 1;
@@ -229,8 +275,8 @@ function initWaterCanvas() {
       // Draw horizontal displaced mesh lines
       for (let y = spacing; y < height; y += spacing) {
         ctx.beginPath();
-        for (let x = 0; x <= width; x += 15) {
-          const displacement = Math.sin(x * frequency + y * 0.01 + frame * 0.02) * amplitude;
+        for (let x = 0; x <= width; x += 25) { // was 15
+          const displacement = Math.sin(x * frequency + y * 0.01 + g.frame * 0.02) * amplitude;
           if (x === 0) {
             ctx.moveTo(x, y + displacement);
           } else {
@@ -243,8 +289,8 @@ function initWaterCanvas() {
       // Draw vertical displaced mesh lines
       for (let x = spacing; x < width; x += spacing) {
         ctx.beginPath();
-        for (let y = 0; y <= height; y += 15) {
-          const displacement = Math.sin(x * 0.01 + y * frequency + frame * 0.02) * amplitude;
+        for (let y = 0; y <= height; y += 25) { // was 15
+          const displacement = Math.sin(x * 0.01 + y * frequency + g.frame * 0.02) * amplitude;
           if (y === 0) {
             ctx.moveTo(x + displacement, y);
           } else {
@@ -254,14 +300,13 @@ function initWaterCanvas() {
         ctx.stroke();
       }
 
-      frame++;
-      requestAnimationFrame(animate);
-    }
-    animate();
+      g.frame++;
+    });
+
+    requestAnimationFrame(animate);
   }
 
-  renderWaveGrid(canvas);
-  if (canvasRes) renderWaveGrid(canvasRes);
+  requestAnimationFrame(animate);
 }
 
 /* --- 3D Depth Perspective Hover Tilts --- */
