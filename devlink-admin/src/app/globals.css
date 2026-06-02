@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  
+  /* Primary Neon Colors */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-secondary: #8b5cf6;
+  --color-secondary-dark: #7c3aed;
+  --color-accent: #0ea5e9;
+
+  /* Dark Theme Colors */
+  --color-background: #09090b;
+  --color-surface: #18181b;
+  --color-surface-hover: #27272a;
+  --color-border: #27272a;
+  --color-border-hover: #3f3f46;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+}
+
+@layer base {
+  :root { color-scheme: dark; }
+
+  [data-theme="light"] {
+    color-scheme: light;
+    --color-background: #f4f4f5;
+    --color-surface: #ffffff;
+    --color-surface-hover: #e4e4e7;
+    --color-border: #d4d4d8;
+    --color-border-hover: #a1a1aa;
+    --color-text-primary: #09090b;
+    --color-text-secondary: #52525b;
+    --color-text-muted: #71717a;
+  }
+
+  html { @apply antialiased scroll-smooth; }
+
+  body {
+    @apply bg-background text-text-primary min-h-screen selection:bg-primary/30 selection:text-white font-sans;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-border-hover; }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-surface/60 backdrop-blur-md border border-white/10 shadow-lg shadow-black/20 rounded-xl;
+  }
+  .glass-card {
+    @apply bg-white/[0.03] backdrop-blur-sm border border-white/[0.05] hover:border-white/[0.1] hover:bg-white/[0.05] transition-all duration-300 rounded-xl;
+  }
+  [data-theme="light"] .glass-panel {
+    @apply bg-white/90 border-black/[0.08] shadow-black/5;
+  }
+  [data-theme="light"] .glass-card {
+    @apply bg-white border-zinc-200/80 hover:border-zinc-300 hover:bg-zinc-50;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+  .neon-glow    { @apply shadow-[0_0_15px_rgba(59,130,246,0.5)]; }
+  .neon-glow-sm { @apply shadow-[0_0_8px_rgba(59,130,246,0.35)]; }
+
+  /* Gradient border ring */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Shimmer skeleton */
+  .shimmer {
+    background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.05) 50%, transparent 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* Pulse dot indicator */
+  .pulse-dot { animation: pulsedot 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+  @keyframes pulsedot { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+  /* Animated mesh gradient background for login */
+  .mesh-gradient {
+    background-color: #09090b;
+    background-image:
+      radial-gradient(ellipse 80% 80% at 20% 20%, rgba(59,130,246,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(139,92,246,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 0%, rgba(14,165,233,0.1) 0%, transparent 60%);
+  }
+  [data-theme="light"] .mesh-gradient {
+    background-color: #eef2ff;
+    background-image:
+      radial-gradient(ellipse 80% 80% at 20% 20%, rgba(59,130,246,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(139,92,246,0.08) 0%, transparent 60%);
+  }
+
+  /* Stat card left accent borders */
+  .stat-border-blue    { border-left: 3px solid #3b82f6; }
+  .stat-border-purple  { border-left: 3px solid #8b5cf6; }
+  .stat-border-emerald { border-left: 3px solid #10b981; }
+  .stat-border-amber   { border-left: 3px solid #f59e0b; }
+
+  /* Badges — each variant is fully self-contained (Tailwind v4 forbids @apply of custom classes) */
+  .badge         { @apply inline-flex items-center justify-center rounded-full text-[10px] font-bold leading-none; }
+  .badge-primary { @apply inline-flex items-center justify-center rounded-full text-[10px] font-bold leading-none bg-primary text-white px-1.5 py-0.5; }
+  .badge-warning { @apply inline-flex items-center justify-center rounded-full text-[10px] font-bold leading-none bg-warning text-black px-1.5 py-0.5; }
+  .badge-success { @apply inline-flex items-center justify-center rounded-full text-[10px] font-bold leading-none bg-success text-white px-1.5 py-0.5; }
+  .badge-error   { @apply inline-flex items-center justify-center rounded-full text-[10px] font-bold leading-none bg-error text-white px-1.5 py-0.5; }
+
+  /* Sidebar nav section label */
+  .nav-section-label {
+    @apply text-[10px] font-semibold uppercase tracking-widest text-text-muted px-3 pt-5 pb-1.5 select-none;
+  }
+
+  /* Score / progress bar */
+  .score-bar {
+    @apply h-1.5 rounded-full bg-border overflow-hidden;
+  }
+  .score-bar-fill {
+    @apply h-full rounded-full bg-gradient-to-r from-primary to-secondary;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Toggle switch */
+  .toggle-track {
+    @apply relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 cursor-pointer;
+  }
+  .toggle-thumb {
+    @apply inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200;
+  }
+}

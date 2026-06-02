@@ -118,6 +118,13 @@ export default function EventDetailsPage() {
         toggleEventRSVP(eventId).then((registered) => {
           setIsRegistered(registered);
           
+          // Re-fetch event data to get updated registered count and status
+          getEventById(eventId).then((matched) => {
+            if (matched) {
+              setEvent(matched);
+            }
+          });
+
           // End loader
           setTimeout(() => {
             setIsRSVPing(false);
@@ -439,7 +446,7 @@ export default function EventDetailsPage() {
                         <div className="flex justify-between items-center text-xs">
                           <span className="text-zinc-500 font-mono">Node Capacity:</span>
                           <span className="text-white font-bold font-mono">
-                            {isRegistered ? "149" : "148"} / {event.capacity}
+                            {event.registered} / {event.capacity}
                           </span>
                         </div>
                         <div className="w-full h-1.5 rounded-full bg-white/5 border border-white/5 overflow-hidden">
@@ -447,7 +454,7 @@ export default function EventDetailsPage() {
                             className="h-full rounded-full transition-all duration-500" 
                             style={{ 
                               backgroundColor: event.color,
-                              width: `${((isRegistered ? 149 : 148) / event.capacity) * 100}%` 
+                              width: `${Math.min((event.registered / event.capacity) * 100, 100)}%` 
                             }} 
                           />
                         </div>
@@ -471,25 +478,37 @@ export default function EventDetailsPage() {
                     )}
 
                     {/* Action Button */}
-                    <button 
-                      onClick={handleRSVPAction}
-                      className="w-full h-12 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
-                      style={{ 
-                        backgroundColor: isRegistered ? "transparent" : event.color,
-                        color: isRegistered ? event.color : "#000000",
-                        border: isRegistered ? `1px solid ${event.color}` : "none",
-                        boxShadow: isRegistered ? "none" : `0 0 25px ${event.color}40`
-                      }}
-                    >
-                      {isRegistered ? (
-                        <>✓ RSVP Confirmed (Cancel)</>
-                      ) : (
-                        <>
-                          <Ticket size={15} /> 
-                          {currentUser ? "RSVP & Claim Ticket" : "Sign In to RSVP"}
-                        </>
-                      )}
-                    </button>
+                    {(() => {
+                      const isFull = event.capacity ? event.registered >= event.capacity : false;
+                      const disableButton = !isRegistered && isFull;
+
+                      return (
+                        <button 
+                          onClick={handleRSVPAction}
+                          disabled={disableButton}
+                          className={`w-full h-12 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${disableButton ? "opacity-50 cursor-not-allowed" : "cursor-pointer active:scale-[0.98]"}`}
+                          style={{ 
+                            backgroundColor: isRegistered ? "transparent" : (disableButton ? "#18181b" : event.color),
+                            color: isRegistered ? event.color : (disableButton ? "#a1a1aa" : "#000000"),
+                            border: isRegistered ? `1px solid ${event.color}` : (disableButton ? "1px solid #27272a" : "none"),
+                            boxShadow: isRegistered || disableButton ? "none" : `0 0 25px ${event.color}40`
+                          }}
+                        >
+                          {isRegistered ? (
+                            <>✓ RSVP Confirmed (Cancel)</>
+                          ) : (
+                            isFull ? (
+                              <>Registration Full / Closed</>
+                            ) : (
+                              <>
+                                <Ticket size={15} /> 
+                                {currentUser ? "RSVP & Claim Ticket" : "Sign In to RSVP"}
+                              </>
+                            )
+                          )}
+                        </button>
+                      );
+                    })()}
                   </div>
                 )}
               </div>

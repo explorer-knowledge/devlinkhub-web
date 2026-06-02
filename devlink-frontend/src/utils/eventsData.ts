@@ -32,6 +32,7 @@ export interface Event {
   color: string;
   tags: string[];
   capacity?: number;
+  registered: number;
   requirements?: string[];
   status: "open" | "live" | "completed";
   speakers?: EventSpeaker[];
@@ -63,6 +64,7 @@ export const FEATURED_EVENT: Event = {
   tags: ["AI/ML", "Next.js", "Open Source"],
   status: "open",
   capacity: 250,
+  registered: 242,
   requirements: ["GitHub Account", "Next.js or React familiarity", "Discord verified handle"],
   speakers: [
     {
@@ -120,6 +122,7 @@ export const UPCOMING_EVENTS: Event[] = [
     longDesc: "An exploratory virtual summit discussing modern deep learning applications in smart farming. We'll explore precision soil sensors data modeling, automated pest detection using vision transformers, and autonomous harvest route planning. A special workshop will guide participants on using the open-source AgriNet model weights on edge devices.",
     status: "open",
     capacity: 500,
+    registered: 498,
     requirements: ["Python basics", "Curiosity for IoT and environmental modeling"],
     tags: ["AgriTech", "AI/ML", "Hardware"],
     speakers: [
@@ -158,6 +161,7 @@ export const UPCOMING_EVENTS: Event[] = [
     longDesc: "Join the core maintainers of DevLink for a high-velocity programming session. We will examine the current product roadmap, triage active bug reports, walk through our custom design systems, and pair-program live to resolve Github issues. All merged pull requests during this session receive specialized community contributor badges.",
     status: "open",
     capacity: 100,
+    registered: 100,
     requirements: ["Git / GitHub basic setup", "React & CSS familiarity"],
     tags: ["Git", "React", "TypeScript"],
     speakers: [
@@ -202,6 +206,7 @@ export const UPCOMING_EVENTS: Event[] = [
     longDesc: "Watch the next wave of developer tooling, cloud infrastructure, and AI automation startups pitch their early MVPs. Founders get 5 minutes to demo their product directly to the DevLink community, followed by live technical Q&A from our engineering guild masters. Perfect for developers looking to join early-stage teams or founders seeking early technical feedback.",
     status: "open",
     capacity: 300,
+    registered: 180,
     requirements: ["Interest in startups", "Developer tooling insights"],
     tags: ["Startup", "Funding", "Product Demo"],
     speakers: [
@@ -249,6 +254,7 @@ export const PAST_EVENTS: Event[] = [
     desc: "The very first gathering of DevLink early adopters. We mapped out the core architecture, established the initial open-source guilds, and formed foundational teams.",
     longDesc: "On April 15, 2026, the Bhopal IT Park Node hosted the historic first offline gathering of DevLink developers. Over 50 engineers gathered to talk about decentralizing developer networks and startup funding. We brainstormed the core schema of DevLink, built the initial wireframes, launched our local open-source guilds, and enjoyed pizza and code in equal measure. This event set the cultural foundation of extreme execution and high-performance engineering that defines DevLink today.",
     status: "completed",
+    registered: 52,
     tags: ["Community", "Meetup", "Bhopal"],
     images: [
       "https://images.unsplash.com/photo-1540317580384-e5d43867caa6?q=80&w=600&auto=format&fit=crop",
@@ -317,6 +323,7 @@ export const PAST_EVENTS: Event[] = [
     desc: "A focused weekend sprint where community members contributed to the Vaitra healthcare platform, building out intelligent doctor listings and medicine tracking schemas.",
     longDesc: "Vaitra is a healthcare application built under the DevLink community incubator. Over a 48-hour period, a specialized team of 20 developers held a focused sprint to implement an intelligent matching algorithm for doctors and patient health schemas. We refactored database relations, integrated secure prescription signatures, and deployed the frontend node to an edge platform.",
     status: "completed",
+    registered: 21,
     tags: ["HealthTech", "Next.js", "Sprint"],
     images: [
       "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=600&auto=format&fit=crop",
@@ -375,7 +382,7 @@ export const PAST_EVENTS: Event[] = [
   }
 ];
 
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://localhost:4000/api";
 
 export async function getEventById(id: string): Promise<Event | undefined> {
   try {
