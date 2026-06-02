@@ -230,3 +230,36 @@ model Announcement {
   active    Boolean  @default(false)
   timestamp DateTime @default(now())
 }
+
+// ─── Hackathon Registration ───────────────────────────────────────────────────
+
+model HackathonTeam {
+  id            String   @id @default(uuid())
+  teamName      String
+  leaderName    String
+  leaderEmail   String
+  leaderPhone   String
+  leaderCollege String
+  status        String   @default("pending") // pending, registered
+  createdAt     DateTime @default(now())
+
+  members       HackathonMember[]
+
+  @@map("hackathon_teams")
+}
+
+model HackathonMember {
+  id          String   @id @default(uuid())
+  teamId      String
+  team        HackathonTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  email       String                      // invite target email
+  name        String?                     // filled by member after accepting
+  phone       String?
+  college     String?
+  inviteToken String   @unique @default(uuid())
+  status      String   @default("pending") // pending, verified
+  invitedAt   DateTime @default(now())
+  verifiedAt  DateTime?
+
+  @@map("hackathon_members")
+}

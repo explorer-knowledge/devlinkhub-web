@@ -15,6 +15,7 @@ import eventRouter from "./routes/eventRoutes.js";
 import builderRouter from "./routes/builderRoutes.js";
 import inquiryRouter from "./routes/inquiryRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
+import hackathonRouter from "./routes/hackathonRoutes.js";
 
 // ─── App Bootstrap ────────────────────────────────────────────────────────────
 
@@ -52,6 +53,7 @@ app.use("/api/events", eventRouter);
 app.use("/api/builders", builderRouter);
 app.use("/api/inquiries", inquiryRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/hackathon", hackathonRouter);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 
