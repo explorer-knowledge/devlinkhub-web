@@ -166,12 +166,12 @@ export default function HomeFooter() {
           <div className="col-span-2 md:col-span-4 lg:col-span-3 flex flex-col space-y-8 lg:pr-12">
             <Link href="/" className="inline-flex items-center group">
               <img
-                src="/logos/DevLinkHub_Text_Logo-white.png"
-                alt="DevLinkHub"
+                src="/logos/DevLink_Text_Logo-white.png"
+                alt="DevLink"
                 className="h-8 w-auto object-contain drop-shadow-[0_0_12px_rgba(0,240,255,0.2)] group-hover:drop-shadow-[0_0_24px_rgba(0,240,255,0.5)] transition-all duration-300"
                 onError={(e) => { 
                   e.currentTarget.style.display = "none"; 
-                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINKHUB</span>')
+                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-2xl font-black text-white tracking-tighter">DEVLINK</span>')
                 }}
               />
             </Link>

@@ -7,7 +7,10 @@ import {
   Terminal, Search, Globe, ArrowUpRight, Cpu, Zap, Heart, ShieldAlert 
 } from "lucide-react";
 import Link from "next/link";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
+import { useAuth } from "@/context/AuthContext";
 
 
 interface OSRepo {
@@ -34,7 +37,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 41,
     issues: 8,
     color: "#00F0FF",
-    githubUrl: "https://github.com/devlinkhub/hyperion-cli"
+    githubUrl: "https://github.com/devlink/hyperion-cli"
   },
   {
     id: 2,
@@ -46,7 +49,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 28,
     issues: 5,
     color: "#FF1CF7",
-    githubUrl: "https://github.com/devlinkhub/hermes-state-relayer"
+    githubUrl: "https://github.com/devlink/hermes-state-relayer"
   },
   {
     id: 3,
@@ -58,7 +61,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 67,
     issues: 12,
     color: "#00FFA3",
-    githubUrl: "https://github.com/devlinkhub/echo-router"
+    githubUrl: "https://github.com/devlink/echo-router"
   },
   {
     id: 4,
@@ -70,7 +73,7 @@ const INITIAL_REPOS: OSRepo[] = [
     forks: 112,
     issues: 19,
     color: "#7B61FF",
-    githubUrl: "https://github.com/devlinkhub/neurocore-matrix"
+    githubUrl: "https://github.com/devlink/neurocore-matrix"
   }
 ];
 
@@ -102,21 +105,16 @@ export default function OpenSourcePage() {
   const [repoColor, setRepoColor] = useState("#00F0FF");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitLogs, setSubmitLogs] = useState<string[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("devlinkhub_opensource_repos");
+      const stored = localStorage.getItem("devlink_opensource_repos");
       if (stored) {
         setRepos(JSON.parse(stored));
       } else {
         setRepos(INITIAL_REPOS);
-        localStorage.setItem("devlinkhub_opensource_repos", JSON.stringify(INITIAL_REPOS));
-      }
-
-      const storedUser = localStorage.getItem("devlinkhub_auth_user");
-      if (storedUser) {
-        setCurrentUser(JSON.parse(storedUser));
+        localStorage.setItem("devlink_opensource_repos", JSON.stringify(INITIAL_REPOS));
       }
     }
 
@@ -141,7 +139,7 @@ export default function OpenSourcePage() {
   };
 
   const handleProposeClick = () => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       window.location.href = `/signin?redirect=${encodeURIComponent("/opensource")}`;
       return;
     }
@@ -180,13 +178,13 @@ export default function OpenSourcePage() {
           forks: 0,
           issues: 0,
           color: repoColor,
-          githubUrl: `https://github.com/${currentUser?.username || "devlinkhub"}/${repoName.toLowerCase()}`
+          githubUrl: `https://github.com/${localUser?.username || firebaseUser?.email?.split("@")[0] || "devlink"}/${repoName.toLowerCase()}`
         };
 
         const updated = [...repos, newRepo];
         setRepos(updated);
         if (typeof window !== "undefined") {
-          localStorage.setItem("devlinkhub_opensource_repos", JSON.stringify(updated));
+          localStorage.setItem("devlink_opensource_repos", JSON.stringify(updated));
         }
 
         setIsSubmitting(false);
@@ -209,7 +207,7 @@ export default function OpenSourcePage() {
     });
     setRepos(updated);
     if (typeof window !== "undefined") {
-      localStorage.setItem("devlinkhub_opensource_repos", JSON.stringify(updated));
+      localStorage.setItem("devlink_opensource_repos", JSON.stringify(updated));
     }
   };
 
@@ -229,6 +227,8 @@ export default function OpenSourcePage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
+      <Navbar />
+
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         
         {/* Glow vector shadows */}
@@ -251,7 +251,7 @@ export default function OpenSourcePage() {
             </h1>
             
             <p className="text-sm md:text-base text-zinc-400 max-w-xl mx-auto font-light leading-relaxed">
-              Browse DevLinkHub core libraries and tool chains. Submit repositories, claim code bounties, or track contributions live on the ledger.
+              Browse DevLink core libraries and tool chains. Submit repositories, claim code bounties, or track contributions live on the ledger.
             </p>
           </div>
 
@@ -393,7 +393,7 @@ export default function OpenSourcePage() {
               {/* Propose repo card */}
               <div className="bg-[#08080a] border border-white/5 rounded-3xl p-6 relative overflow-hidden group shadow-xl">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.01] to-transparent pointer-events-none" />
-                <h3 className="text-sm font-bold text-white mb-1">Host Library on DevLinkHub</h3>
+                <h3 className="text-sm font-bold text-white mb-1">Host Library on DevLink</h3>
                 <p className="text-[11px] text-zinc-500 font-light mb-6">Register your open-source directory to enable star voting and issue bounties.</p>
                 
                 <button
@@ -584,6 +584,7 @@ export default function OpenSourcePage() {
         )}
       </AnimatePresence>
 
-      </div>
+      <Footer />
+    </div>
   );
 }

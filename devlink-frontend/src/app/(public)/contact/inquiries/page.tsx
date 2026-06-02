@@ -7,8 +7,11 @@ import {
   ArrowLeft, Search, Calendar, Inbox, ChevronRight, 
   Trash2, Filter, AlertCircle, RefreshCw, Layers, CheckCircle2, Clock
 } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getInquiries, Inquiry, clearAllInquiries, saveInquiriesList } from "@/utils/inquiriesData";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORY_COLORS: Record<string, string> = {
   PARTNERSHIPS: "#00F0FF",
@@ -26,7 +29,7 @@ export default function InquiriesDashboardPage() {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [selectedStatus, setSelectedStatus] = useState("ALL");
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { localUser, loading } = useAuth();
 
   // Load inquiries on mount
   useEffect(() => {
@@ -36,17 +39,9 @@ export default function InquiriesDashboardPage() {
       setInquiries(data);
     };
     loadData();
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("devlinkhub_auth_user");
-      if (stored) {
-        try {
-          setCurrentUser(JSON.parse(stored));
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
   }, []);
+
+  const isAdmin = !loading && localUser?.role === "Administrator";
 
   const handleRefresh = async () => {
     const data = await getInquiries();
@@ -60,24 +55,7 @@ export default function InquiriesDashboardPage() {
     }
   };
 
-  const handleSimulateAdminLogin = async () => {
-    const adminPayload = {
-      name: "Admin Coordinator",
-      username: "admin",
-      email: "admin@devlinkhub.dev",
-      isAdmin: true
-    };
-    localStorage.setItem("devlinkhub_auth_user", JSON.stringify(adminPayload));
-    setCurrentUser(adminPayload);
-    const data = await getInquiries();
-    setInquiries(data);
-  };
 
-  const isAdmin = currentUser && (
-    currentUser.username === "admin" || 
-    currentUser.isAdmin === true || 
-    currentUser.email === "admin@devlinkhub.dev"
-  );
 
   // Filter & Sort Logic
   const filteredInquiries = inquiries.filter((inq) => {
@@ -119,6 +97,7 @@ export default function InquiriesDashboardPage() {
   if (mounted && !isAdmin) {
     return (
       <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans flex flex-col">
+        <Navbar />
         <main className="flex-1 flex items-center justify-center pt-24 pb-20 px-6 z-10 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-red-500/[0.04] blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
           
@@ -137,17 +116,17 @@ export default function InquiriesDashboardPage() {
               <span className="text-[10px] font-mono text-red-400 uppercase tracking-widest block">Firewall Shield Active</span>
               <h2 className="text-xl font-bold text-white tracking-tight">Access Restricted</h2>
               <p className="text-xs text-zinc-500 leading-relaxed font-light">
-                This terminal is cataloged under secure coordinator operations. Standard builder nodes are not authorized to view the communications telemetry matrix.
+                This terminal is cataloged under secure coordinator operations. Administrator Firebase credentials are required to access the communications telemetry matrix.
               </p>
             </div>
 
             <div className="flex flex-col gap-3 pt-2">
-              <button 
-                onClick={handleSimulateAdminLogin}
-                className="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-mono text-xs font-bold transition-all cursor-pointer shadow-[0_4px_20px_rgba(239,68,68,0.15)] active:scale-98 border-none"
+              <Link 
+                href="/signin"
+                className="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-mono text-xs font-bold transition-all cursor-pointer shadow-[0_4px_20px_rgba(239,68,68,0.15)] active:scale-98 text-center"
               >
-                [ ELEVATE SESSION TO ADMIN ]
-              </button>
+                [ SIGN IN AS ADMINISTRATOR ]
+              </Link>
               
               <Link 
                 href="/contact"
@@ -158,12 +137,15 @@ export default function InquiriesDashboardPage() {
             </div>
           </motion.div>
         </main>
-        </div>
+        <Footer />
+      </div>
     );
   }
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
+      <Navbar />
+
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         
         {/* Background glow ambient lights */}
@@ -181,7 +163,7 @@ export default function InquiriesDashboardPage() {
               <ArrowLeft size={13} /> Return to Contact Page
             </Link>
             <div className="text-zinc-500 font-mono text-[10px]">
-              DEVLINKHUB // SUPPORT // TELEMETRY_MATRIX
+              DEVLINK // SUPPORT // TELEMETRY_MATRIX
             </div>
           </div>
 
@@ -190,7 +172,7 @@ export default function InquiriesDashboardPage() {
             <div className="space-y-2">
               <h1 className="text-4xl font-extrabold text-white tracking-tight">Inquiries Management</h1>
               <p className="text-sm text-zinc-400 font-light max-w-xl">
-                Browse and triage communication packets transmitted via the DevLinkHub contact terminal.
+                Browse and triage communication packets transmitted via the DevLink contact terminal.
               </p>
             </div>
             
@@ -421,6 +403,7 @@ export default function InquiriesDashboardPage() {
         </div>
       </main>
 
-      </div>
+      <Footer />
+    </div>
   );
 }

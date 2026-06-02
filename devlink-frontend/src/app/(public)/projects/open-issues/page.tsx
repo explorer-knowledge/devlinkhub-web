@@ -8,26 +8,23 @@ import {
   Search, ShieldAlert, Award, FileCode, Check, AlertCircle, AlertTriangle 
 } from "lucide-react";
 import Link from "next/link";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedProjects, saveProjects, Project, ProjectIssue } from "@/utils/projectsData";
+import { useAuth } from "@/context/AuthContext";
 
 export default function OpenIssuesPage() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
   
   // Filters
   const [selectedDifficulty, setSelectedDifficulty] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      getMergedProjects().then(setProjects);
-      const stored = localStorage.getItem("devlinkhub_auth_user");
-      if (stored) {
-        setCurrentUser(JSON.parse(stored));
-      }
-    }
+    getMergedProjects().then(setProjects);
   }, []);
 
   // Extract all issues
@@ -51,16 +48,17 @@ export default function OpenIssuesPage() {
 
   // Claim issue logic
   const handleClaimIssue = (projectId: string | number, issueId: string) => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       router.push(`/signin?redirect=/projects/open-issues`);
       return;
     }
 
+    const username = localUser?.username || firebaseUser.email || "user";
     const updatedProjects = projects.map(p => {
       if (String(p.id) === String(projectId)) {
         const updatedIssues = p.issues?.map(issue => {
           if (issue.id === issueId) {
-            return { ...issue, claimedBy: currentUser.username };
+            return { ...issue, claimedBy: username };
           }
           return issue;
         }) || [];
@@ -75,6 +73,8 @@ export default function OpenIssuesPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
+      <Navbar />
+      
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[100vw] max-w-[1200px] h-[500px] bg-[#FF1CF7]/[0.03] blur-[150px] rounded-full mix-blend-screen pointer-events-none" />
 

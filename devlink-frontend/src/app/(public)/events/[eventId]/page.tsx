@@ -10,7 +10,10 @@ import {
   Cpu, FileCode, Check, Play, X, User
 } from "lucide-react";
 import Link from "next/link";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { getEventById, getUserRegisteredEvents, toggleEventRSVP, Event } from "@/utils/eventsData";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── LOCAL UTILITY COMPONENT ─────────────────────────────────────────
 
@@ -48,7 +51,7 @@ export default function EventDetailsPage() {
 
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
   const [isRegistered, setIsRegistered] = useState(false);
 
   // RSVP Terminal Animation State
@@ -59,39 +62,33 @@ export default function EventDetailsPage() {
   // Lightbox Modal State
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
 
-  // Load event details and local auth user
+  // Load event details
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const authUser = localStorage.getItem("devlinkhub_auth_user");
-      if (authUser) {
-        setCurrentUser(JSON.parse(authUser));
+    getEventById(eventId).then((matched) => {
+      if (matched) {
+        setEvent(matched);
+        const registeredList = getUserRegisteredEvents();
+        setIsRegistered(registeredList.includes(eventId));
       }
-
-      getEventById(eventId).then((matched) => {
-        if (matched) {
-          setEvent(matched);
-          const registeredList = getUserRegisteredEvents();
-          setIsRegistered(registeredList.includes(eventId));
-        }
-        setLoading(false);
-      });
-    }
+      setLoading(false);
+    });
   }, [eventId]);
 
   const handleRSVPAction = () => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       // Redirect to sign in page
       router.push(`/signin?redirect=/events/${eventId}`);
       return;
     }
 
+    const displayName = localUser?.username || firebaseUser.email?.split("@")[0] || "user";
     const type = isRegistered ? "cancel" : "register";
     setRsvpActionType(type);
     setIsRSVPing(true);
 
     const logSteps = type === "register" ? [
-      "Connecting to DevLinkHub core node...",
-      "Resolving developer credentials for @" + currentUser.username + "...",
+      "Connecting to DevLink core node...",
+      "Resolving developer credentials for @" + displayName + "...",
       "Allocating capacity slot for: " + event?.title + "...",
       "Generating unique cryptographically signed ticket...",
       "Broadcasting registration to ecosystem indexers...",
@@ -155,6 +152,8 @@ export default function EventDetailsPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
+      <Navbar />
+
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         {/* Background Accent glow */}
         <div 
@@ -482,7 +481,7 @@ export default function EventDetailsPage() {
                       ) : (
                         <>
                           <Ticket size={15} /> 
-                          {currentUser ? "RSVP & Claim Ticket" : "Sign In to RSVP"}
+                          {firebaseUser ? "RSVP & Claim Ticket" : "Sign In to RSVP"}
                         </>
                       )}
                     </button>

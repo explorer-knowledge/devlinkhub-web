@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { saveInquiry } from "@/utils/inquiriesData";
+import { useAuth } from "@/context/AuthContext";
 
 // ─── UTILITY COMPONENTS ─────────────────────────────────────────────\
 const DiscordIcon = ({ size = 24, color = "currentColor", className = "" }) => (
@@ -74,29 +75,12 @@ const FORM_CATEGORIES = [
 // ─── MAIN PAGE ─────────────────────────────────────────────────────
 
 export default function ContactPage() {
+  const { localUser } = useAuth();
+  const isAdmin = localUser?.role === "Administrator";
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [createdId, setCreatedId] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("devlinkhub_auth_user");
-      if (stored) {
-        try {
-          setCurrentUser(JSON.parse(stored));
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-  }, []);
-
-  const isAdmin = currentUser && (
-    currentUser.username === "admin" ||
-    currentUser.isAdmin === true ||
-    currentUser.email === "admin@devlinkhub.dev"
-  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -200,7 +184,7 @@ export default function ContactPage() {
           >
             <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
             <span className="text-[10px] font-mono font-bold tracking-[0.2em] text-zinc-300 uppercase">
-              DevLinkHub // Secure Channel
+              DevLink // Secure Channel
             </span>
           </motion.div>
 
@@ -583,7 +567,7 @@ export default function ContactPage() {
                       </span>
                       <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Inquiry Registered</h2>
                       <p className="text-sm text-zinc-400 font-light leading-relaxed">
-                        Your message has been broadcast to the DevLinkHub support matrix. A coordinator node has been assigned to catalog your request.
+                        Your message has been broadcast to the DevLink support matrix. A coordinator node has been assigned to catalog your request.
                       </p>
                       {createdId && (
                         <div className="inline-block bg-black/50 border border-white/10 rounded-xl px-5 py-3 mt-4 shadow-inner">
@@ -627,12 +611,12 @@ export default function ContactPage() {
           <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
             {[
               {
-                label: "Email Contact", val: "hello@devlinkhub.community", href: "mailto:hello@devlinkhub.community",
+                label: "Email Contact", val: "hello@devlink.community", href: "mailto:hello@devlink.community",
                 icon: Mail, color: "#00F0FF",
                 gradient: "linear-gradient(135deg, #00F0FF 0%, #0080FF 100%)", btnText: "text-white"
               },
               {
-                label: "GitHub Hub", val: "github.com/devlinkhuborg", href: "https://github.com",
+                label: "GitHub Hub", val: "github.com/devlinkorg", href: "https://github.com",
                 icon: Github, color: "#FFFFFF",
                 gradient: "linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%)", btnText: "text-black"
               },
@@ -642,12 +626,12 @@ export default function ContactPage() {
                 gradient: "linear-gradient(135deg, #5865F2 0%, #4752C4 100%)", btnText: "text-white"
               },
               {
-                label: "LinkedIn Network", val: "DevLinkHub Network", href: "https://linkedin.com",
+                label: "LinkedIn Network", val: "DevLink Network", href: "https://linkedin.com",
                 icon: Linkedin, color: "#0A66C2",
                 gradient: "linear-gradient(135deg, #0A66C2 0%, #004182 100%)", btnText: "text-white"
               },
               {
-                label: "Instagram Page", val: "@devlinkhub.community", href: "https://instagram.com",
+                label: "Instagram Page", val: "@devlink.community", href: "https://instagram.com",
                 icon: Instagram, color: "#E1306C",
                 // The authentic Instagram brand gradient
                 gradient: "linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)",
@@ -745,7 +729,7 @@ export default function ContactPage() {
               </span>
             </h2>
             <p className="text-base text-zinc-400 font-light leading-relaxed max-w-xl">
-              DevLinkHub collaborates with universities, open-source foundations, and developer tools to create grassroots, high-impact builder programs.
+              DevLink collaborates with universities, open-source foundations, and developer tools to create grassroots, high-impact builder programs.
             </p>
           </div>
 

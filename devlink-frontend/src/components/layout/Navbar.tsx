@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const NAV_LINKS = [
   { label: "Community", href: "/community" },
-  { label: "Builds", href: "/build" },
   { label: "Events", href: "/events" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -77,12 +76,12 @@ export default function Navbar() {
             <div className="relative h-7 flex items-center">
               <div className="absolute inset-0 bg-[#00F0FF]/0 group-hover:bg-[#00F0FF]/15 blur-xl transition-all duration-500 rounded-full" />
               <img
-                src="/logos/DevLinkHub_Text_Logo-white.png"
-                alt="DevLinkHub"
+                src="/logos/DevLink_Text_Logo-white.png"
+                alt="DevLink"
                 className="relative h-full w-auto object-contain drop-shadow-[0_0_10px_rgba(0,240,255,0.1)] group-hover:drop-shadow-[0_0_20px_rgba(0,240,255,0.8)] transition-all duration-500"
                 onError={(e) => { 
                   e.currentTarget.style.display = "none";
-                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINKHUB</span>')
+                  e.currentTarget.parentElement?.insertAdjacentHTML('beforeend', '<span class="text-xl font-black text-white tracking-tighter">DEVLINK</span>')
                 }}
               />
             </div>

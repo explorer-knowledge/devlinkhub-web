@@ -54,7 +54,7 @@ export const FEATURED_EVENT: Event = {
   id: "syntax-weavers-inaugural-sprint",
   title: "Syntax Weavers: Inaugural Sprint",
   desc: "Join our very first 48-hour global hackathon. Form teams, build an MVP using the latest AI and Web frameworks, and compete for community bounties.",
-  longDesc: "Syntax Weavers is the inaugural global development sprint hosted by DevLinkHub. Over 48 hours, developers, designers, and AI engineers from around the world will form guilds and build production-ready MVPs. The focus is on combining modern Web frameworks (Next.js, Vite) with AI/ML tools (LLMs, Vector databases, edge functions) to build tools that solve developer workflow challenges. Top submissions will be integrated into the DevLinkHub ecosystem, receive dedicated community funding, and earn exclusive Developer Guild credentials.",
+  longDesc: "Syntax Weavers is the inaugural global development sprint hosted by DevLink. Over 48 hours, developers, designers, and AI engineers from around the world will form guilds and build production-ready MVPs. The focus is on combining modern Web frameworks (Next.js, Vite) with AI/ML tools (LLMs, Vector databases, edge functions) to build tools that solve developer workflow challenges. Top submissions will be integrated into the DevLink ecosystem, receive dedicated community funding, and earn exclusive Developer Guild credentials.",
   date: "October 22-24, 2026",
   time: "Kickoff at 10:00 AM IST",
   location: "Virtual (Discord & YouTube Live)",
@@ -67,9 +67,9 @@ export const FEATURED_EVENT: Event = {
   speakers: [
     {
       name: "Arjun Mehta",
-      role: "DevLinkHub Tech Lead",
+      role: "DevLink Tech Lead",
       avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop",
-      bio: "Former staff engineer at Vercel, now driving execution culture at DevLinkHub."
+      bio: "Former staff engineer at Vercel, now driving execution culture at DevLink."
     },
     {
       name: "Sarah Chen",
@@ -100,7 +100,7 @@ export const FEATURED_EVENT: Event = {
     {
       time: "Day 3 - 10:00 AM IST",
       title: "Submission & Demos",
-      description: "DevLinkHub deployment portal freezes. Live 3-minute video pitches play back in Discord.",
+      description: "DevLink deployment portal freezes. Live 3-minute video pitches play back in Discord.",
       speaker: "Sarah Chen"
     }
   ]
@@ -154,15 +154,15 @@ export const UPCOMING_EVENTS: Event[] = [
     location: "Discord Voice Channel", 
     type: "Community Meetup", 
     color: "#00F0FF",
-    desc: "Live pairing session. We will walk through 'Good First Issues' on the DevLinkHub repo and merge PRs live.",
-    longDesc: "Join the core maintainers of DevLinkHub for a high-velocity programming session. We will examine the current product roadmap, triage active bug reports, walk through our custom design systems, and pair-program live to resolve Github issues. All merged pull requests during this session receive specialized community contributor badges.",
+    desc: "Live pairing session. We will walk through 'Good First Issues' on the DevLink repo and merge PRs live.",
+    longDesc: "Join the core maintainers of DevLink for a high-velocity programming session. We will examine the current product roadmap, triage active bug reports, walk through our custom design systems, and pair-program live to resolve Github issues. All merged pull requests during this session receive specialized community contributor badges.",
     status: "open",
     capacity: 100,
     requirements: ["Git / GitHub basic setup", "React & CSS familiarity"],
     tags: ["Git", "React", "TypeScript"],
     speakers: [
       {
-        name: "DevLinkHub Core Bot",
+        name: "DevLink Core Bot",
         role: "Registry System",
         avatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=200&auto=format&fit=crop",
         bio: "Automated DevOps bot summarizing pull request statistics and test coverage."
@@ -173,19 +173,19 @@ export const UPCOMING_EVENTS: Event[] = [
         time: "08:00 PM IST",
         title: "Codebase Architecture Tour",
         description: "A quick overview of our Next.js App directory, styling directives, and Tailwind themes.",
-        speaker: "DevLinkHub Core Bot"
+        speaker: "DevLink Core Bot"
       },
       {
         time: "08:30 PM IST",
         title: "Issue Claiming & Live Pairing",
         description: "Claim an issue from our backlog and build a solution live with one-on-one maintainer support.",
-        speaker: "DevLinkHub Core Bot"
+        speaker: "DevLink Core Bot"
       },
       {
         time: "10:30 PM IST",
         title: "PR Merge Ceremony",
         description: "Reviewing submitted PRs, compiling test suites, and pushing to main live.",
-        speaker: "DevLinkHub Core Bot"
+        speaker: "DevLink Core Bot"
       }
     ]
   },
@@ -199,7 +199,7 @@ export const UPCOMING_EVENTS: Event[] = [
     type: "Startup Event", 
     color: "#F59E0B",
     desc: "Early-stage founders from the ecosystem present their MVPs to the community and engineering guilds.",
-    longDesc: "Watch the next wave of developer tooling, cloud infrastructure, and AI automation startups pitch their early MVPs. Founders get 5 minutes to demo their product directly to the DevLinkHub community, followed by live technical Q&A from our engineering guild masters. Perfect for developers looking to join early-stage teams or founders seeking early technical feedback.",
+    longDesc: "Watch the next wave of developer tooling, cloud infrastructure, and AI automation startups pitch their early MVPs. Founders get 5 minutes to demo their product directly to the DevLink community, followed by live technical Q&A from our engineering guild masters. Perfect for developers looking to join early-stage teams or founders seeking early technical feedback.",
     status: "open",
     capacity: 300,
     requirements: ["Interest in startups", "Developer tooling insights"],
@@ -216,7 +216,7 @@ export const UPCOMING_EVENTS: Event[] = [
       {
         time: "06:30 PM IST",
         title: "Introduction & Pitch Protocol",
-        description: "Overview of DevLinkHub Venture Guild initiatives and presentation formats.",
+        description: "Overview of DevLink Venture Guild initiatives and presentation formats.",
         speaker: "Marcus Vance"
       },
       {
@@ -238,7 +238,7 @@ export const UPCOMING_EVENTS: Event[] = [
 export const PAST_EVENTS: Event[] = [
   {
     id: "genesis-meetup-bhopal",
-    title: "DevLinkHub Genesis Meetup",
+    title: "DevLink Genesis Meetup",
     date: "April 15, 2026",
     location: "Bhopal IT Park Node",
     type: "Local Meetup",
@@ -246,8 +246,8 @@ export const PAST_EVENTS: Event[] = [
     photosCount: 42,
     videoRecap: true,
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    desc: "The very first gathering of DevLinkHub early adopters. We mapped out the core architecture, established the initial open-source guilds, and formed foundational teams.",
-    longDesc: "On April 15, 2026, the Bhopal IT Park Node hosted the historic first offline gathering of DevLinkHub developers. Over 50 engineers gathered to talk about decentralizing developer networks and startup funding. We brainstormed the core schema of DevLinkHub, built the initial wireframes, launched our local open-source guilds, and enjoyed pizza and code in equal measure. This event set the cultural foundation of extreme execution and high-performance engineering that defines DevLinkHub today.",
+    desc: "The very first gathering of DevLink early adopters. We mapped out the core architecture, established the initial open-source guilds, and formed foundational teams.",
+    longDesc: "On April 15, 2026, the Bhopal IT Park Node hosted the historic first offline gathering of DevLink developers. Over 50 engineers gathered to talk about decentralizing developer networks and startup funding. We brainstormed the core schema of DevLink, built the initial wireframes, launched our local open-source guilds, and enjoyed pizza and code in equal measure. This event set the cultural foundation of extreme execution and high-performance engineering that defines DevLink today.",
     status: "completed",
     tags: ["Community", "Meetup", "Bhopal"],
     images: [
@@ -292,7 +292,7 @@ export const PAST_EVENTS: Event[] = [
     ],
     projects: [
       { 
-        name: "DevLinkHub Web UI Base", 
+        name: "DevLink Web UI Base", 
         description: "The initial Next.js boilerplate and Tailwind config designed at the meetup.",
         link: "#",
         contributors: ["@rishi", "@nikhil", "@anamika"] 
@@ -315,7 +315,7 @@ export const PAST_EVENTS: Event[] = [
     photosCount: 18,
     videoRecap: false,
     desc: "A focused weekend sprint where community members contributed to the Vaitra healthcare platform, building out intelligent doctor listings and medicine tracking schemas.",
-    longDesc: "Vaitra is a healthcare application built under the DevLinkHub community incubator. Over a 48-hour period, a specialized team of 20 developers held a focused sprint to implement an intelligent matching algorithm for doctors and patient health schemas. We refactored database relations, integrated secure prescription signatures, and deployed the frontend node to an edge platform.",
+    longDesc: "Vaitra is a healthcare application built under the DevLink community incubator. Over a 48-hour period, a specialized team of 20 developers held a focused sprint to implement an intelligent matching algorithm for doctors and patient health schemas. We refactored database relations, integrated secure prescription signatures, and deployed the frontend node to an edge platform.",
     status: "completed",
     tags: ["HealthTech", "Next.js", "Sprint"],
     images: [
@@ -375,7 +375,7 @@ export const PAST_EVENTS: Event[] = [
   }
 ];
 
-const API_BASE = "http://localhost:10000/api";
+const API_BASE = `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"}/api`;
 
 export async function getEventById(id: string): Promise<Event | undefined> {
   try {
@@ -407,7 +407,7 @@ export async function getEvents(): Promise<Event[]> {
 
 export function getUserRegisteredEvents(): string[] {
   if (typeof window === "undefined") return [];
-  const stored = localStorage.getItem("devlinkhub_registered_events");
+  const stored = localStorage.getItem("devlink_registered_events");
   if (!stored) return [];
   try {
     return JSON.parse(stored);
@@ -429,22 +429,15 @@ export async function toggleEventRSVP(eventId: string): Promise<boolean> {
     isRegistered = true;
   }
   
-  localStorage.setItem("devlinkhub_registered_events", JSON.stringify(registered));
+  localStorage.setItem("devlink_registered_events", JSON.stringify(registered));
 
   try {
-    const storedUser = localStorage.getItem("devlinkhub_auth_user");
-    const user = storedUser ? JSON.parse(storedUser) : null;
-    if (user?.username) {
-      const res = await fetch(`${API_BASE}/events/${eventId}/rsvp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: user.username }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        return data.registered;
-      }
-    }
+    // Auth token must be passed by the calling component (not available in utility files)
+    // This function only handles optimistic localStorage state; real RSVP is done from components with getToken()
+    await fetch(`${API_BASE}/events/${eventId}/rsvp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (e) {
     console.error("Failed to sync RSVP with backend:", e);
   }

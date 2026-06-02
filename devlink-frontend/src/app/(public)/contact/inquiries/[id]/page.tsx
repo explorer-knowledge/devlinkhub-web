@@ -8,6 +8,8 @@ import {
   ArrowLeft, Calendar, Mail, Building2, ShieldAlert, 
   Trash2, Send, CheckCircle2, AlertCircle, Clock, Info, User, Reply
 } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { 
   getInquiryById, 
@@ -16,6 +18,7 @@ import {
   deleteInquiry, 
   Inquiry 
 } from "@/utils/inquiriesData";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORY_COLORS: Record<string, string> = {
   PARTNERSHIPS: "#00F0FF",
@@ -32,56 +35,29 @@ export default function InquiryDetailsPage() {
   const id = params.id as string;
 
   const [inquiry, setInquiry] = useState<Inquiry | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingInquiry, setLoadingInquiry] = useState(true);
+  const { localUser, loading: authLoading } = useAuth();
   
   // State for form reply
   const [replyText, setReplyText] = useState("");
   const [replying, setReplying] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
 
   const [mounted, setMounted] = useState(false);
+
+  const isAdmin = !authLoading && localUser?.role === "Administrator";
 
   // Load inquiry details
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== "undefined") {
-      // Look for devlinkhub auth user
-      const authUser = localStorage.getItem("devlinkhub_auth_user");
-      if (authUser) {
-        try {
-          setCurrentUser(JSON.parse(authUser));
-        } catch (e) {
-          console.error(e);
-        }
+    const loadData = async () => {
+      const match = await getInquiryById(id);
+      if (match) {
+        setInquiry(match);
       }
-
-      const loadData = async () => {
-        const match = await getInquiryById(id);
-        if (match) {
-          setInquiry(match);
-        }
-        setLoading(false);
-      };
-      loadData();
-    }
-  }, [id]);
-
-  const isAdmin = currentUser && (
-    currentUser.username === "admin" || 
-    currentUser.isAdmin === true || 
-    currentUser.email === "admin@devlinkhub.dev"
-  );
-
-  const handleSimulateAdminLogin = () => {
-    const adminPayload = {
-      name: "Admin Coordinator",
-      username: "admin",
-      email: "admin@devlinkhub.dev",
-      isAdmin: true
+      setLoadingInquiry(false);
     };
-    localStorage.setItem("devlinkhub_auth_user", JSON.stringify(adminPayload));
-    setCurrentUser(adminPayload);
-  };
+    loadData();
+  }, [id]);
 
   // Handle status update
   const handleStatusChange = async (newStatus: Inquiry["status"]) => {
@@ -99,9 +75,9 @@ export default function InquiryDetailsPage() {
 
     setReplying(true);
     try {
-      const senderName = currentUser 
-        ? `@${currentUser.username} (Staff)` 
-        : "DevLinkHub Core Node";
+      const senderName = localUser 
+        ? `@${localUser.username} (Staff)` 
+        : "DevLink Core Node";
 
       const updated = await addInquiryReply(inquiry.id, senderName, replyText.trim());
       if (updated) {
@@ -126,7 +102,7 @@ export default function InquiryDetailsPage() {
     }
   };
 
-  if (loading) {
+  if (loadingInquiry) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center font-mono text-xs">
         Connecting core telemetry nodes...
@@ -137,6 +113,7 @@ export default function InquiryDetailsPage() {
   if (mounted && !isAdmin) {
     return (
       <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans flex flex-col">
+        <Navbar />
         <main className="flex-1 flex items-center justify-center pt-24 pb-20 px-6 z-10 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-red-500/[0.04] blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
           
@@ -160,12 +137,12 @@ export default function InquiryDetailsPage() {
             </div>
 
             <div className="flex flex-col gap-3 pt-2">
-              <button 
-                onClick={handleSimulateAdminLogin}
-                className="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-mono text-xs font-bold transition-all cursor-pointer shadow-[0_4px_20px_rgba(239,68,68,0.15)] active:scale-98 border-none"
+              <Link 
+                href="/signin"
+                className="w-full py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-mono text-xs font-bold transition-all cursor-pointer shadow-[0_4px_20px_rgba(239,68,68,0.15)] active:scale-98 text-center"
               >
-                [ ELEVATE SESSION TO ADMIN ]
-              </button>
+                [ SIGN IN AS ADMINISTRATOR ]
+              </Link>
               
               <Link 
                 href="/contact"
@@ -176,7 +153,8 @@ export default function InquiryDetailsPage() {
             </div>
           </motion.div>
         </main>
-        </div>
+        <Footer />
+      </div>
     );
   }
 
@@ -209,6 +187,8 @@ export default function InquiryDetailsPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
+      <Navbar />
+
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         
         {/* Glow behind layout */}
@@ -459,6 +439,7 @@ export default function InquiryDetailsPage() {
         </div>
       </main>
 
-      </div>
+      <Footer />
+    </div>
   );
 }

@@ -8,8 +8,11 @@ import {
   Plus, Calendar, CheckCircle2, Send, ShieldAlert, Award, FileCode, Check 
 } from "lucide-react";
 import Link from "next/link";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import SpotlightCard from "@/components/community/SpotlightCard";
 import { getMergedProjects, saveProjects, Project, ProjectIssue } from "@/utils/projectsData";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ProjectDetailsPage() {
   const router = useRouter();
@@ -18,7 +21,7 @@ export default function ProjectDetailsPage() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const { firebaseUser, localUser } = useAuth();
 
   // Dynamic Updates state
   const [timeline, setTimeline] = useState<Array<{ date: string, text: string }>>([
@@ -38,34 +41,28 @@ export default function ProjectDetailsPage() {
 
   // Load project details
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const authUser = localStorage.getItem("devlinkhub_auth_user");
-      if (authUser) {
-        setCurrentUser(JSON.parse(authUser));
+    getMergedProjects().then((all) => {
+      const matched = all.find(p => String(p.id) === String(projectId));
+      if (matched) {
+        setProject(matched);
       }
-
-      getMergedProjects().then((all) => {
-        const matched = all.find(p => String(p.id) === String(projectId));
-        if (matched) {
-          setProject(matched);
-        }
-        setLoading(false);
-      });
-    }
+      setLoading(false);
+    });
   }, [projectId]);
 
   // Handle claiming an issue
   const handleClaimIssue = (issueId: string) => {
-    if (!currentUser) {
+    if (!firebaseUser) {
       router.push(`/signin?redirect=/projects/${projectId}`);
       return;
     }
 
     if (!project) return;
 
+    const username = localUser?.username || firebaseUser.email || "user";
     const updatedIssues = project.issues?.map(issue => {
       if (issue.id === issueId) {
-        return { ...issue, claimedBy: currentUser.username };
+        return { ...issue, claimedBy: username };
       }
       return issue;
     }) || [];
@@ -120,17 +117,17 @@ export default function ProjectDetailsPage() {
         clearInterval(interval);
         
         // Save application log in localStorage
-        const customApps = localStorage.getItem("devlinkhub_project_applications") || "[]";
+        const customApps = localStorage.getItem("devlink_project_applications") || "[]";
         const appsList = JSON.parse(customApps);
         appsList.push({
           projectId: project?.id,
           projectName: project?.name,
-          username: currentUser?.username,
+          username: localUser?.username || firebaseUser?.email || "user",
           role: applyRole,
           pitch: applyPitch,
           timestamp: Date.now()
         });
-        localStorage.setItem("devlinkhub_project_applications", JSON.stringify(appsList));
+        localStorage.setItem("devlink_project_applications", JSON.stringify(appsList));
 
         // Done
         setIsApplying(false);
@@ -169,6 +166,8 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-zinc-100 font-sans selection:bg-[#00F0FF]/30 flex flex-col">
+      <Navbar />
+      
       <main className="flex-1 flex flex-col relative pt-24 pb-20 z-10">
         
         {/* Background Accent glow */}
@@ -370,7 +369,7 @@ export default function ProjectDetailsPage() {
                       <button 
                         suppressHydrationWarning
                         onClick={() => {
-                          if (!currentUser) {
+                          if (!firebaseUser) {
                             router.push(`/signin?redirect=/projects/${projectId}`);
                           } else {
                             setApplyRole(opening.role);

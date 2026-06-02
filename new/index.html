@@ -24,31 +24,19 @@
 
   <!-- STICKY FROSTED NAVBAR (Depth Layer 4) -->
   <nav class="frosted-navbar">
-    <a href="#" class="brand-wrapper">
-      <svg class="brand-node-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5">
-        <circle cx="12" cy="5" r="3" fill="var(--bg-primary)" />
-        <circle cx="5" cy="18" r="3" fill="var(--bg-primary)" />
-        <circle cx="19" cy="18" r="3" fill="var(--bg-primary)" />
-        <line x1="12" y1="8" x2="6.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
-        <line x1="12" y1="8" x2="17.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
-        <line x1="8" y1="18" x2="16" y2="18" stroke="var(--accent-violet)" stroke-width="1.5" />
-      </svg>
-      <span class="brand-title">DevLink<span class="mono">Hub</span></span>
+    <a href="index.html" class="brand-wrapper">
+      <img src="static/logos/DevLink_Text_Logo-white.png" alt="DevLinkHub" style="height: 32px; width: auto; display: block; object-fit: contain;">
     </a>
     
     <ul class="navbar-links">
-      <li><a href="#" class="active">Home</a></li>
-      <li><a href="#pillars">Mission</a></li>
       <li><a href="#events">Events</a></li>
       <li><a href="#resources">Resources</a></li>
       <li><a href="#community">Community</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
 
     <div class="nav-right-actions">
-      <div class="badge-devs-online">
-        <span class="pulsing-dot"></span>
-        <span>&gt; 47 devs online</span>
-      </div>
       <a href="#boot-cta" class="btn-primary" style="padding: 10px 24px;">Join Hub &rarr;</a>
     </div>
 
@@ -62,11 +50,11 @@
   <!-- MOBILE NAVIGATION DRAWER OVERLAY -->
   <div class="mobile-drawer">
     <button class="close-drawer">&times;</button>
-    <a href="#">Home</a>
-    <a href="#pillars">Mission</a>
+    <a href="#about">About</a>
     <a href="#events">Events</a>
     <a href="#resources">Resources</a>
     <a href="#community">Community</a>
+    <a href="#contact">Contact</a>
     <a href="#boot-cta" class="btn-primary" style="margin-top: 1.5rem;">Join Hub</a>
   </div>
 
@@ -77,7 +65,7 @@
 
     <div class="hero-inner-grid">
       <div class="hero-text-block">
-        <span class="hero-eyebrow">&lt; devlinkhub.init() &gt;</span>
+
         <h1 class="hero-headline">
           <span style="color: var(--accent-cyan)">BUILD.</span>
           <span>CONNECT.</span>
@@ -109,28 +97,60 @@
           </circle>
         </svg>
 
-        <div class="glass-card hero-visual-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 16px;">
+        <div class="glass-card hero-visual-card" id="hero-main-cli">
+          
+          <!-- Original CLI Header -->
+          <div class="cli-header-original" id="hero-cli-orig-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 16px;">
             <div style="display:flex; gap:6px">
               <span class="pulsing-dot" style="background:#ff5f56; box-shadow:none"></span>
               <span class="pulsing-dot" style="background:#ffbd2e; box-shadow:none"></span>
               <span class="pulsing-dot" style="background:#27c93f; box-shadow:none"></span>
             </div>
-            <span class="mono" style="font-size:10px; color:rgba(255,255,255,0.4)">sdk_init.rs</span>
+            <span class="mono" id="hero-cli-title" style="font-size:13px; font-weight:500; color:rgba(255,255,255,0.6)">bash - devlinkhub.sh</span>
           </div>
 
-          <pre class="mono" style="font-size:11px; line-height:1.8; color:rgba(255,255,255,0.85); overflow:hidden; flex:1">
-<span style="color:var(--accent-pink)">fn</span> <span style="color:var(--accent-cyan)">stage_nodes</span>() -> <span style="color:var(--accent-violet)">Result</span>&lt;(), Error&gt; {
-    <span style="color:var(--accent-pink)">let</span> hub = DevLinkHub::connect(<span style="color:var(--accent-green)">"gmt+5:30"</span>)?;
-    <span style="color:var(--accent-pink)">let</span> staged = hub.guild(<span style="color:var(--accent-green)">"web_ops"</span>).compile()?;
-    
-    <span style="color:var(--accent-cyan)">println!</span>(<span style="color:var(--accent-green)">"✓ staged in registry: {:?}"</span>, staged);
-    <span style="color:var(--accent-pink)">Ok</span>(())
-}</pre>
+          <!-- Replaced CLI Header (Hidden by default) -->
+          <div class="cli-header-replaced" id="hero-cli-repl-header" style="display:none; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 16px;">
+            <div style="display:flex; gap:6px">
+              <!-- Clicking the red dot closes the view and restores original -->
+              <span class="pulsing-dot" id="hero-cli-close-dot" style="background:#ff5f56; box-shadow:none; cursor:pointer" title="Close and Restore"></span>
+              <span class="pulsing-dot" style="background:#ffbd2e; box-shadow:none"></span>
+              <span class="pulsing-dot" style="background:#27c93f; box-shadow:none"></span>
+            </div>
+            <span class="mono" style="font-size:13px; font-weight:500; color:var(--accent-cyan)">devlinkhub_console.sh (Active)</span>
+            <button id="hero-cli-close-btn" style="background:transparent; border:none; color:var(--white-secondary); cursor:pointer; font-size:12px; font-family:var(--font-mono)">[ESC] X</button>
+          </div>
+
+          <!-- Hackathon CLI Header (Hidden by default) -->
+          <div class="cli-header-hackathon" id="hero-cli-hack-header" style="display:none; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 16px;">
+            <div style="display:flex; gap:6px">
+              <span class="pulsing-dot" id="hero-cli-hack-close-dot" style="background:#ff5f56; box-shadow:none; cursor:pointer" title="Close and Restore"></span>
+              <span class="pulsing-dot" style="background:#ffbd2e; box-shadow:none"></span>
+              <span class="pulsing-dot" style="background:#27c93f; box-shadow:none"></span>
+            </div>
+            <span class="mono" style="font-size:13px; font-weight:500; color:var(--accent-pink)">/devlinkhub/hackathon/register</span>
+            <button id="hero-cli-hack-close-btn" style="background:transparent; border:none; color:var(--white-secondary); cursor:pointer; font-size:12px; font-family:var(--font-mono)">[ESC] X</button>
+          </div>
+
+          <!-- Original Dynamic Linux Installer Terminal -->
+          <div class="cli-body-original" id="hero-terminal-original-body" style="font-family:var(--font-mono); font-size:13.5px; line-height:1.7; color:var(--accent-green); overflow:hidden; flex:1; text-align:left; white-space:pre-wrap;">
+            <!-- Real-time Linux npm/node_modules logs typing dynamically -->
+          </div>
+
+          <!-- Replaced Activity Stream Terminal (Hidden by default) -->
+          <div class="cli-body-replaced" id="hero-terminal-replaced-body" style="display:none; font-family:var(--font-mono); font-size:13.5px; line-height:1.7; color:var(--accent-green); overflow-y:auto; flex:1; text-align:left;">
+            <!-- Mirrors community activity stream logs -->
+          </div>
+
+          <!-- Hackathon CLI Terminal (Hidden by default) -->
+          <div class="cli-body-hackathon" id="hero-terminal-hackathon-body" style="display:none; font-family:var(--font-mono); font-size:13.5px; line-height:1.7; color:var(--accent-green); overflow:hidden; flex:1; text-align:left; white-space:pre-wrap;">
+            <!-- Real-time Hackathon logs typing dynamically -->
+          </div>
           
           <div style="border-top:1px solid var(--glass-border); padding-top:12px; display:flex; justify-content:space-between; align-items:center; font-family:var(--font-mono); font-size:9px; color:var(--accent-green)">
-            <span>// staged status: active</span>
-            <span>v2.1 Stable</span>
+            <span id="hero-cli-footer-left">// system status: running</span>
+            <span id="hero-cli-footer-right">v3.0.0 Stable</span>
+            <button id="hero-footer-register-btn" class="cyber-register-btn" style="display: none; padding: 10px 24px; font-size: 13.5px; margin-top: 0; line-height: 1.2;">Register Now <span style="font-size:15px; transform:translateY(1px)">⏎</span></button>
           </div>
         </div>
       </div>
@@ -254,40 +274,7 @@
     </div>
   </section>
 
-  <!-- SECTION 4: STATS SECTION (STAGGERED TRANSLATES) -->
-  <section class="stats-section">
-    <div class="section-wrapper">
-      <div class="stats-asym-strip">
-        
-        <!-- Stat Box 1 -->
-        <div class="glass-card stat-glass-box">
-          <div class="stat-icon-glow">&#128101;</div>
-          <div class="stat-number-display grad-cyan-violet" data-target="500">0</div>
-          <div class="stat-label-mono">Developers</div>
-        </div>
-
-        <!-- Stat Box 2 -->
-        <div class="glass-card stat-glass-box" style="border-color: rgba(124, 58, 237, 0.25)">
-          <div class="stat-icon-glow" style="color:var(--accent-violet)">&#128293;</div>
-          <div class="stat-number-display" style="color:var(--accent-violet)" data-target="30">0</div>
-          <div class="stat-label-mono">Hackathons</div>
-        </div>
-
-        <!-- Stat Box 3 -->
-        <div class="glass-card stat-glass-box" style="border-color: rgba(57, 255, 20, 0.25)">
-          <div class="stat-icon-glow" style="color:var(--accent-green)">&#128196;</div>
-          <div class="stat-number-display" style="color:var(--accent-green)" data-target="100">0</div>
-          <div class="stat-label-mono">Resources</div>
-        </div>
-
-        <!-- Stat Box 4 -->
-        <div class="glass-card stat-glass-box" style="border-color: rgba(244, 114, 182, 0.25)">
-          <div class="stat-icon-glow" style="color:var(--accent-pink)">&#9889;</div>
-          <div class="stat-number-display" style="color:var(--accent-pink)" data-target="20">0</div>
-          <div class="stat-label-mono">Workshops</div>
-        </div>
-
-      </div>
+  
     </div>
   </section>
 
@@ -451,7 +438,7 @@
       <div class="resource-tiles-grid">
         
         <!-- Tile 1 (Featured) -->
-        <div class="glass-card resource-tile-card featured-tile" onclick="window.parent.openCodeModal('DSA Cheat Roadmap', '// DSA staged cheatsheet\nimport { Graph } from \'@devlinkhub/dsa\';\n\nconst graph = new Graph();\ngraph.addNode(\'A\');\ngraph.addNode(\'B\');\ngraph.addEdge(\'A\', \'B\');\nconsole.log(graph.hasPath(\'A\', \'B\')); // true')">
+        <div class="glass-card resource-tile-card featured-tile" data-code-key="dsa">
           <div class="tile-loading-mask">
             <span>&gt; compiling DSA...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -464,7 +451,7 @@
         </div>
 
         <!-- Tile 2 -->
-        <div class="glass-card resource-tile-card depth-under" onclick="window.parent.openCodeModal('System Design Core Model', '# Systems Architecture models\n- High availability database replication patterns\n- Distributed Redis caching staging strategies\n- Horizontal microservices cluster scaling protocols')">
+        <div class="glass-card resource-tile-card depth-under" data-code-key="system_design">
           <div class="tile-loading-mask">
             <span>&gt; compiling SystemDesign...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -477,7 +464,7 @@
         </div>
 
         <!-- Tile 3 -->
-        <div class="glass-card resource-tile-card" onclick="window.parent.openCodeModal('Frontend Dev Setup', '// Frontend architectural starter\nnpx create-next-app@latest my-starter --ts --tailwind\ncd my-starter\nnpm install @devlinkhub/core')">
+        <div class="glass-card resource-tile-card" data-code-key="frontend">
           <div class="tile-loading-mask">
             <span>&gt; compiling Frontend...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -490,7 +477,7 @@
         </div>
 
         <!-- Tile 4 -->
-        <div class="glass-card resource-tile-card" onclick="window.parent.openCodeModal('Backend REST API Seed', '// Go REST API Gin boilerplate\npackage main\nimport \"github.com/gin-gonic/gin\"\n\nfunc main() {\n  r := gin.Default()\n  r.GET(\"/api/health\", func(c *gin.Context) {\n    c.JSON(200, gin.H{\"status\": \"operational\"})\n  })\n  r.Run(\":8080\")\n}')">
+        <div class="glass-card resource-tile-card" data-code-key="backend">
           <div class="tile-loading-mask">
             <span>&gt; compiling Backend...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -503,7 +490,7 @@
         </div>
 
         <!-- Tile 5 (Featured) -->
-        <div class="glass-card resource-tile-card featured-tile" onclick="window.parent.openCodeModal('DevOps Compose Presets', '# Multi-container orchestrators\nversion: \'3.8\'\nservices:\n  web:\n    image: devlinkhub/node-staging:latest\n    ports:\n      - \"3000:3000\"\n  db:\n    image: postgres:15\n    environment:\n      POSTGRES_DB: staging_pool')">
+        <div class="glass-card resource-tile-card featured-tile" data-code-key="devops">
           <div class="tile-loading-mask">
             <span>&gt; compiling DevOps...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -516,7 +503,7 @@
         </div>
 
         <!-- Tile 6 -->
-        <div class="glass-card resource-tile-card depth-under" onclick="window.parent.openCodeModal('Open Source Sync Pipelines', '# Git workflows\n- Cloned repository staging configurations\n- Setup upstream active trackers\n- Staged code linting prior to pull request dispatches')">
+        <div class="glass-card resource-tile-card depth-under" data-code-key="open_source">
           <div class="tile-loading-mask">
             <span>&gt; compiling OpenSource...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -529,7 +516,7 @@
         </div>
 
         <!-- Tile 7 -->
-        <div class="glass-card resource-tile-card" onclick="window.parent.openCodeModal('Interview Prep Cheat Roadmap', '# Technical interview models\n- Staged time/space complexity analysis guidelines\n- Basic algorithmic patterns (sliding window, graph traversal)\n- Systems scaling and sharding interviews presets')">
+        <div class="glass-card resource-tile-card" data-code-key="interview">
           <div class="tile-loading-mask">
             <span>&gt; compiling InterviewPrep...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -542,7 +529,7 @@
         </div>
 
         <!-- Tile 8 (Featured) -->
-        <div class="glass-card resource-tile-card featured-tile" onclick="window.parent.openCodeModal('AI & Machine Learning Agent Core', '// LangChain LLM integration setup\nimport { LLMChain } from \'@devlinkhub/agents\';\n\nconst agent = new LLMChain({ model: \'gemini-pro\' });\nconst response = await agent.dispatch(\'initialize community\');')">
+        <div class="glass-card resource-tile-card featured-tile" data-code-key="ai_ml">
           <div class="tile-loading-mask">
             <span>&gt; compiling GenAI...</span>
             <div class="tile-loader-bar"><div class="tile-loader-fill"></div></div>
@@ -708,7 +695,7 @@
         <span class="t-dot t-dot--yellow"></span>
         <span class="t-dot t-dot--green"></span>
       </div>
-      <span class="mono" style="font-size:10px; color:var(--white-secondary)">devlinkhub_console.sh</span>
+      <span class="mono" style="font-size:10px; color:var(--white-secondary)">/devlinkhub/hackathon/register</span>
       <button class="terminal-minimize-btn" aria-label="Minimize terminal window">&#9652;</button>
     </div>
     
@@ -741,16 +728,8 @@
   <footer class="frosted-footer-bar">
     <div class="footer-inner-cols">
       <div class="footer-brand-column">
-        <a href="#" class="brand-wrapper">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5">
-            <circle cx="12" cy="5" r="3" fill="var(--bg-primary)" />
-            <circle cx="5" cy="18" r="3" fill="var(--bg-primary)" />
-            <circle cx="19" cy="18" r="3" fill="var(--bg-primary)" />
-            <line x1="12" y1="8" x2="6.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
-            <line x1="12" y1="8" x2="17.5" y2="15.5" stroke="var(--accent-cyan)" stroke-width="2" />
-            <line x1="8" y1="18" x2="16" y2="18" stroke="var(--accent-violet)" stroke-width="1.5" />
-          </svg>
-          <span class="brand-title">DevLink<span class="mono">Hub</span></span>
+        <a href="index.html" class="brand-wrapper">
+          <img src="static/logos/DevLink_Text_Logo-white.png" alt="DevLinkHub" style="height: 32px; width: auto; display: block; object-fit: contain;">
         </a>
         <p>A tech developer community designed for college cohorts. Connect across academic years, pair program on sandbox instances, audit dependencies, and launch production builds.</p>
       </div>
@@ -758,11 +737,11 @@
       <div class="footer-col">
         <h4 class="footer-col-title-mono">Navigation</h4>
         <ul class="footer-links-list">
-          <li><a href="#">Home</a></li>
-          <li><a href="#pillars">Mission</a></li>
+          <li><a href="#about">About</a></li>
           <li><a href="#events">Events</a></li>
           <li><a href="#resources">Resources</a></li>
           <li><a href="#community">Community</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
 
