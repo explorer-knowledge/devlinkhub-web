@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DevLink Hackathon — Register Your Team</title>
+  <meta name="description" content="Register your team for the DevLink Hackathon. Build fast, win big."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <!-- Razorpay Checkout SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" aria-label="Hackathon hero">
+  <div class="badge">
+    <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+    Applications Open
+  </div>
+
+  <h1>Build Something<br/>That Matters</h1>
+
+  <p>Join hundreds of developers, designers, and innovators at the DevLink Hackathon. 36 hours. Real problems. Real prizes.</p>
+
+  <div class="info-chips">
+    <div class="chip">📅 <span>June 28–29, 2026</span></div>
+    <div class="chip">👥 Teams of <span>2–4</span></div>
+    <div class="chip">🏆 Prize pool <span>₹5,00,000</span></div>
+    <div class="chip">⏱ <span>36 hours</span></div>
+  </div>
+
+  <button id="btn-open" class="btn-register" aria-haspopup="dialog">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+    Register Your Team
+  </button>
+</section>
+
+
+<!-- ══════════ MODAL ══════════ -->
+<div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Team registration">
+  <div class="modal">
+    <button id="btn-close" class="btn-close" aria-label="Close">✕</button>
+
+    <!-- Progress -->
+    <div class="progress-bar" aria-label="Registration steps">
+      <div class="step-dot active" data-step="1">1</div>
+      <div class="step-line" data-after="1"></div>
+      <div class="step-dot" data-step="2">2</div>
+      <div class="step-line" data-after="2"></div>
+      <div class="step-dot" data-step="3">3</div>
+      <div class="step-line" data-after="3"></div>
+      <div class="step-dot" data-step="4">✓</div>
+    </div>
+
+    <!-- ── Step 1: Leader Details ── -->
+    <div class="step active" data-step="1">
+      <div class="step-title">Team Leader Details</div>
+      <div class="step-sub">You'll represent the team and complete the payment.</div>
+
+      <div class="form-grid">
+        <div class="full">
+          <label for="teamName">Team Name</label>
+          <input id="teamName" placeholder="e.g. ByteForce" autocomplete="off" required/>
+        </div>
+        <div>
+          <label for="leaderName">Your Full Name</label>
+          <input id="leaderName" placeholder="Rahul Sharma" required/>
+        </div>
+        <div>
+          <label for="leaderEmail">Email Address</label>
+          <input id="leaderEmail" type="email" placeholder="rahul@college.edu" required/>
+        </div>
+        <div>
+          <label for="leaderPhone">Phone Number</label>
+          <input id="leaderPhone" type="tel" placeholder="9876543210" required/>
+        </div>
+        <div>
+          <label for="leaderCollege">College / Institute</label>
+          <input id="leaderCollege" placeholder="IIT Delhi" required/>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btn-next1" class="btn btn-primary">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── Step 2: Team Members ── -->
+    <div class="step" data-step="2">
+      <div class="step-title">Team Members</div>
+      <div class="step-sub">Add your teammates (1–3 additional members).</div>
+
+      <div class="member-count-row">
+        <label for="member-count">Number of additional members:</label>
+        <select id="member-count" style="width:auto">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+
+      <div id="members-container"></div>
+
+      <div class="btn-row">
+        <button id="btn-back2" class="btn btn-outline">← Back</button>
+        <button id="btn-next2" class="btn btn-primary">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── Step 3: Review & Pay ── -->
+    <div class="step" data-step="3">
+      <div class="step-title">Review &amp; Pay</div>
+      <div class="step-sub">Confirm your details and complete the registration fee.</div>
+
+      <div class="fee-banner">
+        <div>
+          <div class="fee-label">Registration Fee</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:.2rem">One-time payment · Secure via Razorpay</div>
+        </div>
+        <div class="fee-amount">₹499</div>
+      </div>
+
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1.25rem;display:grid;gap:.6rem">
+        <div style="display:flex;justify-content:space-between;font-size:.88rem">
+          <span style="color:var(--muted)">Team</span>
+          <span id="rev-team" style="font-weight:600">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.88rem">
+          <span style="color:var(--muted)">Leader</span>
+          <span id="rev-leader" style="font-weight:600">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.88rem">
+          <span style="color:var(--muted)">Members</span>
+          <span id="rev-members" style="font-weight:600">—</span>
+        </div>
+      </div>
+
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">
+        By clicking <strong>Pay &amp; Register</strong> you agree to the hackathon terms. Your team details will be saved only after successful payment confirmation.
+      </p>
+
+      <div class="btn-row">
+        <button id="btn-back3" class="btn btn-outline">← Back</button>
+        <button id="btn-pay" class="btn btn-primary">💳 Pay &amp; Register</button>
+      </div>
+    </div>
+
+    <!-- ── Step 4: Processing / Confirmed ── -->
+    <div class="step" data-step="4">
+      <div class="status-screen">
+        <div id="poll-spinner" class="spinner"></div>
+        <p id="poll-msg" style="color:var(--muted);font-size:.9rem;line-height:1.6">
+          Payment received! We're confirming your registration…<br/>
+          <span style="font-size:.78rem">This usually takes a few seconds.</span>
+        </p>
+
+        <!-- shown after polling resolves -->
+        <div id="status-icon" class="status-icon" style="display:none"></div>
+        <h2 id="status-title" style="display:none"></h2>
+        <p id="status-sub" style="display:none;margin-top:.5rem"></p>
+
+        <button id="btn-done" class="btn btn-primary" style="display:none;margin-top:1.5rem;max-width:200px;margin-left:auto;margin-right:auto">
+          Done ✓
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /.modal -->
+</div><!-- /#overlay -->
+
+<!-- Toast -->
+<div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+<script src="js/register.js"></script>
+</body>
+</html>
