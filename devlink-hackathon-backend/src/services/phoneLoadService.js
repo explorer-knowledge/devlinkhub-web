@@ -17,7 +17,9 @@ function phoneExists(phone){
 }
 
 function addPhonetoCache(phone){
-    phoneSet.add(phone.trim());
+    const normalized = phone.trim();
+    phoneSet.add(normalized);
+    return normalized;
 }
 
 module.exports = {loadPhone , phoneExists , addPhonetoCache} ;

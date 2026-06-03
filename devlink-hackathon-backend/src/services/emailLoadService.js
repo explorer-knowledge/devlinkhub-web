@@ -24,7 +24,9 @@ function emailExists(email){
 
 
 function addEmailtoCache(email){
-    emailSet.add(email.trim().toLowerCase());
+    const normalized = email.trim().toLowerCase();
+    emailSet.add(normalized);
+    return normalized;
 }
 
 module.exports = {loadEmails , emailExists, addEmailtoCache};

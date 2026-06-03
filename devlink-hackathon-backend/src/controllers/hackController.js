@@ -2,8 +2,14 @@
 
 const crypto  = require('crypto');
 const prisma  = require('../db/prismaClient');
+const redis   = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
+const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 const { validateRegistrationBody } = require('../config/validation');
+const { addEmailtoCache } = require('../services/emailLoadService');
+const { addPhonetoCache } = require('../services/phoneLoadService');
+const {orderIdExists,addOrderIdtoCache} = require('../services/orderIdService');
+const { eventIdExists,addEventIdtoCache } = require('../services/webhookEventId');
 const { sendHackathonInvite }      = require('../config/mailer');
 
 // ─── POST /api/hackathon/initiate ─────────────────────────────────────────────
@@ -47,26 +53,40 @@ async function initiatePayment(req, res) {
     });
 
     //Store pending registration (TTL: 10 min from now)
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    // const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
-    await prisma.pendingRegistration.upsert({
-      where:  { razorpayOrderId: order.id },
-      create: {
-        razorpayOrderId: order.id,
-        payload: {
-          teamName: teamName.trim(),
-          participants: participants.map(p => ({
-            name:     p.name.trim(),
-            email:    p.email.trim().toLowerCase(),
-            phone:    p.phone.trim(),
-            college:  p.college.trim(),
-            isLeader: !!p.isLeader,
-          })),
-        },
-        expiresAt,
-      },
-      update: { expiresAt }, // refresh TTL on retry
-    });
+    const redisKey = `pending_registration:${order.id}`;
+    const payload = {
+        teamName: teamName.trim(),
+        participants: participants.map(p=>({
+            name: p.name.trim(),
+            email: p.email.trim().toLowerCase(),
+            phone: p.phone.trim(),
+            college: p.college.trim(),
+            isLeader: p.isLeader,
+        })),
+    };
+
+    await redis.setex(redisKey,600,JSON.stringify(payload));
+
+    // await prisma.pendingRegistration.upsert({
+    //   where:  { razorpayOrderId: order.id },
+    //   create: {
+    //     razorpayOrderId: order.id,
+    //     payload: {
+    //       teamName: teamName.trim(),
+    //       participants: participants.map(p => ({
+    //         name:     p.name.trim(),
+    //         email:    p.email.trim().toLowerCase(),
+    //         phone:    p.phone.trim(),
+    //         college:  p.college.trim(),
+    //         isLeader: !!p.isLeader,
+    //       })),
+    //     },
+    //     expiresAt,
+    //   },
+    //   update: { expiresAt }, // refresh TTL on retry
+    // });
 
     console.log(`[Hackathon] Pending registration stored for order ${order.id} | team: ${teamName}`);
 
@@ -104,25 +124,24 @@ async function initiatePayment(req, res) {
 async function handleWebhook(req, res) {
   // 1. Grab raw body and signature header
   const rawBody   = req.body; // Buffer — because of express.raw()
-  const signature = req.headers['x-razorpay-signature'];
+  const webhookSignature = req.headers['x-razorpay-signature'];
+  const eventId   = req.headers['x-razorpay-event-id'];
+
+  if (!eventId) {
+    console.warn('[Webhook] Missing x-razorpay-event-id header Critical issue');
+    return;
+  }
 
   if (!signature) {
     console.warn('[Webhook] Missing x-razorpay-signature header');
     return res.status(400).json({ error: 'Missing signature header.' });
   }
 
-  // 2. Verify HMAC-SHA256 signature
-  const expectedSig = crypto
-    .createHmac('sha256', process.env.RAZORPAY_WEBHOOK_SECRET)
-    .update(rawBody)
-    .digest('hex');
-
-  if (!crypto.timingSafeEqual(Buffer.from(expectedSig), Buffer.from(signature))) {
-    console.warn('[Webhook] ❌ Invalid signature — possible forged request.');
-    return res.status(400).json({ error: 'Invalid webhook signature.' });
+  if(!validateWebhookSignature(rawBody.toString(),webhookSignature,process.env.RAZORPAY_WEBHOOK_SECRET)){
+    return res.status(400).send('Invalid signature');
   }
 
-  // 3. Parse verified body
+
   let event;
   try {
     event = JSON.parse(rawBody.toString('utf8'));
@@ -130,29 +149,23 @@ async function handleWebhook(req, res) {
     return res.status(400).json({ error: 'Malformed JSON body.' });
   }
 
-  const eventId   = req.headers['x-razorpay-event-id'];      // unique per Razorpay event
   const eventType = event.event;   // e.g. "payment.captured"
+  console.log(`[Webhook]  Verified event: ${eventType} | id: ${eventId}`);
 
-  if (!eventId) {
-    console.warn('[Webhook] Missing x-razorpay-event-id header Critical issue');
-    return;
-  }
 
-  console.log(`[Webhook] ✅ Verified event: ${eventType} | id: ${eventId}`);
-
-  // 4. Respond 200 immediately — Razorpay requires a fast response
+  // Respond 200 immediately — Razorpay requires a fast response
   //    (it retries on 5xx, so replying before async work is important)
   res.status(200).json({ status: 'ok' });
 
-  // 5. Process only "payment.captured" events
+  // Process only "payment.captured" events
   if (eventType !== 'payment.captured') {
     console.log(`[Webhook] Ignoring event: ${eventType}`);
     return;
   }
 
-  // 6. Idempotency — skip if we've already handled this exact event
+  // Idempotency — skip if we've already handled this exact event
   try {
-    const existing = await prisma.webhookEvent.findUnique({ where: { razorpayEventId: eventId } });
+    const existing = eventIdExists(eventId);
     if (existing) {
       console.log(`[Webhook] Duplicate event ${eventId} — skipping.`);
       return;
@@ -162,7 +175,7 @@ async function handleWebhook(req, res) {
     return;
   }
 
-  // 7. Extract payment details from the event payload
+  // Extract payment details from the event payload
   const payment = event?.payload?.payment?.entity;
   if (!payment) {
     console.error('[Webhook] No payment entity in payload:', JSON.stringify(event));
@@ -175,12 +188,11 @@ async function handleWebhook(req, res) {
 
   console.log(`[Webhook] Payment captured — orderId: ${orderId} | paymentId: ${paymentId} | amount: ₹${(amount / 100).toFixed(2)}`);
 
-  // 8. Find the pending registration
+  // Find the pending registration
+  const redisKey = `pending_registration:${orderId}`;
   let pending;
   try {
-    pending = await prisma.pendingRegistration.findUnique({
-      where: { razorpayOrderId: orderId },
-    });
+    pending = await redis.get(redisKey);
   } catch (err) {
     console.error('[Webhook] Failed to fetch pending registration:', err);
     return;
@@ -191,14 +203,8 @@ async function handleWebhook(req, res) {
     return;
   }
 
-  // 9. Check TTL
-  if (new Date() > pending.expiresAt) {
-    console.warn(`[Webhook] Pending registration expired for orderId: ${orderId}`);
-    await prisma.pendingRegistration.delete({ where: { razorpayOrderId: orderId } }).catch(() => {});
-    return;
-  }
 
-  const p      = pending.payload;
+  const payload     = JSON.parse(pending);
   const teamId = crypto.randomUUID(); // shared UUID for every row in this team
 
   // 10. Persist in a transaction: create all participant rows, delete pending, log event
@@ -206,17 +212,17 @@ async function handleWebhook(req, res) {
     await prisma.$transaction(async (tx) => {
       // Create one HackathonParticipant row per person (leader + members)
       await tx.hackathonParticipant.createMany({
-        data: p.participants.map(participant => ({
+        data: payload.participants.map(participant => ({
           teamId,
-          teamName:          p.teamName,
+          teamName:          payload.teamName,
           razorpayOrderId:   orderId,
           razorpayPaymentId: paymentId,
           amountPaid:        amount,
           status:            'registered',
           isLeader:          participant.isLeader,
           name:              participant.name,
-          email:             participant.email,
-          phone:             participant.phone,
+          email:             addEmailtoCache(participant.email),
+          phone:             addPhonetoCache(participant.phone),
           college:           participant.college,
         })),
       });
@@ -227,29 +233,29 @@ async function handleWebhook(req, res) {
       // Log event for idempotency
       await tx.webhookEvent.create({
         data: {
-          razorpayEventId: eventId,
+          razorpayEventId: addEventIdtoCache(eventId),
           event:           eventType,
         },
       });
     });
 
-    console.log(`[Webhook] 🎉 Team "${p.teamName}" (id: ${teamId}) registered successfully via webhook!`);
+    console.log(`[Webhook] Team "${payload.teamName}" (id: ${teamId}) registered successfully via webhook!`);
 
     // 11. Fire invite emails to non-leader participants (non-blocking — don't await)
-    const leader  = p.participants.find(participant => participant.isLeader);
-    const members = p.participants.filter(participant => !participant.isLeader);
+    // const leader  = p.participants.find(participant => participant.isLeader);
+    // const members = p.participants.filter(participant => !participant.isLeader);
 
-    for (const member of members) {
-      const confirmToken = crypto.randomBytes(32).toString('hex');
-      sendHackathonInvite({
-        toEmail:     member.email,
-        teamName:    p.teamName,
-        leaderName:  leader ? leader.name : 'Team Leader',
-        confirmToken,
-      }).catch(mailErr => {
-        console.error(`[Webhook] Failed to send invite to ${member.email}:`, mailErr.message);
-      });
-    }
+    // for (const member of members) {
+    //   const confirmToken = crypto.randomBytes(32).toString('hex');
+    //   sendHackathonInvite({
+    //     toEmail:     member.email,
+    //     teamName:    p.teamName,
+    //     leaderName:  leader ? leader.name : 'Team Leader',
+    //     confirmToken,
+    //   }).catch(mailErr => {
+    //     console.error(`[Webhook] Failed to send invite to ${member.email}:`, mailErr.message);
+    //   });
+    // }
 
   } catch (err) {
     // P2002 = unique constraint violation → team already registered from a duplicate webhook
@@ -276,12 +282,15 @@ async function getRegistrationStatus(req, res) {
     const { orderId } = req.params;
 
     // Check confirmed table first (any row with this orderId is sufficient)
-    const leaderRow = await prisma.hackathonParticipant.findFirst({
-      where:  { razorpayOrderId: orderId, isLeader: true },
-      select: { teamId: true, teamName: true, status: true, createdAt: true },
-    });
+    // const leaderRow = await prisma.hackathonParticipant.findFirst({
+    //   where:  { razorpayOrderId: orderId, isLeader: true },
+    //   select: { teamId: true, teamName: true, status: true, createdAt: true },
+    // });
 
-    if (leaderRow) {
+    
+
+    if (orderIdExists(orderId)) {
+      const leaderRow = getOrderData(orderId);
       return res.json({
         status:   'registered',
         team: {
