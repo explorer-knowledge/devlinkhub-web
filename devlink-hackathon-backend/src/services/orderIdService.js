@@ -1,5 +1,6 @@
 const prisma = require('../db/prismaClient');
-
+const {addEmailtoCache} = require('./emailLoadService');
+const {addPhonetoCache} = require('./phoneLoadService');
 let orderMap = new Map();
 
 async function loadOrderId(){
@@ -8,7 +9,7 @@ async function loadOrderId(){
     // });
     const leaderRow = await prisma.hackathonParticipant.findMany({
       where:  { isLeader: true },
-      select: { razorpayOrderId: true,teamId: true, teamName: true,email: true,phone:true, status: true, createdAt: true },
+      select: { razorpayOrderId: true,teamId: true, teamName: true,name:true,email: true,phone:true,status: true,createdAt: true },
     });
     orderMap.clear();
 
@@ -26,10 +27,26 @@ function getOrderData(orderId){
     return orderMap.get(orderId.trim()) || null; 
 }
 
-function addOrderIdtoCache(leaderRow){
-    const normalized = leaderRow.razorpayOrderId.trim();
-    orderMap.set(normalized,leaderRow);
-    return leaderRow;
+function addOrderIdtoCache(payload,number=0){
+    payload.participants.forEach(participant=>{
+        addEmailtoCache(participant.email);
+        addPhonetoCache(participant.phone);
+    });
+    const leaderRow = payload.participants.find(p=> p.isLeader);
+    const memCache = {
+      razorpayOrderId: payload.razorpayOrderId ,
+      teamId: payload.teamId ,
+      teamName: payload.teamName,
+      name: leaderRow.name,
+      email: leaderRow.email,
+      phone: leaderRow.phone,
+      status: payload.status,
+      createdAt: payload.createdAt
+    }
+    const normalized = memCache.razorpayOrderId.trim();
+    orderMap.set(normalized,memCache);
+    
+    return [true,memCache,payload][number] ?? true;
 }
 
 module.exports  = {loadOrderId,orderIdExists,getOrderData,addOrderIdtoCache};

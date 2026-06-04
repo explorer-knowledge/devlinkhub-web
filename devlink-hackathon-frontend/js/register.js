@@ -1,6 +1,6 @@
 'use strict';
 
-const API = 'http://localhost:10003/api/hackathon';
+const API = 'https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon';
 
 // ── State ────────────────────────────────────────────────────────────────────
 let currentStep = 1;

@@ -6,9 +6,7 @@ const redis   = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
 const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 const { validateRegistrationBody } = require('../config/validation');
-const { addEmailtoCache } = require('../services/emailLoadService');
-const { addPhonetoCache } = require('../services/phoneLoadService');
-const {orderIdExists,addOrderIdtoCache} = require('../services/orderIdService');
+const {orderIdExists,getOrderData,addOrderIdtoCache} = require('../services/orderIdService');
 const { eventIdExists,addEventIdtoCache } = require('../services/webhookEventId');
 const { sendHackathonInvite }      = require('../config/mailer');
 
@@ -35,7 +33,7 @@ async function initiatePayment(req, res) {
 
     const leader      = participants.find(p => p.isLeader);
     const leaderEmail = leader.email.trim().toLowerCase();
-
+    const leaderPhone = leader.phone.trim();
 
     //Create Razorpay order
     const amountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE || '49900', 10);
@@ -49,6 +47,7 @@ async function initiatePayment(req, res) {
       notes: {
         teamName,
         leaderEmail,
+        leaderPhone,
       },
     });
 
@@ -68,25 +67,6 @@ async function initiatePayment(req, res) {
     };
 
     await redis.setex(redisKey,600,JSON.stringify(payload));
-
-    // await prisma.pendingRegistration.upsert({
-    //   where:  { razorpayOrderId: order.id },
-    //   create: {
-    //     razorpayOrderId: order.id,
-    //     payload: {
-    //       teamName: teamName.trim(),
-    //       participants: participants.map(p => ({
-    //         name:     p.name.trim(),
-    //         email:    p.email.trim().toLowerCase(),
-    //         phone:    p.phone.trim(),
-    //         college:  p.college.trim(),
-    //         isLeader: !!p.isLeader,
-    //       })),
-    //     },
-    //     expiresAt,
-    //   },
-    //   update: { expiresAt }, // refresh TTL on retry
-    // });
 
     console.log(`[Hackathon] Pending registration stored for order ${order.id} | team: ${teamName}`);
 
@@ -122,7 +102,7 @@ async function initiatePayment(req, res) {
 //   6. Fire invite emails to non-leader participants (non-blocking)
 
 async function handleWebhook(req, res) {
-  // 1. Grab raw body and signature header
+  // Grab raw body and signature header
   const rawBody   = req.body; // Buffer — because of express.raw()
   const webhookSignature = req.headers['x-razorpay-signature'];
   const eventId   = req.headers['x-razorpay-event-id'];
@@ -132,7 +112,18 @@ async function handleWebhook(req, res) {
     return;
   }
 
-  if (!signature) {
+  // Idempotency — skip if we've already handled this exact event
+  try {
+    if (eventIdExists(eventId)) {
+      console.log(`[Webhook] Duplicate event ${eventId} — skipping.`);
+      return;
+    }
+  } catch (err) {
+    console.error('[Webhook] Idempotency check failed:', err);
+    return;
+  }
+  
+  if (!webhookSignature) {
     console.warn('[Webhook] Missing x-razorpay-signature header');
     return res.status(400).json({ error: 'Missing signature header.' });
   }
@@ -163,17 +154,7 @@ async function handleWebhook(req, res) {
     return;
   }
 
-  // Idempotency — skip if we've already handled this exact event
-  try {
-    const existing = eventIdExists(eventId);
-    if (existing) {
-      console.log(`[Webhook] Duplicate event ${eventId} — skipping.`);
-      return;
-    }
-  } catch (err) {
-    console.error('[Webhook] Idempotency check failed:', err);
-    return;
-  }
+
 
   // Extract payment details from the event payload
   const payment = event?.payload?.payment?.entity;
@@ -186,6 +167,11 @@ async function handleWebhook(req, res) {
   const paymentId = payment.id;
   const amount    = payment.amount; // paise
 
+  if (typeof orderId !== 'string' || typeof paymentId !== 'string' || !paymentId || !orderId) {
+    console.error('[Webhook] Invalid or missing orderId/paymentId');
+    return;
+}
+  
   console.log(`[Webhook] Payment captured — orderId: ${orderId} | paymentId: ${paymentId} | amount: ₹${(amount / 100).toFixed(2)}`);
 
   // Find the pending registration
@@ -207,37 +193,25 @@ async function handleWebhook(req, res) {
   const payload     = JSON.parse(pending);
   const teamId = crypto.randomUUID(); // shared UUID for every row in this team
 
-  // 10. Persist in a transaction: create all participant rows, delete pending, log event
+  payload.teamId = teamId.trim();
+  payload.razorpayOrderId = orderId.trim();
+  payload.razorpayPaymentId = paymentId.trim();
+  payload.amountPaid = amount;
+  payload.status = "registered";
+  payload.createdAt = new Date();
+
+
+  const webhookEvent = {
+    razorpayEventId: eventId,
+    event: eventType
+  }
+  //Persist in a transaction: create all participant rows, delete pending, log event
   try {
-    await prisma.$transaction(async (tx) => {
-      // Create one HackathonParticipant row per person (leader + members)
-      await tx.hackathonParticipant.createMany({
-        data: payload.participants.map(participant => ({
-          teamId,
-          teamName:          payload.teamName,
-          razorpayOrderId:   orderId,
-          razorpayPaymentId: paymentId,
-          amountPaid:        amount,
-          status:            'registered',
-          isLeader:          participant.isLeader,
-          name:              participant.name,
-          email:             addEmailtoCache(participant.email),
-          phone:             addPhonetoCache(participant.phone),
-          college:           participant.college,
-        })),
-      });
+    await redis.lpush('registration_queue',JSON.stringify(payload));
+    addOrderIdtoCache(payload);
 
-      // Delete pending row (no longer needed)
-      await tx.pendingRegistration.delete({ where: { razorpayOrderId: orderId } });
-
-      // Log event for idempotency
-      await tx.webhookEvent.create({
-        data: {
-          razorpayEventId: addEventIdtoCache(eventId),
-          event:           eventType,
-        },
-      });
-    });
+    await redis.lpush('webhook_event',JSON.stringify(webhookEvent));
+    addEventIdtoCache(eventId);
 
     console.log(`[Webhook] Team "${payload.teamName}" (id: ${teamId}) registered successfully via webhook!`);
 
@@ -267,15 +241,7 @@ async function handleWebhook(req, res) {
   }
 }
 
-// ─── GET /api/hackathon/status/:orderId ───────────────────────────────────────
-//
-// Frontend polls this after payment to know if the webhook has fired and
-// the team has been registered.
-//
-// Responses:
-//   { status: "pending" }     — payment initiated, webhook not yet received
-//   { status: "registered", teamId, teamName, participants }  — webhook processed
-//   { status: "not_found" }   — unknown orderId
+// ─── GET /api/hackathon/status/:orderId ──
 
 async function getRegistrationStatus(req, res) {
   try {
@@ -303,12 +269,9 @@ async function getRegistrationStatus(req, res) {
     }
 
     // Check pending table
-    const pending = await prisma.pendingRegistration.findUnique({
-      where: { razorpayOrderId: orderId },
-    });
-
+    const pending = await redis.get(`pending_registration:${orderId}`);
     if (pending) {
-      if (new Date() > pending.expiresAt) {
+      if (new Date() > JSON.parse(pending).expiresAt) {
         return res.json({ status: 'expired', orderId });
       }
       return res.json({ status: 'pending', orderId });
