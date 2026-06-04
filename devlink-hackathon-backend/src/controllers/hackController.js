@@ -1,14 +1,14 @@
 'use strict';
 
-const crypto  = require('crypto');
-const prisma  = require('../db/prismaClient');
-const redis   = require('../db/redisClient');
+const crypto = require('crypto');
+const prisma = require('../db/prismaClient');
+const redis = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
 const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 const { validateRegistrationBody } = require('../config/validation');
-const {orderIdExists,getOrderData,addOrderIdtoCache} = require('../services/orderIdService');
-const { eventIdExists,addEventIdtoCache } = require('../services/webhookEventId');
-const { sendHackathonInvite }      = require('../config/mailer');
+const { orderIdExists, getOrderData, addOrderIdtoCache } = require('../services/orderIdService');
+const { eventIdExists, addEventIdtoCache } = require('../services/webhookEventId');
+const { sendHackathonInvite } = require('../config/mailer');
 
 // ─── POST /api/hackathon/initiate ─────────────────────────────────────────────
 //
@@ -31,17 +31,17 @@ async function initiatePayment(req, res) {
 
     const { teamName, participants } = req.body;
 
-    const leader      = participants.find(p => p.isLeader);
+    const leader = participants.find(p => p.isLeader);
     const leaderEmail = leader.email.trim().toLowerCase();
     const leaderPhone = leader.phone.trim();
 
     //Create Razorpay order
     const amountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE || '49900', 10);
-    const safeLocal   = leaderEmail.split('@')[0].replace(/[^a-z0-9]/gi, '').slice(0, 20);
-    const receipt     = `devlinkhub_hack_${Date.now()}_${safeLocal}`;
+    const safeLocal = leaderEmail.split('@')[0].replace(/[^a-z0-9]/gi, '').slice(0, 20);
+    const receipt = `devlinkhub_hack_${Date.now()}_${safeLocal}`;
 
     const order = await razorpay.orders.create({
-      amount:   amountPaise,
+      amount: amountPaise,
       currency: 'INR',
       receipt,
       notes: {
@@ -56,25 +56,25 @@ async function initiatePayment(req, res) {
 
     const redisKey = `pending_registration:${order.id}`;
     const payload = {
-        teamName: teamName.trim(),
-        participants: participants.map(p=>({
-            name: p.name.trim(),
-            email: p.email.trim().toLowerCase(),
-            phone: p.phone.trim(),
-            college: p.college.trim(),
-            isLeader: p.isLeader,
-        })),
+      teamName: teamName.trim(),
+      participants: participants.map(p => ({
+        name: p.name.trim(),
+        email: p.email.trim().toLowerCase(),
+        phone: p.phone.trim(),
+        college: p.college.trim(),
+        isLeader: p.isLeader,
+      })),
     };
 
-    await redis.setex(redisKey,600,JSON.stringify(payload));
+    await redis.setex(redisKey, 600, JSON.stringify(payload));
 
     console.log(`[Hackathon] Pending registration stored for order ${order.id} | team: ${teamName}`);
 
     res.status(201).json({
-      orderId:  order.id,
-      amount:   order.amount,
+      orderId: order.id,
+      amount: order.amount,
       currency: order.currency,
-      keyId:    process.env.RAZORPAY_KEY_ID,
+      keyId: process.env.RAZORPAY_KEY_ID,
     });
 
   } catch (err) {
@@ -103,9 +103,9 @@ async function initiatePayment(req, res) {
 
 async function handleWebhook(req, res) {
   // Grab raw body and signature header
-  const rawBody   = req.body; // Buffer — because of express.raw()
+  const rawBody = req.body; // Buffer — because of express.raw()
   const webhookSignature = req.headers['x-razorpay-signature'];
-  const eventId   = req.headers['x-razorpay-event-id'];
+  const eventId = req.headers['x-razorpay-event-id'];
 
   if (!eventId) {
     console.warn('[Webhook] Missing x-razorpay-event-id header Critical issue');
@@ -122,13 +122,14 @@ async function handleWebhook(req, res) {
     console.error('[Webhook] Idempotency check failed:', err);
     return;
   }
-  
+
   if (!webhookSignature) {
     console.warn('[Webhook] Missing x-razorpay-signature header');
     return res.status(400).json({ error: 'Missing signature header.' });
   }
 
-  if(!validateWebhookSignature(rawBody.toString(),webhookSignature,process.env.RAZORPAY_WEBHOOK_SECRET)){
+  if (!validateWebhookSignature(rawBody.toString(), webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET)) {
+    console.warn('[Webhook] Signature verification failed!');
     return res.status(400).send('Invalid signature');
   }
 
@@ -163,15 +164,15 @@ async function handleWebhook(req, res) {
     return;
   }
 
-  const orderId   = payment.order_id;
+  const orderId = payment.order_id;
   const paymentId = payment.id;
-  const amount    = payment.amount; // paise
+  const amount = payment.amount; // paise
 
   if (typeof orderId !== 'string' || typeof paymentId !== 'string' || !paymentId || !orderId) {
     console.error('[Webhook] Invalid or missing orderId/paymentId');
     return;
-}
-  
+  }
+
   console.log(`[Webhook] Payment captured — orderId: ${orderId} | paymentId: ${paymentId} | amount: ₹${(amount / 100).toFixed(2)}`);
 
   // Find the pending registration
@@ -190,7 +191,7 @@ async function handleWebhook(req, res) {
   }
 
 
-  const payload     = JSON.parse(pending);
+  const payload = JSON.parse(pending);
   const teamId = crypto.randomUUID(); // shared UUID for every row in this team
 
   payload.teamId = teamId.trim();
@@ -207,11 +208,15 @@ async function handleWebhook(req, res) {
   }
   //Persist in a transaction: create all participant rows, delete pending, log event
   try {
-    await redis.lpush('registration_queue',JSON.stringify(payload));
     addOrderIdtoCache(payload);
-
-    await redis.lpush('webhook_event',JSON.stringify(webhookEvent));
     addEventIdtoCache(eventId);
+    await redis.lpush('registration_queue', JSON.stringify(payload));
+    
+
+    await redis.del(`pending_registration:${orderId}`);
+
+    await redis.lpush('webhook_event', JSON.stringify(webhookEvent));
+    
 
     console.log(`[Webhook] Team "${payload.teamName}" (id: ${teamId}) registered successfully via webhook!`);
 
@@ -253,16 +258,17 @@ async function getRegistrationStatus(req, res) {
     //   select: { teamId: true, teamName: true, status: true, createdAt: true },
     // });
 
-    
+
 
     if (orderIdExists(orderId)) {
+      console.log("hello");
       const leaderRow = getOrderData(orderId);
       return res.json({
-        status:   'registered',
+        status: 'registered',
         team: {
-          id:       leaderRow.teamId,
+          id: leaderRow.teamId,
           teamName: leaderRow.teamName,
-          status:   leaderRow.status,
+          status: leaderRow.status,
           createdAt: leaderRow.createdAt,
         }
       });
@@ -271,9 +277,6 @@ async function getRegistrationStatus(req, res) {
     // Check pending table
     const pending = await redis.get(`pending_registration:${orderId}`);
     if (pending) {
-      if (new Date() > JSON.parse(pending).expiresAt) {
-        return res.json({ status: 'expired', orderId });
-      }
       return res.json({ status: 'pending', orderId });
     }
 
@@ -295,7 +298,7 @@ async function getTeam(req, res) {
     const { teamId } = req.params;
 
     const participants = await prisma.hackathonParticipant.findMany({
-      where:   { teamId },
+      where: { teamId },
       orderBy: [{ isLeader: 'desc' }, { createdAt: 'asc' }],
     });
 
@@ -304,28 +307,28 @@ async function getTeam(req, res) {
     }
 
     // Shape a clean response
-    const leader  = participants.find(p => p.isLeader);
+    const leader = participants.find(p => p.isLeader);
     const members = participants.filter(p => !p.isLeader);
 
     res.json({
       team: {
-        teamId:            leader.teamId,
-        teamName:          leader.teamName,
-        razorpayOrderId:   leader.razorpayOrderId,
+        teamId: leader.teamId,
+        teamName: leader.teamName,
+        razorpayOrderId: leader.razorpayOrderId,
         razorpayPaymentId: leader.razorpayPaymentId,
-        amountPaid:        leader.amountPaid,
-        status:            leader.status,
-        createdAt:         leader.createdAt,
+        amountPaid: leader.amountPaid,
+        status: leader.status,
+        createdAt: leader.createdAt,
         leader: {
-          name:    leader.name,
-          email:   leader.email,
-          phone:   leader.phone,
+          name: leader.name,
+          email: leader.email,
+          phone: leader.phone,
           college: leader.college,
         },
         members: members.map(m => ({
-          name:    m.name,
-          email:   m.email,
-          phone:   m.phone,
+          name: m.name,
+          email: m.email,
+          phone: m.phone,
           college: m.college,
         })),
       },

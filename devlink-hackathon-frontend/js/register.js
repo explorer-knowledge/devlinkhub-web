@@ -6,7 +6,8 @@ const API = 'https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon';
 let currentStep = 1;
 let memberCount = 1;
 let currentOrderId = null;
-let pollTimer = null;
+let pollTimer      = null;  // setTimeout handle for the active poll loop
+let pollStartedAt  = null;  // Date.now() when the current poll loop began
 
 // ── DOM helpers ──────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -166,30 +167,122 @@ function openRazorpay({ orderId, amount, currency, keyId }) {
 }
 
 // ── Step 4: Poll status ───────────────────────────────────────────────────────
+//
+// Design:
+//  • Recursive setTimeout (not setInterval) so no two fetches overlap.
+//  • Exponential back-off: 2 s → 4 → 8 → 16 → capped at 30 s, ±20 % jitter.
+//  • Consecutive-error counter — warns the user after 5 network failures in a row.
+//  • HTTP 5xx treated as a transient error, not a parse target.
+//  • `not_found` tolerated for the first NOT_FOUND_GRACE_MS (30 s) to cover
+//    the race window between webhook processing and in-memory cache population.
+//  • Double-start guard: clears any existing timer at the top.
+//  • Live attempt counter shown in the polling screen.
+//
 function startPolling(orderId) {
-  let attempts = 0;
-  const MAX = 30; // 30 × 3 s = 90 s max
+  // ── Guard: cancel any previous poll loop ──────────────────────────────────
+  if (pollTimer != null) {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
 
-  pollTimer = setInterval(async () => {
-    attempts++;
-    if (attempts > MAX) {
-      clearInterval(pollTimer);
+  // ── Config ─────────────────────────────────────────────────────────────────
+  const INITIAL_DELAY_MS    = 2_000;   // first poll after 2 s
+  const MAX_DELAY_MS        = 30_000;  // back-off cap
+  const JITTER_RATIO        = 0.20;    // ±20 % randomisation
+  const TIMEOUT_MS          = 90_000;  // absolute wall-clock deadline
+  const MAX_CONSEC_ERRORS   = 5;       // consecutive network failures before warning
+  const NOT_FOUND_GRACE_MS  = 30_000;  // tolerate not_found for this long
+
+  let delay          = INITIAL_DELAY_MS;
+  let consecutiveErr = 0;
+  let attempt        = 0;
+  pollStartedAt      = Date.now();
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function updatePollCounter() {
+    const msg = $('poll-msg');
+    if (msg) msg.textContent = `Checking registration status… (attempt ${attempt})`;
+  }
+
+  function scheduleNext() {
+    if (pollTimer != null) clearTimeout(pollTimer);
+    pollTimer = setTimeout(poll, delay);
+    // Compute next delay: double, cap, jitter
+    const next   = Math.min(delay * 2, MAX_DELAY_MS);
+    const jitter = next * JITTER_RATIO * (Math.random() * 2 - 1); // [-20 %, +20 %]
+    delay = Math.round(next + jitter);
+  }
+
+  // ── Core poll function ────────────────────────────────────────────────────
+  async function poll() {
+    pollTimer = null;
+    attempt++;
+    updatePollCounter();
+
+    // Absolute timeout guard
+    if (Date.now() - pollStartedAt >= TIMEOUT_MS) {
       showFinalStatus('timeout');
       return;
     }
 
+    let res, data;
     try {
-      const res  = await fetch(`${API}/status/${orderId}`);
-      const data = await res.json();
-      if (data.status === 'registered') {
-        clearInterval(pollTimer);
-        showFinalStatus('success', data.team);
-      } else if (data.status === 'expired' || data.status === 'not_found') {
-        clearInterval(pollTimer);
-        showFinalStatus('expired');
+      res = await fetch(`${API}/status/${orderId}`);
+
+      // Server-side errors (5xx) — treat as a transient blip, do not parse
+      if (res.status >= 500) {
+        throw new Error(`Server error ${res.status}`);
       }
-    } catch { /* ignore network blips */ }
-  }, 3000);
+
+      data = await res.json();
+      consecutiveErr = 0; // reset on any successful HTTP response
+      console.log(`[Poll] attempt=${attempt} status=${data.status} orderId=${orderId}`, data);
+    } catch (err) {
+      consecutiveErr++;
+      console.warn(`[Poll] Network/server error (${consecutiveErr} consecutive):`, err.message);
+
+      if (consecutiveErr >= MAX_CONSEC_ERRORS) {
+        toast('Having trouble reaching the server. Still trying…', 'error');
+      }
+
+      scheduleNext();
+      return;
+    }
+
+    // ── Terminal success ────────────────────────────────────────────────────
+    if (data.status === 'registered') {
+      showFinalStatus('success', data.team);
+      return;
+    }
+
+    // ── Hard failure explicitly returned by the backend ─────────────────────
+    if (data.status === 'expired') {
+      showFinalStatus('expired');
+      return;
+    }
+
+    // ── not_found: tolerate during the webhook-processing grace window ───────
+    // The backend deletes the Redis pending key before the in-memory orderMap
+    // is populated, so there is a brief race where a valid registration returns
+    // not_found.  Treat it as pending until the grace window expires.
+    if (data.status === 'not_found') {
+      const elapsed = Date.now() - pollStartedAt;
+      if (elapsed >= NOT_FOUND_GRACE_MS) {
+        // Still not found after 30 s — something went wrong server-side
+        showFinalStatus('expired');
+        return;
+      }
+      // Within grace window — keep polling
+      scheduleNext();
+      return;
+    }
+
+    // ── Still pending (or any other non-terminal value) — keep going ─────────
+    scheduleNext();
+  }
+
+  // Kick off the first poll
+  scheduleNext();
 }
 
 function showFinalStatus(type, team) {
@@ -231,7 +324,12 @@ function openModal() {
 function closeModal() {
   $('overlay').classList.remove('open');
   document.body.style.overflow = '';
-  clearInterval(pollTimer);
+  // Cancel the recursive setTimeout poll loop (was clearInterval before)
+  if (pollTimer != null) {
+    clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+  pollStartedAt = null;
   currentOrderId = null;
 }
 

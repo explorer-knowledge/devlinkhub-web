@@ -2,33 +2,28 @@
 
 require('dotenv').config();
 
-const express         = require('express');
-const cors            = require('cors');
+const express = require('express');
+const cors = require('cors');
 const hackathonRoutes = require('./routes/hackathonRoutes');
-const app  = express();
-const {loadEmails} = require('./services/emailLoadService');
-const {loadFromCache,downloadLatest} = require('./services/disposableService');
-const {startScheduler} = require('./services/scheduler');
+const app = express();
+const { loadEmails } = require('./services/emailLoadService');
+const { loadOrderId } = require('./services/orderIdService');
+const { loadPhone } = require('./services/phoneLoadService');
+const { loadEventId } = require('./services/webhookEventId');
+const { loadFromCache, downloadLatest } = require('./services/disposableService');
+const { startScheduler } = require('./services/scheduler');
 const PORT = process.env.PORT || 10003;
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // Postman / curl / server-to-server
-
-    const allowed = [
-      process.env.FRONTEND_URL,
-      'http://localhost:4000',
-    ];
-
-    if (allowed.includes(origin)) {
-      return callback(null, true);
-    }
-
-    callback(new Error(`CORS blocked: ${origin}`));
-  },
-  credentials: true,
-}));
+// app.use(cors({
+//   origin:  [
+//       process.env.FRONTEND_URL,
+//       'http://localhost:4000',
+//       'https://juliette-hokey-pacifically.ngrok-free.dev',
+//     ],
+//   credentials: true,
+// }));
+app.use(cors());
 
 // ─── Body Parsing ─────────────────────────────────────────────────────────────
 //
@@ -56,9 +51,9 @@ app.use((req, _res, next) => {
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) =>
   res.json({
-    status:  'ok',
+    status: 'ok',
     service: 'devlink-hackathon-backend',
-    time:    new Date().toISOString(),
+    time: new Date().toISOString(),
   })
 );
 
@@ -76,26 +71,29 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
 });
 
-async function start(){
+async function start() {
   await loadEmails();
-  const  cacheloaded = await loadFromCache();
+  await loadOrderId();
+  await loadEventId();
+  await loadPhone();
+  const cacheloaded = await loadFromCache();
 
-  if(!cacheloaded){
+  if (!cacheloaded) {
     await downloadLatest();
-  }else{
+  } else {
     downloadLatest();
   }
   startScheduler();
 
   app.listen(PORT, () => {
-  console.log(`\n⚡ DevLink Hackathon Backend running on http://localhost:${PORT}`);
-  console.log(`\n   Routes:`);
-  console.log(`   GET  /health`);
-  console.log(`   POST /api/hackathon/initiate        → validate + create Razorpay order + save pending`);
-  console.log(`   POST /api/hackathon/webhook         → Razorpay event → verify sig → save to DB`);
-  console.log(`   GET  /api/hackathon/status/:orderId → poll registration status`);
-  console.log(`   GET  /api/hackathon/team/:teamId    → confirmed registration details\n`);
-});
+    console.log(`\n⚡ DevLink Hackathon Backend running on http://localhost:${PORT}`);
+    console.log(`\n   Routes:`);
+    console.log(`   GET  /health`);
+    console.log(`   POST /api/hackathon/initiate        → validate + create Razorpay order + save pending`);
+    console.log(`   POST /api/hackathon/webhook         → Razorpay event → verify sig → save to DB`);
+    console.log(`   GET  /api/hackathon/status/:orderId → poll registration status`);
+    console.log(`   GET  /api/hackathon/team/:teamId    → confirmed registration details\n`);
+  });
 }
 
 start().catch(err => {
