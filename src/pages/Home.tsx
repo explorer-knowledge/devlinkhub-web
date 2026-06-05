@@ -1192,7 +1192,7 @@ export default function Home() {
                 </div>
                 <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center", width: "100%" }}>
                   <a
-                    href="https://discord.gg/devlinkhub"
+                    href="https://discord.gg/cXFCaPsePs"
                     target="_blank"
                     rel="noreferrer"
                     className="btn-primary"

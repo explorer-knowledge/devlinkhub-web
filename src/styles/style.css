@@ -812,11 +812,12 @@ footer.frosted-footer-bar {
 .footer-social-row {
   display: flex; gap: 1rem; margin-top: 0.5rem;
 }
-.footer-social-row svg {
-  color: var(--white-secondary); cursor: pointer; transition: color 0.2s, filter 0.2s;
+.footer-social-row a {
+  color: var(--white-secondary) !important; transition: color 0.2s, filter 0.2s;
+  display: inline-flex; align-items: center; justify-content: center;
 }
-.footer-social-row svg:hover {
-  color: var(--accent-cyan); filter: drop-shadow(0 0 8px var(--accent-cyan));
+.footer-social-row a:hover {
+  color: var(--accent-cyan) !important; filter: drop-shadow(0 0 8px var(--accent-cyan));
 }
 
 .footer-bottom-strip {
