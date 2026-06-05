@@ -7,6 +7,10 @@ import "../styles/register.css";
 /* ── Validation ── */
 const PHONE_REGEX = /^[6-9]\d{9}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const TEAM_NAME_REGEX = /^[a-zA-Z0-9\s_-]{3,30}$/;
+const NAME_REGEX = /^[a-zA-Z\s.]{2,50}$/;
+const BRANCH_REGEX = /^[a-zA-Z\s.,()-]{2,50}$/;
+const COLLEGE_REGEX = /^[a-zA-Z0-9\s.,()-]{3,100}$/;
 const ACADEMIC_YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 
@@ -117,6 +121,8 @@ export default function Register() {
   const [leaderTouched, setLeaderTouched] = useState<Partial<Record<keyof LeaderData, boolean>>>({});
 
   const [members, setMembers] = useState<MemberData[]>([]);
+  const [membersTouched, setMembersTouched] = useState<Partial<Record<keyof MemberData, boolean>>[]>([]);
+  const [membersErr, setMembersErr] = useState<Partial<Record<keyof MemberData, string>>[]>([]);
   const [expandedMember, setExpandedMember] = useState<number | null>(null);
 
   /* ── Promo ── */
@@ -273,15 +279,58 @@ export default function Register() {
 
   /* ── No Autosave ── */
   /* ── Validation ── */
+  const validateTeamName = (val: string): string => {
+    const v = val.trim();
+    if (!v) return "Team Name is required";
+    if (v.length < 3) return "Min 3 characters";
+    if (!TEAM_NAME_REGEX.test(v)) return "Alphanumeric, spaces, hyphens, and underscores only";
+    return "";
+  };
+
   const validateLeaderField = (field: keyof LeaderData, val: string): string => {
     const v = val.trim();
     switch(field) {
-      case "name":    return v.length < 2 ? "Name must be at least 2 characters" : /\d/.test(v) ? "Name cannot contain numbers" : "";
-      case "email":   return !EMAIL_REGEX.test(v) ? "Enter a valid email address" : "";
-      case "mobile":  return !PHONE_REGEX.test(v) ? "Enter a valid 10-digit mobile number" : "";
-      case "college": return v.length < 3 ? "College name required" : "";
-      case "branch":  return v.length < 2 ? "Branch required" : "";
-      case "year":    return !v ? "Select academic year" : "";
+      case "name":
+        if (!v) return "Name is required";
+        return !NAME_REGEX.test(v) ? "Enter a valid name (letters, spaces, periods only)" : "";
+      case "email":
+        if (!v) return "Email is required";
+        return !EMAIL_REGEX.test(v) ? "Enter a valid email address" : "";
+      case "mobile":
+        if (!v) return "Mobile number is required";
+        return !PHONE_REGEX.test(v) ? "Enter a valid 10-digit mobile number" : "";
+      case "college":
+        if (!v) return "College name is required";
+        return !COLLEGE_REGEX.test(v) ? "Enter a valid college name" : "";
+      case "branch":
+        if (!v) return "Branch is required";
+        return !BRANCH_REGEX.test(v) ? "Enter a valid branch name" : "";
+      case "year":
+        return !v ? "Select academic year" : "";
+      default: return "";
+    }
+  };
+
+  const validateMemberField = (field: keyof MemberData, val: string): string => {
+    const v = val.trim();
+    switch(field) {
+      case "name":
+        if (!v) return "Name is required";
+        return !NAME_REGEX.test(v) ? "Enter a valid name (letters, spaces, periods only)" : "";
+      case "email":
+        if (!v) return "Email is required";
+        return !EMAIL_REGEX.test(v) ? "Enter a valid email address" : "";
+      case "mobile":
+        if (!v) return "Mobile number is required";
+        return !PHONE_REGEX.test(v) ? "Enter a valid 10-digit mobile number" : "";
+      case "college":
+        if (!v) return "College name is required";
+        return !COLLEGE_REGEX.test(v) ? "Enter a valid college name" : "";
+      case "branch":
+        if (!v) return "Branch is required";
+        return !BRANCH_REGEX.test(v) ? "Enter a valid branch name" : "";
+      case "year":
+        return !v ? "Select academic year" : "";
       default: return "";
     }
   };
@@ -295,17 +344,18 @@ export default function Register() {
     if (leaderTouched[field]) setLeaderErr(p => ({ ...p, [field]: validateLeaderField(field, val) }));
   };
 
-  const isStep1Valid = () => teamName.trim().length >= 3;
+  const isStep1Valid = () => TEAM_NAME_REGEX.test(teamName.trim());
   const isStep2Valid = () => {
     const fields: (keyof LeaderData)[] = ["name","email","mobile","college","branch","year"];
     return fields.every(f => !validateLeaderField(f, leader[f]));
   };
 
-
-
   const isStep3Valid = () => {
     if (members.length === 0) return true;
-    return members.every(m => m.name.trim().length >= 2 && EMAIL_REGEX.test(m.email.trim()) && m.college.trim().length >= 3 && m.branch.trim().length >= 2 && m.year !== "");
+    return members.every(m => {
+      const fields: (keyof MemberData)[] = ["name", "email", "mobile", "college", "branch", "year"];
+      return fields.every(f => !validateMemberField(f, m[f]));
+    });
   };
 
   const nextStep = () => {
@@ -325,6 +375,20 @@ export default function Register() {
       }
     }
     if (formStep === 3) {
+      const fields: (keyof MemberData)[] = ["name", "email", "mobile", "college", "branch", "year"];
+      const newTouched = members.map(() => {
+        const t: Partial<Record<keyof MemberData, boolean>> = {};
+        fields.forEach(f => { t[f] = true; });
+        return t;
+      });
+      const newErr = members.map(m => {
+        const e: Partial<Record<keyof MemberData, string>> = {};
+        fields.forEach(f => { e[f] = validateMemberField(f, m[f]); });
+        return e;
+      });
+      setMembersTouched(newTouched);
+      setMembersErr(newErr);
+
       if (!isStep3Valid()) {
          triggerToast("Please fill all required fields for your team members, or remove them.");
          return;
@@ -335,11 +399,47 @@ export default function Register() {
 
   /* ── Members ── */
   const addMember = () => {
-    if (members.length < 3) { setMembers(p => [...p, emptyMember()]); setExpandedMember(members.length); }
+    if (members.length < 3) {
+      setMembers(p => [...p, emptyMember()]);
+      setMembersTouched(p => [...p, {}]);
+      setMembersErr(p => [...p, {}]);
+      setExpandedMember(members.length);
+    }
   };
-  const removeMember = (i: number) => { setMembers(p => p.filter((_, idx) => idx !== i)); setExpandedMember(null); };
+  const removeMember = (i: number) => {
+    setMembers(p => p.filter((_, idx) => idx !== i));
+    setMembersTouched(p => p.filter((_, idx) => idx !== i));
+    setMembersErr(p => p.filter((_, idx) => idx !== i));
+    setExpandedMember(null);
+  };
+  const handleMemberBlur = (i: number, field: keyof MemberData) => {
+    setMembersTouched(p => {
+      const n = [...p];
+      if (!n[i]) n[i] = {};
+      n[i][field] = true;
+      return n;
+    });
+    setMembersErr(p => {
+      const n = [...p];
+      if (!n[i]) n[i] = {};
+      n[i][field] = validateMemberField(field, members[i][field]);
+      return n;
+    });
+  };
   const updateMember = (i: number, field: keyof MemberData, val: string) => {
-    setMembers(p => { const n = [...p]; n[i] = { ...n[i], [field]: val }; return n; });
+    setMembers(p => {
+      const n = [...p];
+      n[i] = { ...n[i], [field]: val };
+      return n;
+    });
+    if (membersTouched[i]?.[field]) {
+      setMembersErr(p => {
+        const n = [...p];
+        if (!n[i]) n[i] = {};
+        n[i][field] = validateMemberField(field, val);
+        return n;
+      });
+    }
   };
 
   /* ── Promo ── */
@@ -357,6 +457,10 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async () => {
+    if (!isStep1Valid() || !isStep2Valid() || !isStep3Valid()) {
+      triggerToast("Please fill all details correctly before proceeding.");
+      return;
+    }
     setIsSubmitting(true);
     
     const payload = {
@@ -616,14 +720,18 @@ export default function Register() {
                       <div className="rg-field-group">
                         <label className="rg-label">Team Name</label>
                         <div className="rg-input-wrap">
-                          <input className={`rg-input ${teamName.length>=3?"valid":teamName?"invalid":""}`}
+                          <input className={`rg-input ${teamName ? (teamNameErr ? "invalid" : "valid") : ""}`}
                             placeholder="e.g. ByteForce, NullPointers..."
                             value={teamName}
-                            onChange={e => { setTeamName(e.target.value); setTeamNameErr(e.target.value.trim().length>=3?"":e.target.value?"Min 3 characters":""); }}
-                            onBlur={() => setTeamNameErr(teamName.trim().length<3?"Min 3 characters":"")}
+                            onChange={e => {
+                              setTeamName(e.target.value);
+                              setTeamNameErr(validateTeamName(e.target.value));
+                            }}
+                            onBlur={() => setTeamNameErr(validateTeamName(teamName))}
                             maxLength={30}
                           />
-                          {teamName.length >= 3 && <span className="rg-input-ok">✓</span>}
+                          {teamName && !teamNameErr && <span className="rg-input-ok">✓</span>}
+                          {teamName && teamNameErr && <span className="rg-input-err">⚠</span>}
                         </div>
                         {teamNameErr && <div className="rg-err">{teamNameErr}</div>}
                       </div>
@@ -791,45 +899,108 @@ export default function Register() {
                                 initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}}
                                 exit={{height:0,opacity:0}} transition={{duration:0.25}}>
                                 <div className="rg-field-row">
+                                  {/* Full Name */}
                                   <div className="rg-field-group">
                                     <label className="rg-label">Full Name</label>
-                                    <input className="rg-input" placeholder="Member full name"
-                                      value={m.name} onChange={e => updateMember(i,"name",e.target.value)} />
+                                    <div className="rg-input-wrap">
+                                      <input className={`rg-input ${membersTouched[i]?.name ? (membersErr[i]?.name ? "invalid" : "valid") : ""}`}
+                                        placeholder="Member full name"
+                                        value={m.name}
+                                        onChange={e => updateMember(i, "name", e.target.value)}
+                                        onBlur={() => handleMemberBlur(i, "name")} />
+                                      {membersTouched[i]?.name && !membersErr[i]?.name && <span className="rg-input-ok">✓</span>}
+                                      {membersTouched[i]?.name && membersErr[i]?.name && <span className="rg-input-err">⚠</span>}
+                                    </div>
+                                    {membersTouched[i]?.name && membersErr[i]?.name && <div className="rg-err">{membersErr[i]?.name}</div>}
                                   </div>
+                                  {/* Email */}
                                   <div className="rg-field-group">
                                     <label className="rg-label">Email Address</label>
-                                    <input className="rg-input" type="email" placeholder="member@college.edu"
-                                      value={m.email} onChange={e => updateMember(i,"email",e.target.value)} />
+                                    <div className="rg-input-wrap">
+                                      <input className={`rg-input ${membersTouched[i]?.email ? (membersErr[i]?.email ? "invalid" : "valid") : ""}`}
+                                        type="email" placeholder="member@college.edu"
+                                        value={m.email}
+                                        onChange={e => updateMember(i, "email", e.target.value)}
+                                        onBlur={() => handleMemberBlur(i, "email")} />
+                                      {membersTouched[i]?.email && !membersErr[i]?.email && <span className="rg-input-ok">✓</span>}
+                                      {membersTouched[i]?.email && membersErr[i]?.email && <span className="rg-input-err">⚠</span>}
+                                    </div>
+                                    {membersTouched[i]?.email && membersErr[i]?.email && <div className="rg-err">{membersErr[i]?.email}</div>}
                                   </div>
                                 </div>
                                 <div className="rg-field-row">
+                                  {/* College */}
                                   <div className="rg-field-group">
                                     <label className="rg-label">College Name</label>
-                                    <input className="rg-input" placeholder="University / Institute"
-                                      value={m.college} onChange={e => updateMember(i,"college",e.target.value)} />
+                                    <div className="rg-input-wrap">
+                                      <input className={`rg-input ${membersTouched[i]?.college ? (membersErr[i]?.college ? "invalid" : "valid") : ""}`}
+                                        placeholder="University / Institute"
+                                        value={m.college}
+                                        onChange={e => updateMember(i, "college", e.target.value)}
+                                        onBlur={() => handleMemberBlur(i, "college")} />
+                                      {membersTouched[i]?.college && !membersErr[i]?.college && <span className="rg-input-ok">✓</span>}
+                                      {membersTouched[i]?.college && membersErr[i]?.college && <span className="rg-input-err">⚠</span>}
+                                    </div>
+                                    {membersTouched[i]?.college && membersErr[i]?.college && <div className="rg-err">{membersErr[i]?.college}</div>}
                                   </div>
+                                  {/* Branch */}
                                   <div className="rg-field-group">
                                     <label className="rg-label">Branch</label>
-                                    <input className="rg-input" placeholder="e.g. CSE, IT, ECE"
-                                      value={m.branch} onChange={e => updateMember(i,"branch",e.target.value)} />
+                                    <div className="rg-input-wrap">
+                                      <input className={`rg-input ${membersTouched[i]?.branch ? (membersErr[i]?.branch ? "invalid" : "valid") : ""}`}
+                                        placeholder="e.g. CSE, IT, ECE"
+                                        value={m.branch}
+                                        onChange={e => updateMember(i, "branch", e.target.value)}
+                                        onBlur={() => handleMemberBlur(i, "branch")} />
+                                      {membersTouched[i]?.branch && !membersErr[i]?.branch && <span className="rg-input-ok">✓</span>}
+                                      {membersTouched[i]?.branch && membersErr[i]?.branch && <span className="rg-input-err">⚠</span>}
+                                    </div>
+                                    {membersTouched[i]?.branch && membersErr[i]?.branch && <div className="rg-err">{membersErr[i]?.branch}</div>}
                                   </div>
                                 </div>
                                 <div className="rg-field-row">
+                                  {/* Year */}
                                   <div className="rg-field-group">
                                     <label className="rg-label">Academic Year</label>
                                     <div className="rg-input-wrap">
                                       <CustomSelect
                                         value={m.year}
-                                        onChange={val => updateMember(i, "year", val)}
+                                        onChange={val => {
+                                          updateMember(i, "year", val);
+                                          setMembersTouched(p => {
+                                            const n = [...p];
+                                            if (!n[i]) n[i] = {};
+                                            n[i].year = true;
+                                            return n;
+                                          });
+                                          setMembersErr(p => {
+                                            const n = [...p];
+                                            if (!n[i]) n[i] = {};
+                                            n[i].year = validateMemberField("year", val);
+                                            return n;
+                                          });
+                                        }}
                                         options={ACADEMIC_YEARS}
                                         placeholder="Select Year"
+                                        error={membersErr[i]?.year}
+                                        touched={membersTouched[i]?.year}
                                       />
                                     </div>
+                                    {membersTouched[i]?.year && membersErr[i]?.year && <div className="rg-err">{membersErr[i]?.year}</div>}
                                   </div>
+                                  {/* Mobile */}
                                   <div className="rg-field-group">
-                                    <label className="rg-label">Mobile <span style={{color:"rgba(255,255,255,0.3)",fontWeight:400}}>(optional)</span></label>
-                                    <input className="rg-input" type="tel" placeholder="10-digit (optional)" maxLength={10}
-                                      value={m.mobile} onChange={e => updateMember(i,"mobile",e.target.value)} />
+                                    <label className="rg-label">Mobile Number</label>
+                                    <div className="rg-input-wrap">
+                                      <input className={`rg-input ${membersTouched[i]?.mobile ? (membersErr[i]?.mobile ? "invalid" : "valid") : ""}`}
+                                        type="tel" placeholder="10-digit number" maxLength={10}
+                                        value={m.mobile}
+                                        onChange={e => updateMember(i, "mobile", e.target.value)}
+                                        onBlur={() => handleMemberBlur(i, "mobile")} />
+                                      {membersTouched[i]?.mobile && !membersErr[i]?.mobile && <span className="rg-input-ok">✓</span>}
+                                      {membersTouched[i]?.mobile && membersErr[i]?.mobile && <span className="rg-input-err">⚠</span>}
+                                    </div>
+                                    {membersTouched[i]?.mobile && membersErr[i]?.mobile && <div className="rg-err">{membersErr[i]?.mobile}</div>}
                                   </div>
                                 </div>
                                 <button className="rg-remove-btn" onClick={() => removeMember(i)}>
