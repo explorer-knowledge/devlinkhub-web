@@ -3,7 +3,7 @@
  * In a real application, these functions would perform fetch/axios calls to your backend.
  */
 
-const BACKEND_URL = `http://${window.location.hostname}:10003/api/hackathon`;
+const BACKEND_URL = `https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon`;
 
 export interface RegisterPayload {
   teamName: string;
