@@ -1,0 +1,17 @@
+# DevLinkHub — robots.txt
+# https://devlinkhub.in/
+
+User-agent: *
+Allow: /
+Allow: /register
+
+# Block payment/confirmation pages (no SEO value, require session state)
+Disallow: /checkout
+Disallow: /payment-success
+Disallow: /payment-failed
+
+# Sitemap location
+Sitemap: https://devlinkhub.in/sitemap.xml
+
+# Crawl-delay hint (optional, polite crawling)
+Crawl-delay: 1
