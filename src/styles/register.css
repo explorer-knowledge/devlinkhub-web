@@ -1027,14 +1027,38 @@ body {
     max-width: 100% !important;
     align-items: stretch !important;
   }
-  .rg-left, .rg-center, .rg-right {
+  .rg-center {
+    order: 1;
     width: 100% !important;
     max-width: 100% !important;
     position: static !important;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
   }
-  .rg-right { margin-top: 12px; margin-bottom: 0; }
+  .rg-right {
+    order: 2;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+    margin-top: 0 !important;
+    margin-bottom: 24px;
+  }
+  .rg-left {
+    order: 3;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: static !important;
+    margin-bottom: 24px;
+  }
   .rg-left-card { padding: 16px; border-radius: 14px; background: rgba(8, 5, 22, 0.9) !important; }
+
+  /* Declutter Left Card & CTA on mobile */
+  .rg-left-countdown,
+  .rg-divider,
+  .rg-includes-title,
+  .rg-includes,
+  .rg-cta-btn {
+    display: none !important;
+  }
 
   /* Steps bar */
   .rg-steps-row {
@@ -1080,7 +1104,7 @@ body {
   .rg-success-footer { flex-direction: column; gap: 8px; text-align: center; }
 
   /* Buttons */
-  .rg-btn-primary, .rg-btn-secondary, .rg-submit-btn, .rg-cta-btn {
+  .rg-btn-primary, .rg-btn-secondary, .rg-submit-btn {
     min-height: 48px !important;
     width: 100% !important;
     font-size: 14px !important;
