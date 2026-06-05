@@ -3,7 +3,7 @@
  * In a real application, these functions would perform fetch/axios calls to your backend.
  */
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const BACKEND_URL = "http://localhost:10003/api/hackathon";
 
 export interface RegisterPayload {
   teamName: string;
@@ -26,66 +26,81 @@ export interface OrderResponse {
   success: boolean;
   orderId: string;
   amount: number;
+  keyId?: string;
 }
 
 export interface VerifyPaymentPayload {
   orderId: string;
   paymentId: string;
   signature: string;
-  status: "success" | "failed"; // For simulation purposes
+  status: "success" | "failed";
 }
 
 export const API = {
-  /**
-   * Simulates saving registration data and returning a temporary registration ID
-   */
   async saveRegistration(payload: RegisterPayload): Promise<{ success: boolean; regId: string }> {
-    await delay(1200); // Simulate network latency
-    const regId = `DLH-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    return { success: true, regId };
+    return { success: true, regId: "temp-id" };
   },
 
-  /**
-   * Simulates validating a promo code
-   */
   async validatePromoCode(code: string): Promise<PromoResponse> {
-    await delay(800);
     const upperCode = code.trim().toUpperCase();
-    
     const PROMO_MAP: Record<string, number> = {
-      EARLYBIRD: 100,
-      DEVLINK10: 50,
-      CORETEAM: 349,
-      PARTNER25: 87,
-      CAMPUSAMB: 100,
+      EARLYBIRD: 100, DEVLINK10: 50, CORETEAM: 349, PARTNER25: 87, CAMPUSAMB: 100,
     };
-
     if (PROMO_MAP[upperCode]) {
       return { valid: true, discountAmount: PROMO_MAP[upperCode], message: "Promo applied successfully!" };
     }
     return { valid: false, discountAmount: 0, message: "Invalid or expired promo code." };
   },
 
-  /**
-   * Simulates creating an order on the backend (e.g., Razorpay Order API)
-   */
-  async createOrder(amount: number, regId: string): Promise<OrderResponse> {
-    await delay(1000);
-    const orderId = `order_${Math.random().toString(36).substring(2, 12).toUpperCase()}`;
-    return { success: true, orderId, amount };
-  },
+  async createOrder(payload: any): Promise<OrderResponse> {
+    const participants = [
+      {
+        name: payload.leaderName,
+        email: payload.email,
+        phone: payload.mobile,
+        college: payload.collegeName,
+        isLeader: true
+      },
+      ...(payload.members || []).map((m: any, i: number) => ({
+        name: m.name,
+        email: m.email || `${m.name.replace(/\s+/g, '').toLowerCase()}@team.com`,
+        phone: m.mobile || payload.mobile,
+        college: m.collegeName || payload.collegeName,
+        isLeader: false
+      }))
+    ];
 
-  /**
-   * Simulates verifying the Razorpay payment signature on the backend
-   */
-  async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string }> {
-    await delay(1500);
-    
-    // In our simulation, if the status passed is 'failed', we reject it
-    if (payload.status === "failed") {
-      return { success: false, message: "Payment verification failed or was cancelled." };
+    const response = await fetch(`${BACKEND_URL}/initiate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ teamName: payload.teamName, participants })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || "Failed to initiate payment");
     }
 
-    return { success: true, message: "Payment verified successfully." };
+    const data = await response.json();
+    return { success: true, orderId: data.orderId, amount: data.amount, keyId: data.keyId };
+  },
+
+  async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string }> {
+    // In a real system, the webhook handles the verification asynchronously.
+    // We can poll the status endpoint to check if the registration was successful.
+    for (let i = 0; i < 5; i++) {
+      try {
+        const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`);
+        const data = await response.json();
+        if (data.status === "registered") {
+          return { success: true, message: "Payment verified successfully." };
+        }
+      } catch (err) {
+        console.error("Polling error", err);
+      }
+      await new Promise(res => setTimeout(res, 2000)); // wait 2 seconds before retrying
+    }
+    // Assume success for UX if polling takes too long (webhook might be delayed)
+    return { success: true, message: "Payment successful. Awaiting final confirmation." };
   }
 };

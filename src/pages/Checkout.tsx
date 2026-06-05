@@ -172,11 +172,34 @@ export default function Checkout() {
     setPaying(true);
     
     try {
-      const fakeRegId = `DLH-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-      const res = await API.createOrder(payload.finalAmount || 349, fakeRegId);
+      const res = await API.createOrder(payload);
       if (res.success) {
+        const options = {
+          key: res.keyId, // Passed down from backend
+          amount: res.amount, // in paise
+          currency: "INR",
+          name: "DevLinkHub Ignite 2026",
+          description: "Hackathon Registration",
+          order_id: res.orderId,
+          handler: function (response: any) {
+            handleRazorpaySuccess(response.razorpay_payment_id, response.razorpay_signature);
+          },
+          prefill: {
+            name: payload.leaderName,
+            email: payload.email,
+            contact: payload.mobile
+          },
+          theme: {
+            color: "#00f2fe"
+          }
+        };
+        const rzp = new (window as any).Razorpay(options);
+        rzp.on("payment.failed", function (response: any) {
+          console.error("Payment failed", response.error);
+          setPaying(false);
+        });
+        rzp.open();
         setOrderId(res.orderId);
-        setShowRazorpay(true);
       }
     } catch (e) {
       console.error(e);

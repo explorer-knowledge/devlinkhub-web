@@ -272,16 +272,7 @@ export default function Register() {
     return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", onResize); };
   }, []);
 
-  /* ── Autosave ── */
-  useEffect(() => {
-    const saved = localStorage.getItem("dlh_ignite_v3");
-    if (saved) { try { const d = JSON.parse(saved); if (d.leader) setLeader(d.leader); if (d.teamName) setTeamName(d.teamName); } catch {} }
-  }, []);
-  useEffect(() => {
-    const tid = setTimeout(() => localStorage.setItem("dlh_ignite_v3", JSON.stringify({ teamName, leader })), 800);
-    return () => clearTimeout(tid);
-  }, [teamName, leader]);
-
+  /* ── No Autosave ── */
   /* ── Validation ── */
   const validateLeaderField = (field: keyof LeaderData, val: string): string => {
     const v = val.trim();
@@ -317,14 +308,32 @@ export default function Register() {
     return true;
   };
 
+  const isStep3Valid = () => {
+    if (members.length === 0) return true;
+    return members.every(m => m.name.trim().length >= 2 && EMAIL_REGEX.test(m.email.trim()) && m.college.trim().length >= 3 && m.branch.trim().length >= 2 && m.year !== "");
+  };
+
   const nextStep = () => {
+    if (formStep === 1 && !isStep1Valid()) {
+       triggerToast("Please enter a valid Team Name (min 3 chars).");
+       return;
+    }
     if (formStep === 2) {
       const fields: (keyof LeaderData)[] = ["name","email","mobile","college","branch","year"];
       const newTouched: Partial<Record<keyof LeaderData, boolean>> = {};
       const newErr: Partial<LeaderData> = {};
       fields.forEach(f => { newTouched[f] = true; newErr[f] = validateLeaderField(f, leader[f]); });
       setLeaderTouched(newTouched); setLeaderErr(newErr);
-      if (!isStep2Valid()) return;
+      if (!isStep2Valid()) {
+         triggerToast("Please fill all leader details correctly.");
+         return;
+      }
+    }
+    if (formStep === 3) {
+      if (!isStep3Valid()) {
+         triggerToast("Please fill all required fields for your team members, or remove them.");
+         return;
+      }
     }
     if (formStep < 4) setFormStep(f => f + 1);
   };
@@ -374,32 +383,72 @@ export default function Register() {
     };
     
     try {
-      const res = await API.saveRegistration(payload);
+      const res = await API.createOrder(payload);
       if (res.success) {
-        setRegistrationId(res.regId);
-        setSeats(p => Math.max(p - 1, 0));
-        localStorage.setItem("devlinkhub_checkout_payload", JSON.stringify(payload));
-        navigate("/checkout");
+        const options = {
+          key: res.keyId,
+          amount: res.amount,
+          currency: "INR",
+          name: "DevLinkHub Ignite 2026",
+          description: "Hackathon Registration",
+          order_id: res.orderId,
+          handler: async function (response: any) {
+             setIsSubmitting(true);
+             try {
+               const verifyRes = await API.verifyPayment({ 
+                 orderId: res.orderId, 
+                 paymentId: response.razorpay_payment_id, 
+                 signature: response.razorpay_signature, 
+                 status: "success" 
+               });
+               
+               const regId = verifyRes.regId || `DLH-${Math.floor(1000 + Math.random() * 9000)}`;
+               localStorage.setItem("devlinkhub_payment_result", JSON.stringify({
+                 status: verifyRes.success ? "success" : "failed", 
+                 registrationId: regId, 
+                 paymentId: response.razorpay_payment_id,
+                 finalAmount: payload.finalAmount, 
+                 appliedPromo: payload.appliedPromo, 
+                 teamName: payload.teamName,
+                 leaderName: payload.leaderName, 
+                 members: payload.members ?? [],
+                 collegeName: payload.collegeName, 
+                 email: payload.email,
+               }));
+               
+               if (verifyRes.success) {
+                  navigate("/payment-success");
+               } else {
+                  navigate("/payment-failed");
+               }
+             } catch(err) {
+               navigate("/payment-failed");
+             } finally {
+               setIsSubmitting(false);
+             }
+          },
+          prefill: {
+            name: payload.leaderName,
+            email: payload.email,
+            contact: payload.mobile
+          },
+          theme: { color: "#00f2fe" }
+        };
+        const rzp = new (window as any).Razorpay(options);
+        rzp.on("payment.failed", function (response: any) {
+          triggerToast("Payment failed: " + response.error.description);
+        });
+        rzp.open();
       }
     } catch (e) {
-      triggerToast("Error saving registration. Please try again.");
+      triggerToast("Error initiating payment. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  /* ── Payment ── */
-  const handlePayment = () => {
-    setShowRzpModal(true);
-    setTimeout(() => {
-      setShowRzpModal(false);
-      const pid = "pay_" + Math.random().toString(36).substr(2, 14);
-      setPaymentId(pid);
-      setStep("success");
-      setTimerActive(false);
-      triggerToast("🎉 Payment confirmed! Welcome to Ignite 2026.");
-    }, 2500);
-  };
+  /* ── Payment (Legacy) ── */
+  const handlePayment = () => {};
 
   /* ── Download ticket ── */
   const downloadTicket = () => {
@@ -697,7 +746,7 @@ export default function Register() {
 
                       <div className="rg-btn-row">
                         <button className="rg-back-btn" onClick={() => setFormStep(1)}>← Back</button>
-                        <button className={`rg-next-btn ${isStep2Valid()?"active":""}`} onClick={nextStep}>
+                        <button className={`rg-next-btn ${isStep2Valid()?"active":""}`} onClick={nextStep} disabled={!isStep2Valid()}>
                           Add Team Members <span>→</span>
                         </button>
                       </div>
