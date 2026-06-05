@@ -314,42 +314,47 @@ function TiltGlassCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);   // RAF handle for throttling
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.innerWidth < 768 || 'ontouchstart' in window) return;
-    const card = cardRef.current;
-    const glow = glowRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const rotateX = -((y - rect.height / 2) / (rect.height / 2)) * 4;
-    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 6;
-
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-    if (glow) {
-      glow.style.background = `radial-gradient(350px circle at ${x}px ${y}px, rgba(0, 245, 255, 0.09) 0%, rgba(255, 255, 255, 0.01) 75%, transparent 100%)`;
-      glow.style.opacity = "1";
-    }
+    // Throttle via RAF — only one update per animation frame
+    if (rafRef.current !== null) return;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const card = cardRef.current;
+      const glow = glowRef.current;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      const rotateX = -((y - rect.height / 2) / (rect.height / 2)) * 4;
+      const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 6;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      if (glow) {
+        glow.style.background = `radial-gradient(350px circle at ${x}px ${y}px, rgba(0, 245, 255, 0.09) 0%, rgba(255, 255, 255, 0.01) 75%, transparent 100%)`;
+        glow.style.opacity = "1";
+      }
+    });
   };
 
   const handleMouseLeave = () => {
     if (window.innerWidth < 768 || 'ontouchstart' in window) return;
+    if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
     const card = cardRef.current;
     const glow = glowRef.current;
     if (!card) return;
     card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
-    if (glow) {
-      glow.style.opacity = "0";
-    }
+    if (glow) glow.style.opacity = "0";
   };
 
   return (
     <div
       ref={cardRef}
       className={`glass-card ${className}`}
-      style={{ ...style, transformStyle: "preserve-3d" }}
+      style={{ ...style, transformStyle: "preserve-3d", willChange: "transform" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}

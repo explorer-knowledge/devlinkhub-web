@@ -5,31 +5,27 @@ export default function ParticleBg() {
     <Particles
       id="tsparticles"
       options={{
-        fpsLimit: 60,
+        fpsLimit: 30,                    // was 60 — halves GPU work
         particles: {
-          number: { value: 35, limit: 50 },
+          number: { value: 18, limit: 20 }, // was 35/50 — 50% fewer particles
           color: { value: "#00f5ff" },
           shape: { type: "circle" },
           opacity: {
-            value: 0.12,
+            value: 0.10,
             random: true,
-            animation: { enable: true, speed: 0.5, minimumValue: 0.05, sync: false }
+            animation: { enable: false }  // disabled opacity animation (saves perf)
           },
           size: {
-            value: 3,
+            value: 2,
             random: true,
-            animation: { enable: true, speed: 1.5, minimumValue: 1, sync: false }
+            animation: { enable: false }  // disabled size animation
           },
           links: {
-            enable: true,
-            distance: 130,
-            color: "#7c3aed",
-            opacity: 0.14,
-            width: 1
+            enable: false,               // DISABLED links — link calc is O(n²), major perf killer
           },
           move: {
             enable: true,
-            speed: 0.8,
+            speed: 0.5,                  // slower = fewer style recalcs
             direction: "none",
             random: false,
             straight: false,
@@ -38,16 +34,12 @@ export default function ParticleBg() {
         },
         interactivity: {
           events: {
-            onHover: { enable: false, mode: "grab" },
-            onClick: { enable: false, mode: "push" },
-            resize: { enable: true }
-          },
-          modes: {
-            grab: { distance: 150, links: { opacity: 0.25 } },
-            push: { quantity: 1 }
+            onHover: { enable: false },
+            onClick: { enable: false },
+            resize: { enable: false }    // resize listener removed
           }
         },
-        detectRetina: true,
+        detectRetina: false,             // was true — retina doubles canvas pixels (4x fill rate)
         style: {
           position: "absolute",
           width: "100%",

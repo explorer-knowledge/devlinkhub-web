@@ -51,10 +51,32 @@ body {
     radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
     radial-gradient(at 100% 100%, rgba(0, 242, 254, 0.1) 0px, transparent 50%);
   color: var(--white-primary);
-  overflow-x: clip;   /* clip instead of hidden: preserves body as scroll container */
+  overflow-x: clip;
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── PERFORMANCE: Skip rendering off-screen sections ── */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px; /* rough height estimate per section */
+}
+
+/* ── GPU COMPOSITING: particle canvas stays on its own layer ── */
+#tsparticles canvas {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ── REDUCE MOTION: respect user OS preference ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  #tsparticles { display: none !important; }
 }
 
 ::-webkit-scrollbar {
