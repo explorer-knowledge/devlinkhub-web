@@ -14,16 +14,16 @@ const { loadFromCache, downloadLatest } = require('./services/disposableService'
 const { startScheduler } = require('./services/scheduler');
 const PORT = process.env.PORT || 10003;
 
-// ─── CORS ─────────────────────────────────────────────────────────────────────
-// app.use(cors({
-//   origin:  [
-//       process.env.FRONTEND_URL,
-//       'http://localhost:4000',
-//       'https://juliette-hokey-pacifically.ngrok-free.dev',
-//     ],
-//   credentials: true,
-// }));
-app.use(cors());
+// ─── CORS ───────────
+app.use(cors({
+  origin:  [
+      process.env.FRONTEND_URL,
+      'http://localhost:4000',
+      'https://juliette-hokey-pacifically.ngrok-free.dev',
+    ],
+  credentials: true,
+}));
+// app.use(cors());
 
 // ─── Body Parsing ─────────────────────────────────────────────────────────────
 //
@@ -48,7 +48,7 @@ app.use((req, _res, next) => {
   express.urlencoded({ extended: true })(req, _res, next);
 });
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
+// ─── Health Check ─────────────
 app.get('/health', (_req, res) =>
   res.json({
     status: 'ok',
@@ -57,15 +57,15 @@ app.get('/health', (_req, res) =>
   })
 );
 
-// ─── Routes ───────────────────────────────────────────────────────────────────
+// ─── Routes ───────────────────
 app.use('/api/hackathon', hackathonRoutes);
 
-// ─── 404 ──────────────────────────────────────────────────────────────────────
+// ─── 404 ──────────────────────
 app.use((req, res) => {
   res.status(404).json({ error: `Route ${req.method} ${req.path} not found` });
 });
 
-// ─── Global Error Handler ─────────────────────────────────────────────────────
+// ─── Global Error Handler ─────────────
 app.use((err, _req, res, _next) => {
   console.error('[Server Error]', err.message);
   res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
@@ -92,8 +92,8 @@ async function start() {
     console.log(`   POST /api/hackathon/initiate        → validate + create Razorpay order + save pending`);
     console.log(`   POST /api/hackathon/webhook         → Razorpay event → verify sig → save to DB`);
     console.log(`   GET  /api/hackathon/status/:orderId → poll registration status`);
-    console.log(`   GET  /api/hackathon/team/:teamId    → confirmed registration details\n`);
-  });
+    });
+  require('./services/redisToDb'); 
 }
 
 start().catch(err => {

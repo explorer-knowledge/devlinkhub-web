@@ -10,6 +10,21 @@ const { orderIdExists, getOrderData, addOrderIdtoCache } = require('../services/
 const { eventIdExists, addEventIdtoCache } = require('../services/webhookEventId');
 const { sendHackathonInvite } = require('../config/mailer');
 
+// 11. Fire invite emails to non-leader participants (non-blocking — don't await)
+    // const leader  = p.participants.find(participant => participant.isLeader);
+    // const members = p.participants.filter(participant => !participant.isLeader);
+
+    // for (const member of members) {
+    //   const confirmToken = crypto.randomBytes(32).toString('hex');
+    //   sendHackathonInvite({
+    //     toEmail:     member.email,
+    //     teamName:    p.teamName,
+    //     leaderName:  leader ? leader.name : 'Team Leader',
+    //     confirmToken,
+    //   }).catch(mailErr => {
+    //     console.error(`[Webhook] Failed to send invite to ${member.email}:`, mailErr.message);
+    //   });
+    // }
 // ─── POST /api/hackathon/initiate ─────────────────────────────────────────────
 //
 // Step 1 — Frontend sends ALL team + participant details.
@@ -206,35 +221,23 @@ async function handleWebhook(req, res) {
     razorpayEventId: eventId,
     event: eventType
   }
+
+  const queue = {
+    payload: payload,
+    webhook_event: webhookEvent
+  };
   //Persist in a transaction: create all participant rows, delete pending, log event
   try {
     addOrderIdtoCache(payload);
     addEventIdtoCache(eventId);
-    await redis.lpush('registration_queue', JSON.stringify(payload));
+    await redis.lpush('registration_queue', JSON.stringify(queue));
     
-
     await redis.del(`pending_registration:${orderId}`);
 
-    await redis.lpush('webhook_event', JSON.stringify(webhookEvent));
+    // await redis.lpush('webhook_event', JSON.stringify(webhookEvent));
     
 
     console.log(`[Webhook] Team "${payload.teamName}" (id: ${teamId}) registered successfully via webhook!`);
-
-    // 11. Fire invite emails to non-leader participants (non-blocking — don't await)
-    // const leader  = p.participants.find(participant => participant.isLeader);
-    // const members = p.participants.filter(participant => !participant.isLeader);
-
-    // for (const member of members) {
-    //   const confirmToken = crypto.randomBytes(32).toString('hex');
-    //   sendHackathonInvite({
-    //     toEmail:     member.email,
-    //     teamName:    p.teamName,
-    //     leaderName:  leader ? leader.name : 'Team Leader',
-    //     confirmToken,
-    //   }).catch(mailErr => {
-    //     console.error(`[Webhook] Failed to send invite to ${member.email}:`, mailErr.message);
-    //   });
-    // }
 
   } catch (err) {
     // P2002 = unique constraint violation → team already registered from a duplicate webhook
@@ -251,14 +254,6 @@ async function handleWebhook(req, res) {
 async function getRegistrationStatus(req, res) {
   try {
     const { orderId } = req.params;
-
-    // Check confirmed table first (any row with this orderId is sufficient)
-    // const leaderRow = await prisma.hackathonParticipant.findFirst({
-    //   where:  { razorpayOrderId: orderId, isLeader: true },
-    //   select: { teamId: true, teamName: true, status: true, createdAt: true },
-    // });
-
-
 
     if (orderIdExists(orderId)) {
       console.log("hello");
@@ -293,56 +288,56 @@ async function getRegistrationStatus(req, res) {
 // Retrieve full registration details for a confirmed team (for confirmation page).
 // Uses the shared teamId UUID (set during webhook processing).
 
-async function getTeam(req, res) {
-  try {
-    const { teamId } = req.params;
+// async function getTeam(req, res) {
+//   try {
+//     const { teamId } = req.params;
 
-    const participants = await prisma.hackathonParticipant.findMany({
-      where: { teamId },
-      orderBy: [{ isLeader: 'desc' }, { createdAt: 'asc' }],
-    });
+//     const participants = await prisma.hackathonParticipant.findMany({
+//       where: { teamId },
+//       orderBy: [{ isLeader: 'desc' }, { createdAt: 'asc' }],
+//     });
 
-    if (!participants || participants.length === 0) {
-      return res.status(404).json({ error: 'Team not found.' });
-    }
+//     if (!participants || participants.length === 0) {
+//       return res.status(404).json({ error: 'Team not found.' });
+//     }
 
-    // Shape a clean response
-    const leader = participants.find(p => p.isLeader);
-    const members = participants.filter(p => !p.isLeader);
+//     // Shape a clean response
+//     const leader = participants.find(p => p.isLeader);
+//     const members = participants.filter(p => !p.isLeader);
 
-    res.json({
-      team: {
-        teamId: leader.teamId,
-        teamName: leader.teamName,
-        razorpayOrderId: leader.razorpayOrderId,
-        razorpayPaymentId: leader.razorpayPaymentId,
-        amountPaid: leader.amountPaid,
-        status: leader.status,
-        createdAt: leader.createdAt,
-        leader: {
-          name: leader.name,
-          email: leader.email,
-          phone: leader.phone,
-          college: leader.college,
-        },
-        members: members.map(m => ({
-          name: m.name,
-          email: m.email,
-          phone: m.phone,
-          college: m.college,
-        })),
-      },
-    });
+//     res.json({
+//       team: {
+//         teamId: leader.teamId,
+//         teamName: leader.teamName,
+//         razorpayOrderId: leader.razorpayOrderId,
+//         razorpayPaymentId: leader.razorpayPaymentId,
+//         amountPaid: leader.amountPaid,
+//         status: leader.status,
+//         createdAt: leader.createdAt,
+//         leader: {
+//           name: leader.name,
+//           email: leader.email,
+//           phone: leader.phone,
+//           college: leader.college,
+//         },
+//         members: members.map(m => ({
+//           name: m.name,
+//           email: m.email,
+//           phone: m.phone,
+//           college: m.college,
+//         })),
+//       },
+//     });
 
-  } catch (err) {
-    console.error('[Hackathon] getTeam error:', err);
-    res.status(500).json({ error: err.message });
-  }
-}
+//   } catch (err) {
+//     console.error('[Hackathon] getTeam error:', err);
+//     res.status(500).json({ error: err.message });
+//   }
+// }
 
 module.exports = {
   initiatePayment,
   handleWebhook,
   getRegistrationStatus,
-  getTeam,
+  // getTeam,
 };

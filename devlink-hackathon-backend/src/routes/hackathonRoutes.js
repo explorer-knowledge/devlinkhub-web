@@ -5,8 +5,7 @@ const express     = require('express');
 const {
   initiatePayment,
   handleWebhook,
-  getRegistrationStatus,
-  getTeam,
+  getRegistrationStatus
 } = require('../controllers/hackController');
 
 const router = Router();
@@ -38,6 +37,6 @@ router.get('/status/:orderId', getRegistrationStatus);
 
 // GET  /api/hackathon/team/:teamId
 // Full registration details for confirmation page
-router.get('/team/:teamId', getTeam);
+// router.get('/team/:teamId', getTeam);
 
 module.exports = router;
