@@ -72,7 +72,10 @@ export const API = {
 
     const response = await fetch(`${BACKEND_URL}/initiate`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+	    "Content-Type": "application/json",
+	    "ngrok-skip-browser-warning": "true" 
+      },
       body: JSON.stringify({ teamName: payload.teamName, participants })
     });
 
