@@ -6,7 +6,7 @@ const redis = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
 const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 const { validateRegistrationBody } = require('../config/validation');
-const { orderIdExists, getOrderData, addOrderIdtoCache } = require('../services/orderIdService');
+const { orderIdExists, getOrderData,getOrderCount, addOrderIdtoCache } = require('../services/orderIdService');
 const { eventIdExists, addEventIdtoCache } = require('../services/webhookEventId');
 const { sendHackathonInvite } = require('../config/mailer');
 
@@ -39,6 +39,9 @@ const { sendHackathonInvite } = require('../config/mailer');
 
 async function initiatePayment(req, res) {
   try {
+    if (getOrderCount > 61){
+      return res.status(601).json({error: "Registration Over"});
+    }
     const validationError = validateRegistrationBody(req.body);
     if (validationError) {
       return res.status(400).json({ error: validationError });
@@ -52,7 +55,7 @@ async function initiatePayment(req, res) {
 
     //Create Razorpay order
     const amountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE || '49900', 10);
-    const safeLocal = leaderEmail.split('@')[0].replace(/[^a-z0-9]/gi, '').slice(0, 20);
+    const safeLocal = leaderEmail.split('@')[0].replace(/[^a-z0-9]/gi, '').slice(0, 10);
     const receipt = `devlinkhub_hack_${Date.now()}_${safeLocal}`;
 
     const order = await razorpay.orders.create({

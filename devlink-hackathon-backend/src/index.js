@@ -20,6 +20,7 @@ app.use(cors({
       process.env.FRONTEND_URL,
       'http://localhost:4000',
       'https://juliette-hokey-pacifically.ngrok-free.dev',
+      'https://temporary.404lab.xyz',
     ],
   credentials: true,
 }));

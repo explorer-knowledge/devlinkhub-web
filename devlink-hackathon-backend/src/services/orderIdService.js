@@ -27,6 +27,10 @@ function getOrderData(orderId){
     return orderMap.get(orderId.trim()) || null; 
 }
 
+function getOrderCount(){
+    return orderMap.size;
+}
+
 function addOrderIdtoCache(payload,number=0){
     payload.participants.forEach(participant=>{
         addEmailtoCache(participant.email);
@@ -49,4 +53,4 @@ function addOrderIdtoCache(payload,number=0){
     return [true,memCache,payload][number] ?? true;
 }
 
-module.exports  = {loadOrderId,orderIdExists,getOrderData,addOrderIdtoCache};
+module.exports  = {loadOrderId,orderIdExists,getOrderData,addOrderIdtoCache,getOrderCount};

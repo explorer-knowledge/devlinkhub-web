@@ -123,7 +123,10 @@ async function initiatePayment() {
   try {
     const res  = await fetch(`${API}/initiate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        "ngrok-skip-browser-warning": "true"
+       },
       body: JSON.stringify(collectPayload()),
     });
     const data = await res.json();
@@ -227,7 +230,12 @@ function startPolling(orderId) {
 
     let res, data;
     try {
-      res = await fetch(`${API}/status/${orderId}`);
+      res = await fetch(`${API}/status/${orderId}`,{
+        headers: {
+          "ngrok-skip-browser-warning": "true"
+        }
+      }
+    );
 
       // Server-side errors (5xx) — treat as a transient blip, do not parse
       if (res.status >= 500) {

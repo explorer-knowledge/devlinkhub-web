@@ -1,4 +1,5 @@
 const {emailExists } = require('../services/emailLoadService');
+const {phoneExists } = require('../services/phoneLoadService');
 const {isDisposable} = require('../services/disposableService');
 
 function validateRegistrationBody(body) {
@@ -10,7 +11,7 @@ function validateRegistrationBody(body) {
     }
 
     
-    const emailsSeen = new Set();
+    const sSeen = new Set();
 
 
     for (const participant of participants){
@@ -18,16 +19,25 @@ function validateRegistrationBody(body) {
             return "All participant fields are required";
         }
         const email  = participant.email.trim().toLowerCase();
-        if(isDisposable(email)){
-            return "Disposable email detected";
+        const phone = participant.phone.trim();
+
+        if(phoneExists(phone)){
+            return `Phone no Already Exists ${participant.name} `;
         }
-        if(emailsSeen.has(email)){
-            return "Duplicate email in team found";
+        if(sSeen.has(phone)){
+            return `Duplicate Phone no detected ${phone}`
+        }
+        if(isDisposable(email)){
+            return `Disposable email detected ${email}`;
+        }
+        if(sSeen.has(email)){
+            return `Duplicate email in team found ${email}`;
         }
         if(emailExists(email)){
-            return "Email already exists" ;
+            return `Email already exists ${email}`;
         }
-        emailsSeen.add(email);
+        sSeen.add(email);
+        sSeen.add(phone);
     }
 
     const leaders = participants.filter(p => p.isLeader);
