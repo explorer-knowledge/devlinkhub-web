@@ -281,8 +281,9 @@ export default function Home() {
       const step = steps[stepIdx];
 
       if (step.type === "type") {
-        if (charIdx < step.text.length) {
-          currentText += step.text[charIdx];
+        const text = step.text || "";
+        if (charIdx < text.length) {
+          currentText += text[charIdx];
           setCliText(currentText);
           charIdx++;
           timeoutId = setTimeout(execute, 50);
@@ -292,13 +293,13 @@ export default function Home() {
           timeoutId = setTimeout(execute, 100);
         }
       } else if (step.type === "print") {
-        currentText += step.text;
+        currentText += step.text || "";
         setCliText(currentText);
         stepIdx++;
         timeoutId = setTimeout(execute, 40);
       } else if (step.type === "wait") {
         stepIdx++;
-        timeoutId = setTimeout(execute, step.delay);
+        timeoutId = setTimeout(execute, step.delay || 0);
       } else if (step.type === "clear") {
         currentText = "admin@devlinkhub:~ $ ";
         setCliText(currentText);
@@ -360,8 +361,9 @@ export default function Home() {
       const step = steps[stepIdx];
 
       if (step.type === "type") {
-        if (charIdx < step.text.length) {
-          currentText += step.text[charIdx];
+        const text = step.text || "";
+        if (charIdx < text.length) {
+          currentText += text[charIdx];
           setHackathonCliText(currentText);
           charIdx++;
           timeoutId = setTimeout(execute, 50);
@@ -371,13 +373,13 @@ export default function Home() {
           timeoutId = setTimeout(execute, 100);
         }
       } else if (step.type === "print") {
-        currentText += step.text;
+        currentText += step.text || "";
         setHackathonCliText(currentText);
         stepIdx++;
         timeoutId = setTimeout(execute, 40);
       } else if (step.type === "wait") {
         stepIdx++;
-        timeoutId = setTimeout(execute, step.delay);
+        timeoutId = setTimeout(execute, step.delay || 0);
       }
     };
 
