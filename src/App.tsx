@@ -41,7 +41,6 @@ function ScrollToTop() {
 
 function MainLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Disable Lenis on mobile - it fights native touch scroll and causes lag
     const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
     if (isMobile) return;
 
@@ -50,16 +49,16 @@ function MainLayout({ children }: { children: React.ReactNode }) {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
-    // ── FIX: store rafId so it can be cancelled on unmount ──
     let rafId: number;
     function raf(time: number) {
-      lenis.raf(time);
+      // ── FIX: skip lenis processing when tab is hidden ──
+      if (!document.hidden) lenis.raf(time);
       rafId = requestAnimationFrame(raf);
     }
     rafId = requestAnimationFrame(raf);
 
     return () => {
-      cancelAnimationFrame(rafId); // ← was missing: RAF loop leaked on every re-mount
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);
@@ -74,6 +73,26 @@ function MainLayout({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  // ── GLOBAL: Pause all CSS animations + RAF loops when tab is hidden ──
+  // body.page-hidden triggers animation-play-state:paused on ALL elements (style.css)
+  // This stops all 8 infinite CSS animations from consuming GPU on background tabs.
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden) {
+        document.body.classList.add("page-hidden");
+      } else {
+        document.body.classList.remove("page-hidden");
+      }
+    };
+    // Set initial state in case page loads in background
+    onVisibility();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      document.body.classList.remove("page-hidden");
+    };
+  }, []);
+
   return (
     <Router>
       <ScrollToTop />

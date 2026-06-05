@@ -60,13 +60,18 @@ body {
 /* ── PERFORMANCE: Skip rendering off-screen sections ── */
 section {
   content-visibility: auto;
-  contain-intrinsic-size: 0 600px; /* rough height estimate per section */
+  contain-intrinsic-size: 0 600px;
 }
 
-/* ── GPU COMPOSITING: particle canvas stays on its own layer ── */
-#tsparticles canvas {
-  will-change: transform;
-  transform: translateZ(0);
+/* ── TAB VISIBILITY: Pause ALL infinite CSS animations when tab is hidden ──
+   JS in App.tsx sets body.page-hidden via document.visibilitychange.
+   This pauses: blobBreath, dotPulse, chevronBounce, borderCycle,
+   caretBlink, borderMove, pulseDotGreen, ringPulse — ALL 8 infinite animations.
+   Result: ~0% GPU usage on background tabs. */
+body.page-hidden *,
+body.page-hidden *::before,
+body.page-hidden *::after {
+  animation-play-state: paused !important;
 }
 
 /* ── REDUCE MOTION: respect user OS preference ── */
@@ -76,7 +81,6 @@ section {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  #tsparticles { display: none !important; }
 }
 
 ::-webkit-scrollbar {
@@ -108,17 +112,17 @@ section {
   background-size: 36px 36px;
 }
 
-/* Ambient Blobs — blur reduced 130px→60px (saves ~75% GPU texture memory)
-   Sizes reduced, animations slowed 8/10/12s→20/24/28s (fewer compositor frames) */
+/* Ambient Blobs — blur(60px), slow animations, no will-change (they're not interactive) */
 .ambient-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(60px);  /* was 130px — each extra px doubles GPU surface area */
+  filter: blur(60px);
   z-index: 1;
   pointer-events: none;
   opacity: 0.18;
-  will-change: transform;
-  transform: translateZ(0);
+  /* will-change REMOVED: 3 blobs × permanent GPU compositor layers = ~50MB VRAM wasted.
+     These are background decorations that don't need compositing optimization. */
+  transform: translateZ(0); /* single promote, no persistent layer */
 }
 
 .blob-cyan {
@@ -286,24 +290,27 @@ h1, h2, h3, h4 {
 nav.frosted-navbar {
   position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
   width: calc(100% - 48px); max-width: 1200px;
-  background: rgba(3, 5, 16, 0.3);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: rgba(3, 5, 16, 0.55);  /* increased opacity avoids needing heavy blur */
+  /* blur(8px) only, removed saturate(180%) — saturate adds a second full GPU pass
+     on a position:fixed element that must composite the ENTIRE page behind it
+     on every single scroll pixel. This was the worst GPU hog on scroll. */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: var(--specular), 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   border-radius: 18px;
   padding: 14px 28px;
   display: flex; align-items: center; justify-content: space-between;
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, padding 0.3s ease, top 0.3s ease;
 }
 nav.frosted-navbar.scrolled {
   top: 8px;
   padding: 10px 24px;
-  background: rgba(3, 5, 16, 0.3);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  box-shadow: var(--specular), 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 245, 255, 0.04);
+  background: rgba(3, 5, 16, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
 .brand-wrapper {

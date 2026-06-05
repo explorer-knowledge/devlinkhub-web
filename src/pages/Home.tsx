@@ -314,11 +314,10 @@ function TiltGlassCard({
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number | null>(null);   // RAF handle for throttling
+  const rafRef = useRef<number | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (window.innerWidth < 768 || 'ontouchstart' in window) return;
-    // Throttle via RAF — only one update per animation frame
     if (rafRef.current !== null) return;
     const clientX = e.clientX;
     const clientY = e.clientY;
@@ -340,6 +339,12 @@ function TiltGlassCard({
     });
   };
 
+  const handleMouseEnter = () => {
+    // ── FIX: apply will-change ONLY when hovering, not permanently ──
+    // Permanently setting will-change on 20+ cards = 20+ GPU compositor layers always allocated
+    if (cardRef.current) cardRef.current.style.willChange = "transform";
+  };
+
   const handleMouseLeave = () => {
     if (window.innerWidth < 768 || 'ontouchstart' in window) return;
     if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
@@ -347,6 +352,8 @@ function TiltGlassCard({
     const glow = glowRef.current;
     if (!card) return;
     card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+    // ── FIX: release compositor layer after hover ends ──
+    card.style.willChange = "auto";
     if (glow) glow.style.opacity = "0";
   };
 
@@ -354,7 +361,8 @@ function TiltGlassCard({
     <div
       ref={cardRef}
       className={`glass-card ${className}`}
-      style={{ ...style, transformStyle: "preserve-3d", willChange: "transform" }}
+      style={style}  // removed static willChange:"transform" from here
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
@@ -404,7 +412,7 @@ export default function Home() {
   /* --- Canvases --- */
   const heroCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  /* --- 1. Water Canvas Sine Mesh Animations --- */
+  /* --- 1. Water Canvas Sine Mesh Animation (desktop only) --- */
   useEffect(() => {
     if (isMobile || window.innerWidth < 1024 || 'ontouchstart' in window) return;
     const canvas = heroCanvasRef.current;
@@ -420,24 +428,26 @@ export default function Home() {
     };
     window.addEventListener("resize", handleResize, { passive: true });
 
-    // Reduced grid density: step 35px (was 25px) = 30% fewer draw calls
     const GRID_STEP = 35;
     const spacing = 70;
     const amplitude = 10;
     const frequency = 0.007;
     let frame = 0;
     let animId: number;
+    // ── FIX: pause when tab not visible ──
+    let isPaused = document.hidden;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      // Draw every 3rd frame only (~20fps) — visual quality unchanged, CPU/GPU load ~66% less
+      // ── CRITICAL: skip all work when tab is in background ──
+      if (isPaused) return;
+      // Draw every 3rd frame (~20fps)
       if (frame % 3 !== 0) { frame++; return; }
 
       ctx.clearRect(0, 0, w, h);
       ctx.strokeStyle = "rgba(0, 245, 255, 0.10)";
       ctx.lineWidth = 1;
 
-      // Horizontal lines
       for (let y = spacing; y < h; y += spacing) {
         ctx.beginPath();
         for (let x = 0; x <= w; x += GRID_STEP) {
@@ -448,7 +458,6 @@ export default function Home() {
         ctx.stroke();
       }
 
-      // Vertical lines
       for (let x = spacing; x < w; x += spacing) {
         ctx.beginPath();
         for (let y = 0; y <= h; y += GRID_STEP) {
@@ -458,16 +467,19 @@ export default function Home() {
         }
         ctx.stroke();
       }
-
       frame++;
     };
+
+    const onVisibilityChange = () => { isPaused = document.hidden; };
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     animate();
 
     return () => {
-      window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animId);
-      canvas.width = 0; canvas.height = 0; // release pixel buffer
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("resize", handleResize);
+      canvas.width = 0; canvas.height = 0;
     };
   }, []);
 
@@ -507,11 +519,18 @@ export default function Home() {
 
     let stepIdx = 0;
     let charIdx = 0;
-    let timeoutId: any;
-
-
+    let timeoutId: ReturnType<typeof setTimeout>;
+    // ── FIX: alive flag — guarantees loop stops even if mid-chain ──
+    // clearTimeout() only cancels the ONE currently scheduled callback.
+    // If the effect re-runs while a callback is queued, the old callback
+    // fires and schedules a new one, restarting the loop. The alive flag
+    // prevents any callback from scheduling further work after cleanup.
+    let alive = true;
 
     const execute = () => {
+      // ── CRITICAL: bail out immediately if effect was cleaned up ──
+      if (!alive) return;
+
       if (stepIdx >= steps.length) {
         stepIdx = 0;
         charIdx = 0;
@@ -551,8 +570,13 @@ export default function Home() {
     };
 
     timeoutId = setTimeout(execute, 500);
-    return () => clearTimeout(timeoutId);
-  }, [isTerminalSwapped, isMobile]);
+    return () => {
+      // ── Kill the chain: flag stops any in-flight callback from rescheduling ──
+      alive = false;
+      clearTimeout(timeoutId);
+    };
+  }, [isTerminalSwapped]);
+  // ── FIX: removed isMobile from deps — CLI animation doesn't need to restart on resize ──
 
   /* --- 3. Swapped CLI (Hackathon sequence) --- */
   useEffect(() => {
@@ -589,11 +613,13 @@ export default function Home() {
 
     let stepIdx = 0;
     let charIdx = 0;
-    let timeoutId: any;
-
-
+    let timeoutId: ReturnType<typeof setTimeout>;
+    // ── FIX: alive flag prevents mid-chain callbacks from rescheduling ──
+    let alive = true;
 
     const execute = () => {
+      if (!alive) return;  // bail immediately if cleaned up
+
       if (stepIdx >= steps.length) {
         setHackathonCliDone(true);
         return;
@@ -625,8 +651,12 @@ export default function Home() {
     };
 
     timeoutId = setTimeout(execute, 400);
-    return () => clearTimeout(timeoutId);
-  }, [isTerminalSwapped, isMobile]);
+    return () => {
+      alive = false;
+      clearTimeout(timeoutId);
+    };
+  }, [isTerminalSwapped]);
+  // ── FIX: removed isMobile from deps — sequence doesn't change on resize ──
 
   /* --- 4. Global Escape key listener --- */
   // REMOVED: merged into the single Escape handler above
