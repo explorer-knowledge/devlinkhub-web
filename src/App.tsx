@@ -1,17 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Lenis from "lenis";
-import { ParticlesProvider } from "@tsparticles/react";
-import { loadSlim } from "@tsparticles/slim";
-import type { Engine } from "@tsparticles/engine";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
-import Register from "./pages/Register";
-import Checkout from "./pages/Checkout";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentFailed from "./pages/PaymentFailed";
 import "./styles/mobile.css";
+
+// Lazy load all non-home pages — they only download when user navigates there
+// Saves ~300KB from initial bundle (Register alone is ~77KB)
+const Register = lazy(() => import("./pages/Register"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const PaymentFailed = lazy(() => import("./pages/PaymentFailed"));
+
+// Lightweight fallback — matches the dark bg so there's no flash
+const PageLoader = () => (
+  <div style={{ minHeight: "100vh", background: "#04020d", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ width: 32, height: 32, border: "2px solid rgba(0,242,254,0.15)", borderTop: "2px solid #00f2fe", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+  </div>
+);
 
 /**
  * Guards payment-flow routes.
@@ -35,15 +43,25 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Disable Lenis on mobile - it fights native touch scroll and causes lag
     const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
-    if (isMobile) return; // Let the browser handle scroll natively on mobile
+    if (isMobile) return;
 
     const lenis = new Lenis({
       duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
-    function raf(time: number) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
-    return () => { lenis.destroy(); };
+
+    // ── FIX: store rafId so it can be cancelled on unmount ──
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId); // ← was missing: RAF loop leaked on every re-mount
+      lenis.destroy();
+    };
   }, []);
 
   return (
@@ -56,16 +74,14 @@ function MainLayout({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  const initFn = async (engine: Engine) => { await loadSlim(engine); };
-
   return (
-    <ParticlesProvider init={initFn}>
-      <Router>
-        <ScrollToTop />
+    <Router>
+      <ScrollToTop />
+      <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<MainLayout><Home /></MainLayout>} />
 
-          {/* Registration form — standalone */}
+          {/* Lazy-loaded: only download JS when user navigates here */}
           <Route path="/register" element={<Register />} />
 
           {/* Payment flow — protected: only accessible via proper flow */}
@@ -73,8 +89,8 @@ function App() {
           <Route path="/payment-success" element={<PaymentGuard checkKey="devlinkhub_payment_result"><PaymentSuccess /></PaymentGuard>} />
           <Route path="/payment-failed" element={<PaymentGuard checkKey="devlinkhub_payment_result"><PaymentFailed /></PaymentGuard>} />
         </Routes>
-      </Router>
-    </ParticlesProvider>
+      </Suspense>
+    </Router>
   );
 }
 

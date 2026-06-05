@@ -52,8 +52,9 @@ const CustomSelect = ({
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        if (isOpen && onBlur) onBlur();
         setIsOpen(false);
+        // Only trigger blur/validation when closing WITHOUT selecting
+        if (isOpen && onBlur) onBlur();
       }
     };
     document.addEventListener("mousedown", handleClick);
@@ -86,10 +87,13 @@ const CustomSelect = ({
               <div
                 key={opt}
                 className={`rg-custom-select-option ${value === opt ? "selected" : ""}`}
+                onMouseDown={(e) => e.stopPropagation()} /* prevent outside-click blur firing */
                 onClick={() => {
                   onChange(opt);
                   setIsOpen(false);
-                  if (onBlur) onBlur();
+                  /* Do NOT call onBlur here — onChange already updates the value.
+                     Calling onBlur immediately causes validation to run against
+                     the stale (empty) value before React flushes the new state. */
                 }}
               >
                 {opt}
@@ -433,7 +437,12 @@ export default function Register() {
   };
   const handleLeaderChange = (field: keyof LeaderData, val: string) => {
     setLeader(p => ({ ...p, [field]: val }));
-    if (leaderTouched[field]) setLeaderErr(p => ({ ...p, [field]: validateLeaderField(field, val) }));
+    // For select fields (year), always validate immediately with the new value
+    // so we never show a stale "required" error right after selection
+    if (field === "year" || leaderTouched[field]) {
+      setLeaderTouched(p => ({ ...p, [field]: true }));
+      setLeaderErr(p => ({ ...p, [field]: validateLeaderField(field, val) }));
+    }
   };
 
   const isStep1Valid = () => TEAM_NAME_REGEX.test(teamName.trim());
@@ -524,7 +533,14 @@ export default function Register() {
       n[i] = { ...n[i], [field]: val };
       return n;
     });
-    if (membersTouched[i]?.[field]) {
+    // For year (select), always validate immediately — avoids false error on first pick
+    if (field === "year" || membersTouched[i]?.[field]) {
+      setMembersTouched(p => {
+        const n = [...p];
+        if (!n[i]) n[i] = {};
+        n[i][field] = true;
+        return n;
+      });
       setMembersErr(p => {
         const n = [...p];
         if (!n[i]) n[i] = {};

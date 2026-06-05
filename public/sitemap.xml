@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Homepage — highest priority -->
+  <url>
+    <loc>https://event.devlinkhub.in/</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://event.devlinkhub.in/"/>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/logos/DevLink_Vertical_Logo-white.png</image:loc>
+      <image:title>DevLinkHub IGNITE 2026 — National Hackathon</image:title>
+      <image:caption>DevLinkHub IGNITE 2026 — National Hackathon &amp; Developer Workshop, Central India, 20–21 September 2026</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Registration page -->
+  <url>
+    <loc>https://event.devlinkhub.in/register</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+</urlset>
