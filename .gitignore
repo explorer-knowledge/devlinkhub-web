@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backend repo — separate git repository, must NOT be tracked here
+# (was accidentally stored as a phantom git submodule causing Vercel build warning)
+backend/
