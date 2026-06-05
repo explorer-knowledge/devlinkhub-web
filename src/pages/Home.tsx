@@ -1622,7 +1622,13 @@ export default function Home() {
                   style={{ cursor: "pointer" }}
                 >
                   {org.image ? (
-                    <img src={org.image} alt={org.name} className="organizer-avatar" />
+                    <img
+                      src={org.image}
+                      alt={org.name}
+                      className="organizer-avatar"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ) : (
                     <div className="organizer-avatar-placeholder">{org.init}</div>
                   )}
@@ -1698,6 +1704,8 @@ export default function Home() {
                       src={selectedOrg.image}
                       alt={selectedOrg.name}
                       className="org-modal-portrait"
+                      loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div
