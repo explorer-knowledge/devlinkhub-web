@@ -3,7 +3,7 @@
  * In a real application, these functions would perform fetch/axios calls to your backend.
  */
 
-const BACKEND_URL = `https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon`;
+export const BACKEND_URL = `https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon`;
 
 export interface RegisterPayload {
   teamName: string;
@@ -28,6 +28,8 @@ export interface OrderResponse {
   amount: number;
   keyId?: string;
 }
+
+
 
 export interface VerifyPaymentPayload {
   orderId: string;
@@ -88,6 +90,9 @@ export const API = {
     return { success: true, orderId: data.orderId, amount: data.amount, keyId: data.keyId };
   },
 
+
+  
+
   async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string; regId?: string }> {
     // In a real system, the webhook handles the verification asynchronously.
     // We can poll the status endpoint to check if the registration was successful.
@@ -112,3 +117,5 @@ export const API = {
     return { success: true, message: "Payment successful. Awaiting final confirmation." };
   }
 };
+
+

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { API } from "../services/api";
+import { API, BACKEND_URL } from "../services/api";
 import "../styles/register.css";
 
 /* ── Validation ── */
@@ -25,10 +25,10 @@ interface LeaderData {
 const emptyMember = (): MemberData => ({ name: "", email: "", mobile: "", college: "", branch: "", year: "" });
 
 const FORM_STEPS = [
-  { id: 1, label: "Team Details",   short: "01" },
-  { id: 2, label: "Leader Info",    short: "02" },
-  { id: 3, label: "Team Members",   short: "03" },
-  { id: 4, label: "Review",         short: "04" },
+  { id: 1, label: "Team Details", short: "01" },
+  { id: 2, label: "Leader Info", short: "02" },
+  { id: 3, label: "Team Members", short: "03" },
+  { id: 4, label: "Review", short: "04" },
 ];
 
 
@@ -201,13 +201,13 @@ const renderPromoIcon = (size = 16, extraStyle = {}) => (
 
 export default function Register() {
   const navigate = useNavigate();
-  const canvasRef   = useRef<HTMLCanvasElement>(null);
-  const mouseRef    = useRef({ x: 0.5, y: 0.5 });
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: 0.5, y: 0.5 });
 
   /* ── Form Steps ── */
-  const [step,        setStep]        = useState<"form"|"checkout"|"success">("form");
-  const [formStep,    setFormStep]    = useState(1);
-  const [teamName,    setTeamName]    = useState("");
+  const [step, setStep] = useState<"form" | "checkout" | "success">("form");
+  const [formStep, setFormStep] = useState(1);
+  const [teamName, setTeamName] = useState("");
   const [teamNameErr, setTeamNameErr] = useState("");
 
   const [leader, setLeader] = useState<LeaderData>({
@@ -222,19 +222,19 @@ export default function Register() {
   const [expandedMember, setExpandedMember] = useState<number | null>(null);
 
   /* ── Promo ── */
-  const [promoOpen,     setPromoOpen]     = useState(false);
-  const [promoInput,    setPromoInput]    = useState("");
-  const [appliedPromo,  setAppliedPromo]  = useState<string|null>(null);
-  const [promoError,    setPromoError]    = useState("");
-  const [discountAmt,   setDiscountAmt]   = useState(0);
-  const [finalAmount,   setFinalAmount]   = useState(349);
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const [promoError, setPromoError] = useState("");
+  const [discountAmt, setDiscountAmt] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(349);
 
   /* ── Checkout / Success ── */
   const [checkoutTimeLeft, setCheckoutTimeLeft] = useState(300);
-  const [timerActive,      setTimerActive]      = useState(false);
-  const [showRzpModal]     = useState(false);
-  const [registrationId]   = useState("");
-  const [paymentId]        = useState("");
+  const [timerActive, setTimerActive] = useState(false);
+  const [showRzpModal] = useState(false);
+  const [registrationId] = useState("");
+  const [paymentId] = useState("");
 
   /* ── Toast ── */
   const [toast, setToast] = useState("");
@@ -244,7 +244,32 @@ export default function Register() {
   };
 
   /* ── Seat counter (animated) ── */
-  const [seats] = useState(73);
+  const [seats, setSeats] = useState<number | null>(null);
+
+  /* ── Live Registration Count via SSE ── */
+  useEffect(() => {
+    const source = new EventSource(`${BACKEND_URL}/live-count`);
+
+    source.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        // data.count = teams registered. You can derive remaining seats:
+        const TOTAL_SEATS = 100; // or whatever your max is
+        setSeats(TOTAL_SEATS - data.count);
+      } catch (err) {
+        console.error('Failed to parse SSE count:', err);
+      }
+    };
+
+    source.onerror = () => {
+      console.warn('SSE connection lost. Browser will retry automatically.');
+    };
+
+    return () => {
+      source.close(); // cleanup when component unmounts
+    };
+  }, []);
+
 
   /* ── Countdown to event ── */
   const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
@@ -303,11 +328,11 @@ export default function Register() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
     if (window.innerWidth < 1024 || 'ontouchstart' in window) return; // Prevent heavy canvas lag on touch/mobile devices
-    let W = canvas.width  = window.innerWidth;
+    let W = canvas.width = window.innerWidth;
     let H = canvas.height = window.innerHeight;
     let animId: number;
 
-    const particles: { x:number; y:number; vx:number; vy:number; r:number; alpha:number }[] = [];
+    const particles: { x: number; y: number; vx: number; vy: number; r: number; alpha: number }[] = [];
     for (let i = 0; i < 60; i++) {
       particles.push({
         x: Math.random() * W, y: Math.random() * H,
@@ -317,7 +342,7 @@ export default function Register() {
     }
 
     const onResize = () => {
-      W = canvas.width  = window.innerWidth;
+      W = canvas.width = window.innerWidth;
       H = canvas.height = window.innerHeight;
     };
     window.addEventListener("resize", onResize);
@@ -330,8 +355,8 @@ export default function Register() {
       ctx.strokeStyle = "rgba(0,242,254,0.04)";
       ctx.lineWidth = 1;
       const gs = 60;
-      for (let x = 0; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-      for (let y = 0; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+      for (let x = 0; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+      for (let y = 0; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
 
       /* Aurora blobs */
       const mx = mouseRef.current.x * W;
@@ -339,21 +364,21 @@ export default function Register() {
       const g1 = ctx.createRadialGradient(mx, my, 0, mx, my, 500);
       g1.addColorStop(0, "rgba(0,242,254,0.06)");
       g1.addColorStop(1, "transparent");
-      ctx.fillStyle = g1; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
 
       const ax = W * 0.2 + Math.sin(t * 0.3) * 100;
       const ay = H * 0.3 + Math.cos(t * 0.2) * 80;
       const g2 = ctx.createRadialGradient(ax, ay, 0, ax, ay, 400);
       g2.addColorStop(0, "rgba(139,92,246,0.08)");
       g2.addColorStop(1, "transparent");
-      ctx.fillStyle = g2; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
 
       const bx = W * 0.8 + Math.cos(t * 0.25) * 120;
       const by = H * 0.7 + Math.sin(t * 0.35) * 60;
       const g3 = ctx.createRadialGradient(bx, by, 0, bx, by, 350);
       g3.addColorStop(0, "rgba(0,255,135,0.05)");
       g3.addColorStop(1, "transparent");
-      ctx.fillStyle = g3; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = g3; ctx.fillRect(0, 0, W, H);
 
       /* Particles */
       particles.forEach(p => {
@@ -385,7 +410,7 @@ export default function Register() {
 
   const validateLeaderField = (field: keyof LeaderData, val: string): string => {
     const v = val.trim();
-    switch(field) {
+    switch (field) {
       case "name":
         if (!v) return "Name is required";
         return !NAME_REGEX.test(v) ? "Enter a valid name (letters, spaces, periods only)" : "";
@@ -409,7 +434,7 @@ export default function Register() {
 
   const validateMemberField = (field: keyof MemberData, val: string): string => {
     const v = val.trim();
-    switch(field) {
+    switch (field) {
       case "name":
         if (!v) return "Name is required";
         return !NAME_REGEX.test(v) ? "Enter a valid name (letters, spaces, periods only)" : "";
@@ -447,7 +472,7 @@ export default function Register() {
 
   const isStep1Valid = () => TEAM_NAME_REGEX.test(teamName.trim());
   const isStep2Valid = () => {
-    const fields: (keyof LeaderData)[] = ["name","email","mobile","college","branch","year"];
+    const fields: (keyof LeaderData)[] = ["name", "email", "mobile", "college", "branch", "year"];
     return fields.every(f => !validateLeaderField(f, leader[f]));
   };
 
@@ -461,18 +486,18 @@ export default function Register() {
 
   const nextStep = () => {
     if (formStep === 1 && !isStep1Valid()) {
-       triggerToast("Please enter a valid Team Name (min 3 chars).");
-       return;
+      triggerToast("Please enter a valid Team Name (min 3 chars).");
+      return;
     }
     if (formStep === 2) {
-      const fields: (keyof LeaderData)[] = ["name","email","mobile","college","branch","year"];
+      const fields: (keyof LeaderData)[] = ["name", "email", "mobile", "college", "branch", "year"];
       const newTouched: Partial<Record<keyof LeaderData, boolean>> = {};
       const newErr: Partial<LeaderData> = {};
       fields.forEach(f => { newTouched[f] = true; newErr[f] = validateLeaderField(f, leader[f]); });
       setLeaderTouched(newTouched); setLeaderErr(newErr);
       if (!isStep2Valid()) {
-         triggerToast("Please fill all leader details correctly.");
-         return;
+        triggerToast("Please fill all leader details correctly.");
+        return;
       }
     }
     if (formStep === 3) {
@@ -491,8 +516,8 @@ export default function Register() {
       setMembersErr(newErr);
 
       if (!isStep3Valid()) {
-         triggerToast("Please fill all required fields for your team members, or remove them.");
-         return;
+        triggerToast("Please fill all required fields for your team members, or remove them.");
+        return;
       }
     }
     if (formStep < 4) setFormStep(f => f + 1);
@@ -563,14 +588,14 @@ export default function Register() {
 
   /* ── Submit ── */
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const handleSubmit = async () => {
     if (!isStep1Valid() || !isStep2Valid() || !isStep3Valid()) {
       triggerToast("Please fill all details correctly before proceeding.");
       return;
     }
     setIsSubmitting(true);
-    
+
     const payload = {
       teamName,
       leaderName: leader.name,
@@ -588,7 +613,7 @@ export default function Register() {
       discountAmount: 0,
       finalAmount
     };
-    
+
     try {
       const res = await API.createOrder(payload);
       if (res.success) {
@@ -600,40 +625,40 @@ export default function Register() {
           description: "Hackathon Registration",
           order_id: res.orderId,
           handler: async function (response: any) {
-             setIsSubmitting(true);
-             try {
-               const verifyRes = await API.verifyPayment({ 
-                 orderId: res.orderId, 
-                 paymentId: response.razorpay_payment_id, 
-                 signature: response.razorpay_signature, 
-                 status: "success" 
-               });
-               
-               const regId = verifyRes.regId || `DLH-${Math.floor(1000 + Math.random() * 9000)}`;
-               localStorage.setItem("devlinkhub_payment_result", JSON.stringify({
-                 status: verifyRes.success ? "success" : "failed", 
-                 registrationId: regId, 
-                 paymentId: response.razorpay_payment_id,
-                 orderId: res.orderId,
-                 finalAmount: payload.finalAmount, 
-                 appliedPromo: payload.appliedPromo, 
-                 teamName: payload.teamName,
-                 leaderName: payload.leaderName, 
-                 members: payload.members ?? [],
-                 collegeName: payload.collegeName, 
-                 email: payload.email,
-               }));
-               
-               if (verifyRes.success) {
-                  navigate("/payment-success");
-               } else {
-                  navigate("/payment-failed");
-               }
-             } catch(err) {
-               navigate("/payment-failed");
-             } finally {
-               setIsSubmitting(false);
-             }
+            setIsSubmitting(true);
+            try {
+              const verifyRes = await API.verifyPayment({
+                orderId: res.orderId,
+                paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+                status: "success"
+              });
+
+              const regId = verifyRes.regId || `DLH-${Math.floor(1000 + Math.random() * 9000)}`;
+              localStorage.setItem("devlinkhub_payment_result", JSON.stringify({
+                status: verifyRes.success ? "success" : "failed",
+                registrationId: regId,
+                paymentId: response.razorpay_payment_id,
+                orderId: res.orderId,
+                finalAmount: payload.finalAmount,
+                appliedPromo: payload.appliedPromo,
+                teamName: payload.teamName,
+                leaderName: payload.leaderName,
+                members: payload.members ?? [],
+                collegeName: payload.collegeName,
+                email: payload.email,
+              }));
+
+              if (verifyRes.success) {
+                navigate("/payment-success");
+              } else {
+                navigate("/payment-failed");
+              }
+            } catch (err) {
+              navigate("/payment-failed");
+            } finally {
+              setIsSubmitting(false);
+            }
           },
           prefill: {
             name: payload.leaderName,
@@ -656,15 +681,15 @@ export default function Register() {
   };
 
   /* ── Payment (Legacy) ── */
-  const handlePayment = () => {};
+  const handlePayment = () => { };
 
   /* ── Download ticket ── */
   const downloadTicket = () => {
     const c = document.createElement("canvas"); c.width = 800; c.height = 400;
     const ctx = c.getContext("2d")!;
-    const g = ctx.createLinearGradient(0,0,800,400);
-    g.addColorStop(0,"#04020d"); g.addColorStop(1,"#0a0618");
-    ctx.fillStyle = g; ctx.fillRect(0,0,800,400);
+    const g = ctx.createLinearGradient(0, 0, 800, 400);
+    g.addColorStop(0, "#04020d"); g.addColorStop(1, "#0a0618");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, 800, 400);
     ctx.fillStyle = "#00f2fe"; ctx.font = "bold 28px sans-serif"; ctx.fillText("DEVLINKHUB IGNITE 2026", 40, 60);
     ctx.fillStyle = "#fff"; ctx.font = "18px sans-serif";
     ctx.fillText(`Team: ${teamName}`, 40, 110);
@@ -675,7 +700,7 @@ export default function Register() {
     const a = document.createElement("a"); a.href = url; a.download = `IGNITE-${teamName}.png`; a.click();
   };
 
-  const formatTime = (s: number) => `${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`;
+  const formatTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   /* ── RENDER ── */
   return (
@@ -697,9 +722,9 @@ export default function Register() {
         </div>
         <div className="rg-nav-right">
           <div className="rg-nav-countdown">
-            {[{v:countdown.d,l:"D"},{v:countdown.h,l:"H"},{v:countdown.m,l:"M"},{v:countdown.s,l:"S"}].map(({v,l})=>(
+            {[{ v: countdown.d, l: "D" }, { v: countdown.h, l: "H" }, { v: countdown.m, l: "M" }, { v: countdown.s, l: "S" }].map(({ v, l }) => (
               <div key={l} className="rg-cd-unit">
-                <span className="rg-cd-num">{String(v).padStart(2,"0")}</span>
+                <span className="rg-cd-num">{String(v).padStart(2, "0")}</span>
                 <span className="rg-cd-label">{l}</span>
               </div>
             ))}
@@ -714,7 +739,7 @@ export default function Register() {
               FORM STEP
           ═══════════════════════════════════════════ */}
           {step === "form" && (
-            <motion.div key="form" initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-24}}
+            <motion.div key="form" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -24 }}
               className="rg-grid">
 
               {/* ────────────── LEFT PANEL ────────────── */}
@@ -723,30 +748,36 @@ export default function Register() {
                   <div className="rg-left-badge" style={{ display: "inline-flex", alignItems: "center" }}>
                     {renderZapIcon(12, { marginRight: "4px" })} ignite.details
                   </div>
-                  <h2 className="rg-left-title">DEVLINKHUB<br/><span>IGNITE 2026</span></h2>
+                  <h2 className="rg-left-title">DEVLINKHUB<br /><span>IGNITE 2026</span></h2>
                   <p className="rg-left-tagline">Build. Connect. Grow.</p>
 
                   {/* Seat counter */}
                   <div className="rg-seat-bar">
                     <div className="rg-seat-top">
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                        <span className="rg-pulse-dot" style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--accent-green)", boxShadow: "0 0 8px var(--accent-green)" }} />
-                        {seats} Seats Remaining
+                      <span>
+                        <span className="rg-pulse-dot" />
+                        {seats === null ? "—" : `${seats} Seats Remaining`}
                       </span>
-                      <span className="rg-seat-pct">{Math.round((seats/100)*100)}%</span>
+                      <span className="rg-seat-pct">
+                        {seats === null ? "—" : `${Math.round((seats / 100) * 100)}%`}
+                      </span>
                     </div>
                     <div className="rg-seat-track">
-                      <motion.div className="rg-seat-fill" initial={{width:0}} animate={{width:`${seats}%`}} transition={{duration:1.2,ease:"easeOut"}} />
+                      <motion.div
+                        className="rg-seat-fill"
+                        animate={{ width: seats === null ? "0%" : `${seats}%` }}
+                      />
                     </div>
                   </div>
+
 
                   {/* Event details */}
                   <div className="rg-left-items">
                     {[
-                      {icon:"calendar", text:"20–21 June 2026", sub:"Mark your calendar"},
-                      {icon:"users", text:"Team Size: 1–4 Members", sub:"Solo or squad"},
-                      {icon:"education", text:"Open for College Students", sub:"Undergrads & graduates"},
-                      {icon:"trophy", text:"Workshop + Hackathon", sub:"Full event access"},
+                      { icon: "calendar", text: "20–21 June 2026", sub: "Mark your calendar" },
+                      { icon: "users", text: "Team Size: 1–4 Members", sub: "Solo or squad" },
+                      { icon: "education", text: "Open for College Students", sub: "Undergrads & graduates" },
+                      { icon: "trophy", text: "Workshop + Hackathon", sub: "Full event access" },
                     ].map(d => (
                       <div key={d.text} className="rg-left-item">
                         <span className="rg-li-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>{renderLeftItemIcon(d.icon)}</span>
@@ -763,7 +794,7 @@ export default function Register() {
                   {/* Includes */}
                   <div className="rg-includes-title">What's Included</div>
                   <ul className="rg-includes">
-                    {["Workshop Access","Hackathon Entry","Participation Certificate","Community Membership","Networking Opportunities","Mentor Sessions","Refreshments"].map(i=>(
+                    {["Workshop Access", "Hackathon Entry", "Participation Certificate", "Community Membership", "Networking Opportunities", "Mentor Sessions", "Refreshments"].map(i => (
                       <li key={i}><span className="rg-check">✓</span>{i}</li>
                     ))}
                   </ul>
@@ -772,13 +803,13 @@ export default function Register() {
                   <div className="rg-left-countdown">
                     <div className="rg-lc-label">Event starts in</div>
                     <div className="rg-lc-row">
-                      {[{v:countdown.d,l:"Days"},{v:countdown.h,l:"Hrs"},{v:countdown.m,l:"Min"},{v:countdown.s,l:"Sec"}].map(({v,l})=>(
+                      {[{ v: countdown.d, l: "Days" }, { v: countdown.h, l: "Hrs" }, { v: countdown.m, l: "Min" }, { v: countdown.s, l: "Sec" }].map(({ v, l }) => (
                         <div key={l} className="rg-lc-unit">
                           <AnimatePresence mode="wait">
                             <motion.span key={v} className="rg-lc-num"
-                              initial={{y:-10,opacity:0}} animate={{y:0,opacity:1}} exit={{y:10,opacity:0}}
-                              transition={{duration:0.2}}>
-                              {String(v).padStart(2,"0")}
+                              initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}
+                              transition={{ duration: 0.2 }}>
+                              {String(v).padStart(2, "0")}
                             </motion.span>
                           </AnimatePresence>
                           <span className="rg-lc-sub">{l}</span>
@@ -803,12 +834,12 @@ export default function Register() {
                 <div className="rg-progress">
                   <div className="rg-progress-track">
                     <motion.div className="rg-progress-fill"
-                      animate={{width:`${((formStep-1)/3)*100}%`}}
-                      transition={{duration:0.5,ease:"easeOut"}} />
+                      animate={{ width: `${((formStep - 1) / 3) * 100}%` }}
+                      transition={{ duration: 0.5, ease: "easeOut" }} />
                   </div>
                   <div className="rg-steps-row">
                     {FORM_STEPS.map(s => (
-                      <button key={s.id} className={`rg-step-btn ${formStep===s.id?"active":""} ${formStep>s.id?"done":""}`}
+                      <button key={s.id} className={`rg-step-btn ${formStep === s.id ? "active" : ""} ${formStep > s.id ? "done" : ""}`}
                         onClick={() => s.id < formStep && setFormStep(s.id)}>
                         <span className="rg-step-num">{formStep > s.id ? "✓" : s.short}</span>
                         <span className="rg-step-lbl">{s.label}</span>
@@ -823,8 +854,8 @@ export default function Register() {
                   {/* ── STEP 1: Team Details ── */}
                   {formStep === 1 && (
                     <motion.div key="s1" className="rg-step-panel"
-                      initial={{opacity:0,x:40}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-40}}
-                      transition={{duration:0.3}}>
+                      initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.3 }}>
                       <div className="rg-panel-title">
                         <span className="rg-pn-num">01</span>
                         <div><div className="rg-pn-label">Team Details</div><div className="rg-pn-sub">Name your team and pick your challenge</div></div>
@@ -852,7 +883,7 @@ export default function Register() {
 
 
 
-                      <button className={`rg-next-btn ${isStep1Valid()?"active":""}`}
+                      <button className={`rg-next-btn ${isStep1Valid() ? "active" : ""}`}
                         onClick={nextStep} disabled={!isStep1Valid()}>
                         Continue to Leader Info <span>→</span>
                       </button>
@@ -862,8 +893,8 @@ export default function Register() {
                   {/* ── STEP 2: Leader Details ── */}
                   {formStep === 2 && (
                     <motion.div key="s2" className="rg-step-panel"
-                      initial={{opacity:0,x:40}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-40}}
-                      transition={{duration:0.3}}>
+                      initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.3 }}>
                       <div className="rg-panel-title">
                         <span className="rg-pn-num">02</span>
                         <div><div className="rg-pn-label">Leader Info</div><div className="rg-pn-sub">Your contact & academic details</div></div>
@@ -874,7 +905,7 @@ export default function Register() {
                         <div className="rg-field-group">
                           <label className="rg-label">Full Name</label>
                           <div className="rg-input-wrap">
-                            <input className={`rg-input ${leaderTouched.name?(leaderErr.name?"invalid":"valid"):""}`}
+                            <input className={`rg-input ${leaderTouched.name ? (leaderErr.name ? "invalid" : "valid") : ""}`}
                               placeholder="Your full name"
                               value={leader.name}
                               onChange={e => handleLeaderChange("name", e.target.value)}
@@ -888,7 +919,7 @@ export default function Register() {
                         <div className="rg-field-group">
                           <label className="rg-label">Email Address</label>
                           <div className="rg-input-wrap">
-                            <input className={`rg-input ${leaderTouched.email?(leaderErr.email?"invalid":"valid"):""}`}
+                            <input className={`rg-input ${leaderTouched.email ? (leaderErr.email ? "invalid" : "valid") : ""}`}
                               type="email" placeholder="leader@college.edu"
                               value={leader.email}
                               onChange={e => handleLeaderChange("email", e.target.value)}
@@ -905,7 +936,7 @@ export default function Register() {
                         <div className="rg-field-group">
                           <label className="rg-label">Mobile Number</label>
                           <div className="rg-input-wrap">
-                            <input className={`rg-input ${leaderTouched.mobile?(leaderErr.mobile?"invalid":"valid"):""}`}
+                            <input className={`rg-input ${leaderTouched.mobile ? (leaderErr.mobile ? "invalid" : "valid") : ""}`}
                               type="tel" placeholder="10-digit number" maxLength={10}
                               value={leader.mobile}
                               onChange={e => handleLeaderChange("mobile", e.target.value)}
@@ -919,7 +950,7 @@ export default function Register() {
                         <div className="rg-field-group">
                           <label className="rg-label">College Name</label>
                           <div className="rg-input-wrap">
-                            <input className={`rg-input ${leaderTouched.college?(leaderErr.college?"invalid":"valid"):""}`}
+                            <input className={`rg-input ${leaderTouched.college ? (leaderErr.college ? "invalid" : "valid") : ""}`}
                               placeholder="University / Institute"
                               value={leader.college}
                               onChange={e => handleLeaderChange("college", e.target.value)}
@@ -935,7 +966,7 @@ export default function Register() {
                         <div className="rg-field-group">
                           <label className="rg-label">Branch</label>
                           <div className="rg-input-wrap">
-                            <input className={`rg-input ${leaderTouched.branch?(leaderErr.branch?"invalid":"valid"):""}`}
+                            <input className={`rg-input ${leaderTouched.branch ? (leaderErr.branch ? "invalid" : "valid") : ""}`}
                               placeholder="e.g. CSE, IT, ECE"
                               value={leader.branch}
                               onChange={e => handleLeaderChange("branch", e.target.value)}
@@ -964,7 +995,7 @@ export default function Register() {
 
                       <div className="rg-btn-row">
                         <button className="rg-back-btn" onClick={() => setFormStep(1)}>← Back</button>
-                        <button className={`rg-next-btn ${isStep2Valid()?"active":""}`} onClick={nextStep} disabled={!isStep2Valid()}>
+                        <button className={`rg-next-btn ${isStep2Valid() ? "active" : ""}`} onClick={nextStep} disabled={!isStep2Valid()}>
                           Add Team Members <span>→</span>
                         </button>
                       </div>
@@ -974,8 +1005,8 @@ export default function Register() {
                   {/* ── STEP 3: Team Members ── */}
                   {formStep === 3 && (
                     <motion.div key="s3" className="rg-step-panel"
-                      initial={{opacity:0,x:40}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-40}}
-                      transition={{duration:0.3}}>
+                      initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.3 }}>
                       <div className="rg-panel-title">
                         <span className="rg-pn-num">03</span>
                         <div><div className="rg-pn-label">Team Members</div><div className="rg-pn-sub">Add up to 3 more members (optional)</div></div>
@@ -983,7 +1014,7 @@ export default function Register() {
 
                       {/* Leader card (always visible) */}
                       <div className="rg-member-card leader-card">
-                        <div className="rg-mc-avatar" style={{background: AVATAR_COLORS[0]}}>
+                        <div className="rg-mc-avatar" style={{ background: AVATAR_COLORS[0] }}>
                           {leader.name ? leader.name[0].toUpperCase() : "L"}
                         </div>
                         <div className="rg-mc-info">
@@ -996,22 +1027,22 @@ export default function Register() {
                       {/* Additional members */}
                       {members.map((m, i) => (
                         <div key={i} className="rg-member-card expandable">
-                          <button className="rg-mc-toggle" onClick={() => setExpandedMember(expandedMember===i?null:i)}>
-                            <div className="rg-mc-avatar" style={{background: AVATAR_COLORS[i+1]}}>
-                              {m.name ? m.name[0].toUpperCase() : String(i+2)}
+                          <button className="rg-mc-toggle" onClick={() => setExpandedMember(expandedMember === i ? null : i)}>
+                            <div className="rg-mc-avatar" style={{ background: AVATAR_COLORS[i + 1] }}>
+                              {m.name ? m.name[0].toUpperCase() : String(i + 2)}
                             </div>
                             <div className="rg-mc-info">
-                              <div className="rg-mc-name">{m.name || `Member ${i+2}`}</div>
+                              <div className="rg-mc-name">{m.name || `Member ${i + 2}`}</div>
                               <div className="rg-mc-sub">{m.email || "Click to expand"}</div>
                             </div>
-                            <span className="rg-mc-chevron">{expandedMember===i?"▲":"▼"}</span>
+                            <span className="rg-mc-chevron">{expandedMember === i ? "▲" : "▼"}</span>
                           </button>
 
                           <AnimatePresence>
                             {expandedMember === i && (
                               <motion.div className="rg-mc-fields"
-                                initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}}
-                                exit={{height:0,opacity:0}} transition={{duration:0.25}}>
+                                initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}>
                                 <div className="rg-field-row">
                                   {/* Full Name */}
                                   <div className="rg-field-group">
@@ -1127,7 +1158,7 @@ export default function Register() {
                       ))}
 
                       {members.length < 3 && (
-                        <motion.button className="rg-add-member-btn" onClick={addMember} whileHover={{scale:1.02}} whileTap={{scale:0.98}}>
+                        <motion.button className="rg-add-member-btn" onClick={addMember} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                           <span className="rg-amb-icon">+</span>
                           Add Team Member
                           <span className="rg-amb-count">{members.length}/3</span>
@@ -1146,8 +1177,8 @@ export default function Register() {
                   {/* ── STEP 4: Review ── */}
                   {formStep === 4 && (
                     <motion.div key="s4" className="rg-step-panel"
-                      initial={{opacity:0,x:40}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-40}}
-                      transition={{duration:0.3}}>
+                      initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.3 }}>
                       <div className="rg-panel-title">
                         <span className="rg-pn-num">04</span>
                         <div><div className="rg-pn-label">Review</div><div className="rg-pn-sub">Confirm your registration details</div></div>
@@ -1170,13 +1201,13 @@ export default function Register() {
                           <div className="rg-rs-row"><span>College</span><strong>{leader.college}</strong></div>
                           <div className="rg-rs-row"><span>Branch / Year</span><strong>{leader.branch} · {leader.year}</strong></div>
                         </div>
-                        {members.filter(m=>m.name).length > 0 && (
+                        {members.filter(m => m.name).length > 0 && (
                           <>
                             <div className="rg-review-divider" />
                             <div className="rg-review-section">
                               <div className="rg-rs-label">Team Members</div>
-                              {members.filter(m=>m.name).map((m,i)=>(
-                                <div key={i} className="rg-rs-row"><span>Member {i+2}</span><strong>{m.name}{m.college ? ` · ${m.college}` : ""}{m.branch ? `, ${m.branch}` : ""}</strong></div>
+                              {members.filter(m => m.name).map((m, i) => (
+                                <div key={i} className="rg-rs-row"><span>Member {i + 2}</span><strong>{m.name}{m.college ? ` · ${m.college}` : ""}{m.branch ? `, ${m.branch}` : ""}</strong></div>
                               ))}
                             </div>
                           </>
@@ -1221,7 +1252,7 @@ export default function Register() {
                   </div>
                   <div className="rg-pc-divider" />
                   <div className="rg-pc-features">
-                    {["2-Day Full Access","Workshop Cert.","Hackathon Prizes","Community Access","Mentor Sessions"].map(f=>(
+                    {["2-Day Full Access", "Workshop Cert.", "Hackathon Prizes", "Community Access", "Mentor Sessions"].map(f => (
                       <div key={f} className="rg-pc-feat"><span>✓</span>{f}</div>
                     ))}
                   </div>
@@ -1229,15 +1260,15 @@ export default function Register() {
 
                 {/* Promo Code */}
                 <div className="rg-promo-wrap">
-                  <button className="rg-promo-toggle" onClick={() => setPromoOpen(p=>!p)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                  <button className="rg-promo-toggle" onClick={() => setPromoOpen(p => !p)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
                     <span style={{ display: "inline-flex", alignItems: "center" }}>
                       {renderPromoIcon(16, { marginRight: "6px" })} Have a promo code?
                     </span>
-                    <span className={`rg-promo-chevron ${promoOpen?"open":""}`}>▼</span>
+                    <span className={`rg-promo-chevron ${promoOpen ? "open" : ""}`}>▼</span>
                   </button>
                   <AnimatePresence>
                     {promoOpen && (
-                      <motion.div className="rg-promo-body" initial={{height:0,opacity:0}} animate={{height:"auto",opacity:1}} exit={{height:0,opacity:0}} transition={{duration:0.25}}>
+                      <motion.div className="rg-promo-body" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}>
                         <div className="rg-promo-row">
                           <input className="rg-promo-input" placeholder="Enter code"
                             value={promoInput} onChange={e => setPromoInput(e.target.value.toUpperCase())}
@@ -1258,7 +1289,7 @@ export default function Register() {
                   <div className="rg-pr-row"><span>Original Price</span><span>₹349</span></div>
                   <AnimatePresence>
                     {appliedPromo && (
-                      <motion.div className="rg-pr-row discount" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
+                      <motion.div className="rg-pr-row discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         <span>Discount ({appliedPromo})</span><span>−₹{discountAmt}</span>
                       </motion.div>
                     )}
@@ -1282,7 +1313,7 @@ export default function Register() {
 
                 {/* Trust badges */}
                 <div className="rg-trust">
-                  {["256-bit SSL","Instant Verify","Razorpay Trusted","Safe Payments","No Hidden Charges"].map(b=>(
+                  {["256-bit SSL", "Instant Verify", "Razorpay Trusted", "Safe Payments", "No Hidden Charges"].map(b => (
                     <div key={b} className="rg-trust-badge">{b}</div>
                   ))}
                 </div>
@@ -1296,7 +1327,7 @@ export default function Register() {
               CHECKOUT STEP
           ═══════════════════════════════════════════ */}
           {step === "checkout" && (
-            <motion.div key="checkout" initial={{opacity:0,scale:0.97}} animate={{opacity:1,scale:1}} exit={{opacity:0}}
+            <motion.div key="checkout" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
               className="rg-checkout-wrap">
               <div className="rg-checkout-card">
                 <div className="rg-co-header">
@@ -1311,7 +1342,7 @@ export default function Register() {
                     <div className="rg-co-secure" style={{ display: "inline-flex", alignItems: "center" }}>
                       {renderLockIcon(12, { marginRight: "4px" })} Secure Checkout
                     </div>
-                    <div className={`rg-co-timer ${checkoutTimeLeft<60?"urgent":""}`} style={{ display: "inline-flex", alignItems: "center" }}>
+                    <div className={`rg-co-timer ${checkoutTimeLeft < 60 ? "urgent" : ""}`} style={{ display: "inline-flex", alignItems: "center" }}>
                       {renderClockIcon(12, { marginRight: "4px" })} {formatTime(checkoutTimeLeft)}
                     </div>
                   </div>
@@ -1325,7 +1356,7 @@ export default function Register() {
                       <div className="rg-co-row"><span>Team</span><strong>{teamName}</strong></div>
                       <div className="rg-co-row"><span>Leader</span><strong>{leader.name}</strong></div>
 
-                      <div className="rg-co-row"><span>Members</span><strong>{1 + members.filter(m=>m.name).length}</strong></div>
+                      <div className="rg-co-row"><span>Members</span><strong>{1 + members.filter(m => m.name).length}</strong></div>
                       <div className="rg-co-divider" />
                       <div className="rg-co-row total-row"><span>Total</span><strong className="rg-co-total">₹{finalAmount}</strong></div>
                     </div>
@@ -1333,11 +1364,11 @@ export default function Register() {
                     <div className="rg-co-upi">
                       <div className="rg-co-upi-label">Pay using UPI</div>
                       <div className="rg-co-upi-apps">
-                        {[{bg:"#fff",t:"#000",label:"GPay"},
-                          {bg:"#5f259f",t:"#fff",label:"PhonePe"},
-                          {bg:"#00baf2",t:"#fff",label:"Paytm"},
-                          {bg:"#00529b",t:"#fff",label:"BHIM"}].map(app=>(
-                          <div key={app.label} className="rg-upi-pill" style={{background:app.bg,color:app.t}}>
+                        {[{ bg: "#fff", t: "#000", label: "GPay" },
+                        { bg: "#5f259f", t: "#fff", label: "PhonePe" },
+                        { bg: "#00baf2", t: "#fff", label: "Paytm" },
+                        { bg: "#00529b", t: "#fff", label: "BHIM" }].map(app => (
+                          <div key={app.label} className="rg-upi-pill" style={{ background: app.bg, color: app.t }}>
                             {app.label}
                           </div>
                         ))}
@@ -1350,28 +1381,28 @@ export default function Register() {
                     <div className="rg-co-qr-label">Scan & Pay ₹{finalAmount}</div>
                     <div className="rg-co-qr">
                       <svg viewBox="0 0 200 200" width="160" height="160">
-                        <rect width="200" height="200" fill="#0a0a1a" rx="12"/>
-                        <rect x="10" y="10" width="60" height="60" rx="6" fill="none" stroke="#3b82f6" strokeWidth="6"/>
-                        <rect x="20" y="20" width="40" height="40" rx="3" fill="none" stroke="#3b82f6" strokeWidth="4"/>
-                        <rect x="28" y="28" width="24" height="24" rx="2" fill="#3b82f6"/>
-                        <rect x="130" y="10" width="60" height="60" rx="6" fill="none" stroke="#8b5cf6" strokeWidth="6"/>
-                        <rect x="140" y="20" width="40" height="40" rx="3" fill="none" stroke="#8b5cf6" strokeWidth="4"/>
-                        <rect x="148" y="28" width="24" height="24" rx="2" fill="#8b5cf6"/>
-                        <rect x="10" y="130" width="60" height="60" rx="6" fill="none" stroke="#06b6d4" strokeWidth="6"/>
-                        <rect x="20" y="140" width="40" height="40" rx="3" fill="none" stroke="#06b6d4" strokeWidth="4"/>
-                        <rect x="28" y="148" width="24" height="24" rx="2" fill="#06b6d4"/>
-                        {[85,95,105,115,125].map(x=>[85,95,105,115,125].map(y=>
-                          Math.sin(x*y*0.017+2.3)>0.1?<rect key={`${x}-${y}`} x={x} y={y} width="7" height="7" rx="1" fill={y%20===5?"#8b5cf6":"#3b82f6"} opacity="0.85"/>:null
+                        <rect width="200" height="200" fill="#0a0a1a" rx="12" />
+                        <rect x="10" y="10" width="60" height="60" rx="6" fill="none" stroke="#3b82f6" strokeWidth="6" />
+                        <rect x="20" y="20" width="40" height="40" rx="3" fill="none" stroke="#3b82f6" strokeWidth="4" />
+                        <rect x="28" y="28" width="24" height="24" rx="2" fill="#3b82f6" />
+                        <rect x="130" y="10" width="60" height="60" rx="6" fill="none" stroke="#8b5cf6" strokeWidth="6" />
+                        <rect x="140" y="20" width="40" height="40" rx="3" fill="none" stroke="#8b5cf6" strokeWidth="4" />
+                        <rect x="148" y="28" width="24" height="24" rx="2" fill="#8b5cf6" />
+                        <rect x="10" y="130" width="60" height="60" rx="6" fill="none" stroke="#06b6d4" strokeWidth="6" />
+                        <rect x="20" y="140" width="40" height="40" rx="3" fill="none" stroke="#06b6d4" strokeWidth="4" />
+                        <rect x="28" y="148" width="24" height="24" rx="2" fill="#06b6d4" />
+                        {[85, 95, 105, 115, 125].map(x => [85, 95, 105, 115, 125].map(y =>
+                          Math.sin(x * y * 0.017 + 2.3) > 0.1 ? <rect key={`${x}-${y}`} x={x} y={y} width="7" height="7" rx="1" fill={y % 20 === 5 ? "#8b5cf6" : "#3b82f6"} opacity="0.85" /> : null
                         ))}
-                        <rect x="84" y="84" width="32" height="32" rx="6" fill="#0a0a1a"/>
+                        <rect x="84" y="84" width="32" height="32" rx="6" fill="#0a0a1a" />
                         <path d="M102,89 L94,101 L100,101 L97,111 L106,99 L100,99 Z" fill="#3b82f6" />
                       </svg>
                     </div>
-                    <div className="rg-co-qr-status"><span className="rg-qr-dot"/> Waiting for payment…</div>
+                    <div className="rg-co-qr-status"><span className="rg-qr-dot" /> Waiting for payment…</div>
                   </div>
                 </div>
 
-                <button className="rg-co-pay-btn" onClick={handlePayment} disabled={checkoutTimeLeft===0}>
+                <button className="rg-co-pay-btn" onClick={handlePayment} disabled={checkoutTimeLeft === 0}>
                   <span>🔒 Proceed to Pay ₹{finalAmount}</span>
                 </button>
                 <button className="rg-co-back" onClick={() => { setStep("form"); setTimerActive(false); setFormStep(4); }}>
@@ -1385,11 +1416,11 @@ export default function Register() {
               SUCCESS STEP
           ═══════════════════════════════════════════ */}
           {step === "success" && (
-            <motion.div key="success" initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} exit={{opacity:0}}
+            <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
               className="rg-success-wrap">
               <div className="rg-success-card">
                 <div className="rg-success-glow" />
-                <motion.div className="rg-success-icon" initial={{scale:0}} animate={{scale:1}} transition={{type:"spring",delay:0.1,stiffness:200}}>
+                <motion.div className="rg-success-icon" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.1, stiffness: 200 }}>
                   ✓
                 </motion.div>
                 <h2 className="rg-success-title" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
@@ -1407,7 +1438,7 @@ export default function Register() {
                   <div className="rg-sd-row"><span>Team</span><strong>{teamName}</strong></div>
                   <div className="rg-sd-row"><span>Leader</span><strong>{leader.name}</strong></div>
 
-                  {paymentId && <div className="rg-sd-row"><span>Payment ID</span><strong style={{fontFamily:"monospace",fontSize:"11px"}}>{paymentId}</strong></div>}
+                  {paymentId && <div className="rg-sd-row"><span>Payment ID</span><strong style={{ fontFamily: "monospace", fontSize: "11px" }}>{paymentId}</strong></div>}
                 </div>
 
                 <div className="rg-whats-next">
@@ -1428,7 +1459,7 @@ export default function Register() {
                 </div>
 
                 <div className="rg-success-footer">
-                  <button className="rg-sf-link" onClick={() => { setStep("form"); setFormStep(1); setTeamName(""); setLeader({name:"",email:"",mobile:"",college:"",branch:"",year:""}); setMembers([]); }}>
+                  <button className="rg-sf-link" onClick={() => { setStep("form"); setFormStep(1); setTeamName(""); setLeader({ name: "", email: "", mobile: "", college: "", branch: "", year: "" }); setMembers([]); }}>
                     [ Register Another Team ]
                   </button>
                   <button className="rg-sf-link" onClick={() => navigate("/")}>[ Return to Home ]</button>
@@ -1449,8 +1480,8 @@ export default function Register() {
       {/* Razorpay processing modal */}
       <AnimatePresence>
         {showRzpModal && (
-          <motion.div className="rg-rzp-overlay" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
-            <motion.div className="rg-rzp-modal" initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} exit={{scale:0.9,opacity:0}}>
+          <motion.div className="rg-rzp-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="rg-rzp-modal" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}>
               <div className="rg-rzp-spinner" />
               <div className="rg-rzp-title">Processing Payment</div>
               <div className="rg-rzp-sub">Please wait while we confirm your transaction…</div>
@@ -1462,7 +1493,7 @@ export default function Register() {
       {/* Toast */}
       <AnimatePresence>
         {toast && (
-          <motion.div className="rg-toast" initial={{opacity:0,y:40}} animate={{opacity:1,y:0}} exit={{opacity:0,y:40}}>
+          <motion.div className="rg-toast" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}>
             {toast}
           </motion.div>
         )}
@@ -1472,7 +1503,7 @@ export default function Register() {
       <footer className="rg-footer">
         <div className="rg-footer-marquee">
           <div className="rg-fm-content">
-            {Array(3).fill(null).map((_,i)=>(
+            {Array(3).fill(null).map((_, i) => (
               <span key={i} className="rg-fm-items">
                 <span>&gt; registration.open()</span>
                 <span className="rg-fm-sep">——</span>
