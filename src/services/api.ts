@@ -90,7 +90,12 @@ export const API = {
     // We can poll the status endpoint to check if the registration was successful.
     for (let i = 0; i < 5; i++) {
       try {
-        const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`);
+        const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`,
+          {
+            headers: { 
+              "ngrok-skip-browser-warning": "true"
+            },
+          });
         const data = await response.json();
         if (data.status === "registered") {
           return { success: true, message: "Payment verified successfully." };
