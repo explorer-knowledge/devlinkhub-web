@@ -7,13 +7,157 @@ const ParticleBg = lazy(() => import("../components/ParticleBg"));
 
 /* --- Tracks Data --- */
 const tracks = [
-  { icon: "🤖", title: "Artificial Intelligence & ML", desc: "Build intelligent systems that solve real-world challenges using cognitive nodes, vector embeddings, and LLM orchestration." },
-  { icon: "🌐", title: "Web & Software Development", desc: "Create modern, highly-responsive, performance-optimized, and secure digital products and platforms." },
-  { icon: "🏥", title: "HealthTech", desc: "Develop solutions that improve healthcare accessibility, diagnostic systems, patient management, and efficiency." },
-  { icon: "📚", title: "EdTech", desc: "Transform educational journeys, classroom learning, and shared resource archives through engaging tech." },
-  { icon: "💰", title: "FinTech", desc: "Build tools that simplify transactions, secure payment gateways, and improve regional financial accessibility." },
-  { icon: "💡", title: "Open Innovation", desc: "Got a unique idea? Bring any impactful, high-performance technology concept to life on our open stage." }
+  { icon: "ai", title: "Artificial Intelligence & ML", desc: "Build intelligent systems that solve real-world challenges using cognitive nodes, vector embeddings, and LLM orchestration." },
+  { icon: "web", title: "Web & Software Development", desc: "Create modern, highly-responsive, performance-optimized, and secure digital products and platforms." },
+  { icon: "health", title: "HealthTech", desc: "Develop solutions that improve healthcare accessibility, diagnostic systems, patient management, and efficiency." },
+  { icon: "education", title: "EdTech", desc: "Transform educational journeys, classroom learning, and shared resource archives through engaging tech." },
+  { icon: "finance", title: "FinTech", desc: "Build tools that simplify transactions, secure payment gateways, and improve regional financial accessibility." },
+  { icon: "open", title: "Open Innovation", desc: "Got a unique idea? Bring any impactful, high-performance technology concept to life on our open stage." }
 ];
+
+const renderTrackIcon = (iconId: string) => {
+  switch (iconId) {
+    case "ai":
+      return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <rect x="9" y="9" width="6" height="6" />
+          <line x1="9" y1="1" x2="9" y2="4" />
+          <line x1="15" y1="1" x2="15" y2="4" />
+          <line x1="9" y1="20" x2="9" y2="23" />
+          <line x1="15" y1="20" x2="15" y2="23" />
+          <line x1="20" y1="9" x2="23" y2="9" />
+          <line x1="20" y1="15" x2="23" y2="15" />
+          <line x1="1" y1="9" x2="4" y2="9" />
+          <line x1="1" y1="15" x2="4" y2="15" />
+        </svg>
+      );
+    case "web":
+      return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+      );
+    case "health":
+      return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+      );
+    case "education":
+      return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      );
+    case "finance":
+      return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <line x1="2" y1="10" x2="22" y2="10" />
+          <rect x="6" y="14" width="4" height="2" />
+        </svg>
+      );
+    case "open":
+      return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5" />
+          <line x1="9" y1="18" x2="15" y2="18" />
+          <line x1="10" y1="22" x2="14" y2="22" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
+const renderRoleIcon = (roleId: string) => {
+  switch (roleId) {
+    case "students":
+      return (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", filter: "drop-shadow(0 0 6px rgba(0, 242, 254, 0.2))" }}>
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+          <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+        </svg>
+      );
+    case "developers":
+      return (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-green)", filter: "drop-shadow(0 0 6px rgba(0, 255, 135, 0.2))" }}>
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+          <line x1="8" y1="21" x2="16" y2="21" />
+          <line x1="12" y1="17" x2="12" y2="21" />
+        </svg>
+      );
+    case "designers":
+      return (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-pink)", filter: "drop-shadow(0 0 6px rgba(255, 0, 127, 0.2))" }}>
+          <path d="M12 22C17.52 22 22 17.52 22 12S17.52 2 12 2 2 6.48 2 12a10 10 0 0 0 10 10zm0-16a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-4 4.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm8 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+        </svg>
+      );
+    case "ai":
+      return (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", filter: "drop-shadow(0 0 6px rgba(0, 242, 254, 0.2))" }}>
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <rect x="9" y="9" width="6" height="6" />
+          <line x1="9" y1="1" x2="9" y2="4" />
+          <line x1="15" y1="1" x2="15" y2="4" />
+          <line x1="9" y1="20" x2="9" y2="23" />
+          <line x1="15" y1="20" x2="15" y2="23" />
+          <line x1="20" y1="9" x2="23" y2="9" />
+          <line x1="20" y1="15" x2="23" y2="15" />
+          <line x1="1" y1="9" x2="4" y2="9" />
+          <line x1="1" y1="15" x2="4" y2="15" />
+        </svg>
+      );
+    case "entrepreneurs":
+      return (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-violet)", filter: "drop-shadow(0 0 6px rgba(139, 92, 246, 0.2))" }}>
+          <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5" />
+          <line x1="9" y1="18" x2="15" y2="18" />
+          <line x1="10" y1="22" x2="14" y2="22" />
+        </svg>
+      );
+    case "communities":
+      return (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", filter: "drop-shadow(0 0 6px rgba(0, 242, 254, 0.2))" }}>
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+          <path d="M2 12h20" />
+        </svg>
+      );
+    case "beginners":
+      return (
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-green)", filter: "drop-shadow(0 0 6px rgba(0, 255, 135, 0.2))" }}>
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
+const renderPlanIcon = (iconId: string) => {
+  switch (iconId) {
+    case "zap":
+      return (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", verticalAlign: "middle" }}>
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      );
+    case "rocket":
+      return (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-pink)", verticalAlign: "middle" }}>
+          <path d="M4.5 16.5c-1.5 1.25-2.5 3.5-2.5 3.5s2.25-1 3.5-2.5M14 2c.004.008.008.016.012.024A10.15 10.15 0 0 1 15 6v3h3a10.15 10.15 0 0 1 3.976.988c.008.004.016.008.024.012L22 2l-8 8z" />
+          <path d="M9 15l-3 3v3h3l3-3H9z" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
 
 /* --- Schedule Data --- */
 const day1Schedule = [
@@ -42,7 +186,8 @@ const pricingPlans = [
   {
     key: "ignite_pass",
     badge: "Official Entry Pass",
-    title: "⚡ IGNITE Pass",
+    title: "IGNITE Pass",
+    icon: "zap",
     price: "₹349",
     features: [
       "Access to BuildX Workshop",
@@ -57,7 +202,8 @@ const pricingPlans = [
   {
     key: "early_bird",
     badge: "Stay Tuned",
-    title: "🚀 Early Bird Promo",
+    title: "Early Bird Promo",
+    icon: "rocket",
     price: "Campaigns",
     featured: true,
     features: [
@@ -75,7 +221,7 @@ const pricingPlans = [
 const faqs = [
   { q: "Is the workshop free?", a: "Yes, full access to the BuildX workshop is included with the IGNITE registration pass." },
   { q: "Can I participate alone?", a: "Yes. Solo participation is allowed, and we support solo builders looking to form cohorts." },
-  { q: "Can I create a team later?", a: "Yes. Teams can be formed or modified before the hackathon begins on Day 2." },
+  { q: "Can I create a team later?", a: "No. Teams must be finalized during registration. Once a team is registered, members cannot be added, removed, or replaced." },
   { q: "What is the team size?", a: "Teams can consist of 1 to 4 members. The pass covers the entire team." },
   { q: "When will the venue be announced?", a: "The venue details will be shared soon through official DevLinkHub channels and via email." },
   { q: "When will prizes be announced?", a: "Prize pool details and challenge themes will be revealed during the kickoff on Day 2." }
@@ -83,10 +229,75 @@ const faqs = [
 
 /* --- Organizers Data --- */
 const organizers = [
-  { name: "Pawan Kushwaha", role: "Founder", init: "PK" },
-  { name: "Prince Kumar", role: "Operation Head", init: "PR" },
-  { name: "Kartik Raj", role: "Community Manager", init: "KR" },
-  { name: "Ayush Kumar", role: "Community Relations Head", init: "AK" }
+  {
+    name: "Pawan Kushwaha",
+    role: "Founder & Community Head",
+    init: "PK",
+    image: "/static/founder-image.svg",
+    bio: "Visionary behind DevLinkHub — building a developer community that empowers students and creators across India through collaboration, learning, and innovation.",
+    badge: "FOUNDER",
+    badgeColor: "var(--accent-cyan)",
+    skills: ["Community Building", "Leadership", "Event Management", "Developer Relations", "Startup Ecosystem"]
+  },
+  {
+    name: "Prince Kumar",
+    role: "Operations Head",
+    init: "PR",
+    image: "/static/operation-head.jpeg",
+    bio: "Drives the operational backbone of DevLinkHub IGNITE, ensuring everything runs smoothly — from logistics and coordination to participant experience.",
+    badge: "OPERATIONS",
+    badgeColor: "var(--accent-green)",
+    skills: ["Logistics", "Team Coordination", "Project Planning", "Execution"]
+  },
+  {
+    name: "Ayush Kumar",
+    role: "Community Relations Head",
+    init: "AK",
+    image: "/static/community-realations-head.png",
+    bio: "Bridges the gap between the community and the event — managing outreach, partnerships, and ensuring every participant feels welcomed and valued.",
+    badge: "COMMUNITY",
+    badgeColor: "var(--accent-violet)",
+    skills: ["Outreach", "Partnership Building", "Communication", "Brand Relations"]
+  },
+  {
+    name: "Kartik Raj",
+    role: "Community Manager",
+    init: "KR",
+    image: "/static/community-manager.jpg",
+    bio: "Keeps the community active and engaged — organizing discussions, facilitating collaborations, and nurturing the developer ecosystem at DevLinkHub.",
+    badge: "COMMUNITY",
+    badgeColor: "var(--accent-violet)",
+    skills: ["Engagement", "Content Strategy", "Community Growth", "Moderation"]
+  },
+  {
+    name: "Nilesh Verma",
+    role: "Management Lead",
+    init: "NI",
+    image: "/static/management-lead.jpeg",
+    bio: "Oversees planning and project management for the event, making sure every moving part aligns toward a successful and impactful experience.",
+    badge: "MANAGEMENT",
+    badgeColor: "var(--accent-orange)",
+    skills: ["Project Management", "Strategic Planning", "Resource Allocation", "Risk Management"]
+  },
+  {
+    name: "Akshat Agrawal",
+    role: "Technical Lead",
+    init: "AA",
+    bio: "Leads the technical vision of DevLinkHub — architecting platforms, guiding technical decisions, and mentoring developers within the community.",
+    badge: "TECH",
+    badgeColor: "var(--accent-pink)",
+    skills: ["Full Stack Dev", "System Architecture", "API Design", "Mentorship", "Cloud"]
+  },
+  {
+    name: "Ranjan Kumar Singh",
+    role: "Technical Co-Lead",
+    init: "RS",
+    image: "/static/co-tech-lead.jpg",
+    bio: "Co-leads the technical engineering efforts, contributing to platform development and helping elevate the quality of technical projects across the team.",
+    badge: "TECH",
+    badgeColor: "var(--accent-pink)",
+    skills: ["Frontend Dev", "React", "TypeScript", "UI Engineering", "Performance"]
+  }
 ];
 
 /* --- Interactive Card Spotlight Hover Tilt Wrapper --- */
@@ -102,11 +313,12 @@ function TiltGlassCard({
   onClick?: () => void;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [glowStyle, setGlowStyle] = useState<React.CSSProperties>({});
+  const glowRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (window.innerWidth < 768) return;
+    if (window.innerWidth < 768 || 'ontouchstart' in window) return;
     const card = cardRef.current;
+    const glow = glowRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -116,18 +328,21 @@ function TiltGlassCard({
     const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 6;
 
     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-    setGlowStyle({
-      background: `radial-gradient(350px circle at ${x}px ${y}px, rgba(0, 245, 255, 0.09) 0%, rgba(255, 255, 255, 0.01) 75%, transparent 100%)`,
-      opacity: 1
-    });
+    if (glow) {
+      glow.style.background = `radial-gradient(350px circle at ${x}px ${y}px, rgba(0, 245, 255, 0.09) 0%, rgba(255, 255, 255, 0.01) 75%, transparent 100%)`;
+      glow.style.opacity = "1";
+    }
   };
 
   const handleMouseLeave = () => {
-    if (window.innerWidth < 768) return;
+    if (window.innerWidth < 768 || 'ontouchstart' in window) return;
     const card = cardRef.current;
+    const glow = glowRef.current;
     if (!card) return;
     card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
-    setGlowStyle({ opacity: 0 });
+    if (glow) {
+      glow.style.opacity = "0";
+    }
   };
 
   return (
@@ -139,7 +354,7 @@ function TiltGlassCard({
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      <div className="spotlight-glow" style={glowStyle}></div>
+      <div ref={glowRef} className="spotlight-glow" style={{ opacity: 0, transition: "opacity 0.3s ease" }}></div>
       {children}
     </div>
   );
@@ -150,14 +365,23 @@ export default function Home() {
 
   /* --- States --- */
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const showBackgroundEffects = !isMobile && window.innerWidth >= 1024 && !('ontouchstart' in window);
   const [activeTab, setActiveTab] = useState<"day1" | "day2">("day1");
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [isTerminalSwapped, setIsTerminalSwapped] = useState(false);
+  const [selectedOrg, setSelectedOrg] = useState<typeof organizers[0] | null>(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Close organizer panel on Escape
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setSelectedOrg(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   // Hero Original CLI text lines state
@@ -171,7 +395,7 @@ export default function Home() {
 
   /* --- 1. Water Canvas Sine Mesh Animations --- */
   useEffect(() => {
-    if (isMobile) return; // Completely abort heavy canvas render on mobile
+    if (isMobile || window.innerWidth < 1024 || 'ontouchstart' in window) return; // Completely abort heavy canvas render on mobile/touch devices
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
@@ -410,14 +634,14 @@ export default function Home() {
 
       {/* SECTION 1: HERO SECTION */}
       <section className="hero-wrapper" id="home">
-        {!isMobile && (
+        {showBackgroundEffects && (
           <Suspense fallback={null}>
             <div className="hero-particles-bg" aria-hidden="true">
               <ParticleBg />
             </div>
           </Suspense>
         )}
-        {!isMobile && <canvas ref={heroCanvasRef} className="hero-water-bg" aria-hidden="true"></canvas>}
+        {showBackgroundEffects && <canvas ref={heroCanvasRef} className="hero-water-bg" aria-hidden="true"></canvas>}
 
         <div className="hero-inner-grid">
           <motion.div
@@ -459,10 +683,38 @@ export default function Home() {
               </a>
             </div>
             <div className="hero-date-grid">
-              <div>📅 20-21 June 2026</div>
-              <div>👥 Team Size: 1-4 Members</div>
-              <div>🎓 Open for Students &amp; Developers</div>
-              <div>📍 Venue To Be Announced Soon</div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>20-21 June 2026</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>Team Size: 1-4 Members</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                </svg>
+                <span>Open for Students &amp; Developers</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Venue To Be Announced Soon</span>
+              </div>
             </div>
           </motion.div>
 
@@ -731,7 +983,13 @@ export default function Home() {
               >
                 <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>👨‍🏫</div>
+                    <div style={{ color: "var(--accent-cyan)", marginBottom: "1rem" }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 242, 254, 0.3))" }}>
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M19 8l2 2 4-4" />
+                      </svg>
+                    </div>
                     <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
                       Learn From Industry Professionals
                     </h4>
@@ -750,7 +1008,14 @@ export default function Home() {
               >
                 <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>🤝</div>
+                    <div style={{ color: "var(--accent-violet)", marginBottom: "1rem" }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(139, 92, 246, 0.3))" }}>
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                      </svg>
+                    </div>
                     <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
                       Meet Like-Minded Builders
                     </h4>
@@ -769,7 +1034,11 @@ export default function Home() {
               >
                 <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>⚡</div>
+                    <div style={{ color: "var(--accent-pink)", marginBottom: "1rem" }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(255, 0, 127, 0.3))" }}>
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                      </svg>
+                    </div>
                     <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
                       Build Meaningful Connections
                     </h4>
@@ -788,7 +1057,13 @@ export default function Home() {
               >
                 <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>💻</div>
+                    <div style={{ color: "var(--accent-green)", marginBottom: "1rem" }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 255, 135, 0.3))" }}>
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                        <line x1="8" y1="21" x2="16" y2="21" />
+                        <line x1="12" y1="17" x2="12" y2="21" />
+                      </svg>
+                    </div>
                     <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
                       Real Hackathon Environment
                     </h4>
@@ -808,7 +1083,12 @@ export default function Home() {
               >
                 <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>🚀</div>
+                    <div style={{ color: "var(--accent-cyan)", marginBottom: "1rem" }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 242, 254, 0.3))" }}>
+                        <path d="M4.5 16.5c-1.5 1.25-2.5 3.5-2.5 3.5s2.25-1 3.5-2.5M14 2c.004.008.008.016.012.024A10.15 10.15 0 0 1 15 6v3h3a10.15 10.15 0 0 1 3.976.988c.008.004.016.008.024.012L22 2l-8 8z" />
+                        <path d="M9 15l-3 3v3h3l3-3H9z" />
+                      </svg>
+                    </div>
                     <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
                       Become Part of DevLinkHub
                     </h4>
@@ -846,7 +1126,7 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: i * 0.08 }}
               >
                 <TiltGlassCard className="track-card">
-                  <div className="track-icon">{track.icon}</div>
+                  <div className="track-icon">{renderTrackIcon(track.icon)}</div>
                   <h3 className="track-title">{track.title}</h3>
                   <p className="track-desc">{track.desc}</p>
                 </TiltGlassCard>
@@ -871,15 +1151,15 @@ export default function Home() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1.25rem", marginBottom: "3rem" }}>
             {[
-              { role: "Students", icon: "🎓", desc: "College students looking to learn, network, and build projects." },
-              { role: "Developers", icon: "💻", desc: "Software engineers, backend, frontend, and fullstack builders." },
-              { role: "Designers", icon: "🎨", desc: "UI/UX designers creating intuitive and premium interfaces." },
-              { role: "AI Enthusiasts", icon: "🤖", desc: "Builders leveraging models, embeddings, and cognitive pipelines." },
-              { role: "Entrepreneurs", icon: "💡", desc: "Future founders looking to build a proof of concept or MVP." },
-              { role: "Tech Communities", icon: "🌐", desc: "Active community members wishing to collaborate on stage." },
-              { role: "Beginners & Pros", icon: "⚡", desc: "Both first-time hackathon attendees and seasoned developers." }
+              { role: "Students", icon: "students", desc: "College students looking to learn, network, and build projects." },
+              { role: "Developers", icon: "developers", desc: "Software engineers, backend, frontend, and fullstack builders." },
+              { role: "Designers", icon: "designers", desc: "UI/UX designers creating intuitive and premium interfaces." },
+              { role: "AI Enthusiasts", icon: "ai", desc: "Builders leveraging models, embeddings, and cognitive pipelines." },
+              { role: "Entrepreneurs", icon: "entrepreneurs", desc: "Future founders looking to build a proof of concept or MVP." },
+              { role: "Tech Communities", icon: "communities", desc: "Active community members wishing to collaborate on stage." },
+              { role: "Beginners & Pros", icon: "beginners", desc: "Both first-time hackathon attendees and seasoned developers." }
             ].map((item, idx) => (
-              <motion.div
+              <motion.div 
                 key={item.role}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -887,7 +1167,7 @@ export default function Home() {
                 transition={{ duration: 0.4, delay: idx * 0.05 }}
               >
                 <TiltGlassCard style={{ padding: "2rem", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", height: "100%" }}>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>{item.icon}</div>
+                  <div style={{ marginBottom: "1rem" }}>{renderRoleIcon(item.icon)}</div>
                   <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem", color: "#fff", marginBottom: "0.5rem" }}>
                     {item.role}
                   </h4>
@@ -905,7 +1185,7 @@ export default function Home() {
             viewport={{ once: true }}
             style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: "14px", color: "var(--accent-green)" }}
           >
-            <span>&gt; Everyone with a passion for learning and building is welcome. 🚀</span>
+            <span>&gt; Everyone with a passion for learning and building is welcome.</span>
           </motion.div>
         </div>
       </section>
@@ -1020,7 +1300,10 @@ export default function Home() {
                   style={{ cursor: "pointer" }}
                 >
                   <span className="pricing-card-badge">{plan.badge}</span>
-                  <h3 className="pricing-plan-title" style={{ marginTop: "1.5rem" }}>{plan.title}</h3>
+                  <h3 className="pricing-plan-title" style={{ marginTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                    {renderPlanIcon(plan.icon)}
+                    {plan.title}
+                  </h3>
                   <div className="pricing-price">{plan.price}</div>
                   <div className="pricing-price-period">per team configuration</div>
 
@@ -1040,7 +1323,7 @@ export default function Home() {
                     className={plan.featured ? "btn-primary" : "btn-secondary"}
                     style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "none" }}
                   >
-                    {plan.key === "ignite_pass" ? "Select Pass ➔" : "Unlock Promo Benefits ➔"}
+                    {plan.key === "ignite_pass" ? "Register now ➔" : "Unlock Promo Benefits ➔"}
                   </button>
                 </TiltGlassCard>
               </motion.div>
@@ -1070,24 +1353,54 @@ export default function Home() {
                   Solutions will be evaluated by an esteemed panel of technology professionals and founders based on:
                 </p>
                 <div style={{ marginTop: "2rem", display: "flex", flexDirection: "column", gap: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
-                    <span>💡 Innovation (Uniqueness, Creativity)</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px", alignItems: "center" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)" }}>
+                        <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5" />
+                        <line x1="9" y1="18" x2="15" y2="18" />
+                      </svg>
+                      Innovation (Uniqueness, Creativity)
+                    </span>
                     <strong style={{ color: "var(--accent-cyan)" }}>30%</strong>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
-                    <span>🛠️ Technical Implementation (Robust code, scalability)</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px", alignItems: "center" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-violet)" }}>
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <rect x="9" y="9" width="6" height="6" />
+                      </svg>
+                      Technical Implementation (Robust code, scalability)
+                    </span>
                     <strong style={{ color: "var(--accent-violet)" }}>25%</strong>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
-                    <span>🎯 Problem Solving (Real-world applicability)</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px", alignItems: "center" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-green)" }}>
+                        <circle cx="12" cy="12" r="10" />
+                        <circle cx="12" cy="12" r="6" />
+                        <circle cx="12" cy="12" r="2" />
+                      </svg>
+                      Problem Solving (Real-world applicability)
+                    </span>
                     <strong style={{ color: "var(--accent-green)" }}>20%</strong>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
-                    <span>🎨 User Experience (Design, clean flow)</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px", alignItems: "center" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-pink)" }}>
+                        <path d="M12 22C17.52 22 22 17.52 22 12S17.52 2 12 2 2 6.48 2 12a10 10 0 0 0 10 10zm0-16a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+                      </svg>
+                      User Experience (Design, clean flow)
+                    </span>
                     <strong style={{ color: "var(--accent-pink)" }}>15%</strong>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
-                    <span>📢 Presentation (Pitch clarity, server demo)</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px", alignItems: "center" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#fff" }}>
+                        <polygon points="23 7 16 12 23 17 23 7" />
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                      </svg>
+                      Presentation (Pitch clarity, server demo)
+                    </span>
                     <strong style={{ color: "#fff" }}>10%</strong>
                   </div>
                 </div>
@@ -1098,23 +1411,80 @@ export default function Home() {
               <TiltGlassCard className="pillar-card" style={{ minHeight: "180px" }}>
                 <div>
                   <h3 className="pillar-title violet" style={{ fontSize: "28px" }}>Podium Awards</h3>
-                  <p className="pillar-body" style={{ fontSize: "14px", marginTop: "8px" }}>
-                    🏆 <strong>Winner</strong>: Cash Prize + Trophy + Certificate<br />
-                    🥈 <strong>Runner-Up</strong>: Cash Prize + Certificate<br />
-                    🥉 <strong>Second Runner-Up</strong>: Cash Prize + Certificate
-                  </p>
+                  <div className="pillar-body" style={{ fontSize: "14px", marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                    <div>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#ffd700", marginRight: "8px", verticalAlign: "middle" }}>
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                        <path d="M4 22h16" />
+                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+                        <path d="M12 2a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z" />
+                      </svg>
+                      <strong>Winner</strong>: Cash Prize + Trophy + Certificate
+                    </div>
+                    <div>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#c0c0c0", marginRight: "8px", verticalAlign: "middle" }}>
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                        <path d="M4 22h16" />
+                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+                        <path d="M12 2a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z" />
+                      </svg>
+                      <strong>Runner-Up</strong>: Cash Prize + Certificate
+                    </div>
+                    <div>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#cd7f32", marginRight: "8px", verticalAlign: "middle" }}>
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                        <path d="M4 22h16" />
+                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+                        <path d="M12 2a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z" />
+                      </svg>
+                      <strong>Second Runner-Up</strong>: Cash Prize + Certificate
+                    </div>
+                  </div>
                 </div>
               </TiltGlassCard>
               <TiltGlassCard className="pillar-card" style={{ minHeight: "220px" }}>
                 <div>
                   <h3 className="pillar-title green" style={{ fontSize: "28px" }}>Special Awards</h3>
-                  <p className="pillar-body" style={{ fontSize: "14px", marginTop: "8px" }}>
-                    🏅 Best AI Project<br />
-                    🏅 Best Design / UX<br />
-                    🏅 Best Beginner Team<br />
-                    🏅 Community Choice Award<br />
-                    🏅 Most Innovative Solution
-                  </p>
+                  <div className="pillar-body" style={{ fontSize: "14px", marginTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", marginRight: "8px", verticalAlign: "middle" }}>
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                      </svg>
+                      Best AI Project
+                    </div>
+                    <div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", marginRight: "8px", verticalAlign: "middle" }}>
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                      </svg>
+                      Best Design / UX
+                    </div>
+                    <div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", marginRight: "8px", verticalAlign: "middle" }}>
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                      </svg>
+                      Best Beginner Team
+                    </div>
+                    <div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", marginRight: "8px", verticalAlign: "middle" }}>
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                      </svg>
+                      Community Choice Award
+                    </div>
+                    <div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", marginRight: "8px", verticalAlign: "middle" }}>
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                      </svg>
+                      Most Innovative Solution
+                    </div>
+                  </div>
                 </div>
               </TiltGlassCard>
             </div>
@@ -1237,18 +1607,166 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <TiltGlassCard className="organizer-card">
-                  <div className="organizer-avatar-placeholder">{org.init}</div>
+                <TiltGlassCard
+                  className="organizer-card"
+                  onClick={() => setSelectedOrg(org)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {org.image ? (
+                    <img src={org.image} alt={org.name} className="organizer-avatar" />
+                  ) : (
+                    <div className="organizer-avatar-placeholder">{org.init}</div>
+                  )}
                   <div>
                     <h4 className="organizer-name">{org.name}</h4>
                     <span className="organizer-role">{org.role}</span>
                   </div>
+                  {/* View detail hint */}
+                  <div className="organizer-view-hint">View Profile →</div>
                 </TiltGlassCard>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* ORGANIZER SPOTLIGHT MODAL */}
+      <AnimatePresence>
+        {selectedOrg && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="org-backdrop"
+              className="org-modal-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              onClick={() => setSelectedOrg(null)}
+            />
+
+            {/* Centering wrapper — separate from animation so transform doesn't clash */}
+            <div className="org-modal-center-wrap">
+            <motion.div
+              key="org-modal"
+              className="org-spotlight-modal"
+              initial={{ opacity: 0, scale: 0.88 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 320, damping: 30 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${selectedOrg.name} profile`}
+            >
+              {/* Close button */}
+              <button
+                className="org-modal-close"
+                onClick={() => setSelectedOrg(null)}
+                aria-label="Close profile"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+
+              {/* ── PORTRAIT SECTION ── */}
+              <div className="org-modal-portrait-zone">
+                {/* Ambient glow behind image */}
+                <div
+                  className="org-modal-portrait-glow"
+                  style={{ background: `radial-gradient(circle, ${selectedOrg.badgeColor}30 0%, transparent 70%)` }}
+                />
+                {/* ── Portrait frame: rings + image share the same origin ── */}
+                <div className="org-modal-portrait-frame">
+                  {/* Dual glow rings — absolutely centered on the frame */}
+                  <div className="org-modal-ring org-modal-ring-outer" style={{ borderColor: `${selectedOrg.badgeColor}40` }} />
+                  <div className="org-modal-ring org-modal-ring-inner" style={{ borderColor: `${selectedOrg.badgeColor}80` }} />
+
+                  {/* Portrait image */}
+                  {selectedOrg.image ? (
+                    <img
+                      src={selectedOrg.image}
+                      alt={selectedOrg.name}
+                      className="org-modal-portrait"
+                    />
+                  ) : (
+                    <div
+                      className="org-modal-portrait-placeholder"
+                      style={{ background: `linear-gradient(135deg, ${selectedOrg.badgeColor}, var(--accent-violet))` }}
+                    >
+                      {selectedOrg.init}
+                    </div>
+                  )}
+                </div>
+
+                {/* Floating badge overlapping image bottom */}
+                <motion.span
+                  className="org-modal-floating-badge"
+                  style={{
+                    background: `${selectedOrg.badgeColor}18`,
+                    borderColor: `${selectedOrg.badgeColor}70`,
+                    color: selectedOrg.badgeColor,
+                    boxShadow: `0 0 16px ${selectedOrg.badgeColor}35`
+                  }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.18, type: "spring", stiffness: 400, damping: 20 }}
+                >
+                  {selectedOrg.badge}
+                </motion.span>
+              </div>
+
+              {/* ── DETAILS SECTION ── */}
+              <div className="org-modal-details">
+                {/* Event label */}
+                <div className="org-modal-event-label">DevLinkHub IGNITE 2026</div>
+
+                {/* Name */}
+                <h3 className="org-modal-name">{selectedOrg.name}</h3>
+
+                {/* Role */}
+                <div className="org-modal-role" style={{ color: selectedOrg.badgeColor }}>
+                  {selectedOrg.role}
+                </div>
+
+                {/* Divider */}
+                <div className="org-modal-divider" style={{ background: `linear-gradient(90deg, ${selectedOrg.badgeColor}, transparent)` }} />
+
+                {/* About */}
+                <div className="org-modal-section-label">About</div>
+                <p className="org-modal-bio">{selectedOrg.bio}</p>
+
+                {/* Expertise chips */}
+                {selectedOrg.skills && selectedOrg.skills.length > 0 && (
+                  <>
+                    <div className="org-modal-section-label" style={{ marginTop: "1.25rem" }}>Expertise</div>
+                    <div className="org-modal-chips">
+                      {selectedOrg.skills.map((skill, si) => (
+                        <motion.span
+                          key={skill}
+                          className="org-modal-chip"
+                          style={{
+                            borderColor: `${selectedOrg.badgeColor}40`,
+                            color: selectedOrg.badgeColor,
+                            boxShadow: `0 0 10px ${selectedOrg.badgeColor}20`
+                          }}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.12 + si * 0.06, type: "spring", stiffness: 360, damping: 22 }}
+                        >
+                          {skill}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
 
     </MotionConfig>
   );

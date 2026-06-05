@@ -2,36 +2,113 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
+const navLinks = [
+  { label: "About", id: "about" },
+  { label: "Tracks", id: "tracks" },
+  { label: "Schedule", id: "schedule" },
+  { label: "Passes", id: "pricing" },
+  { label: "FAQ", id: "faq" },
+];
+
+
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("about");
+  const [visible, setVisible] = useState(true);
+  
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Scroll visibility (hide on scroll down, show on scroll up)
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 80) {
+    let lastY = window.scrollY;
+
+    const onScroll = () => {
+      const currentY = window.scrollY;
+
+      // Update frosted scrolled state
+      if (currentY > 80) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
       }
+
+      // Hide or show navbar
+      if (currentY < 50) {
+        setVisible(true);
+        lastY = currentY;
+        return;
+      }
+
+      if (currentY > lastY && currentY > 150) {
+        setVisible(false); // Hide on scroll down
+      } else if (currentY < lastY) {
+        setVisible(true); // Show on scroll up
+      }
+
+      lastY = currentY;
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Intersection Observer to highlight current active section
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      setActiveSection("");
+      return;
+    }
+
+    const sections = navLinks.map((item) =>
+      document.getElementById(item.id)
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: "-25% 0px -55% 0px",
+        threshold: 0.1,
+      }
+    );
+
+    sections.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
-    setIsOpen(false);
+    setMobileOpen(false);
     if (location.pathname !== "/") {
       navigate("/");
-      // Wait for navigation and then scroll
       setTimeout(() => {
         const element = document.querySelector(targetId);
         if (element) {
           element.scrollIntoView({ behavior: "smooth" });
         }
-      }, 100);
+      }, 150);
     } else {
       const element = document.querySelector(targetId);
       if (element) {
@@ -42,72 +119,146 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`frosted-navbar ${isScrolled ? "scrolled" : ""}`}>
-        <Link to="/" className="brand-wrapper">
+      <motion.nav
+        className={`frosted-navbar ${isScrolled ? "scrolled" : ""}`}
+        initial={{ x: "-50%", y: 0 }}
+        animate={{
+          x: "-50%",
+          y: visible ? 0 : -120,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+      >
+        <Link to="/" className="brand-wrapper" onClick={() => {
+          setMobileOpen(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}>
           <img
             src="/static/logos/DevLink_Text_Logo-white.png"
-            alt="DevLinkHub"
+            alt="DevLinkHub Logo"
             style={{ height: "32px", width: "auto", display: "block", objectFit: "contain" }}
           />
         </Link>
 
         <ul className="navbar-links">
-          <li><a href="#about" onClick={(e) => handleLinkClick(e, "#about")}>About</a></li>
-          <li><a href="#tracks" onClick={(e) => handleLinkClick(e, "#tracks")}>Tracks</a></li>
-          <li><a href="#schedule" onClick={(e) => handleLinkClick(e, "#schedule")}>Schedule</a></li>
-          <li><a href="#pricing" onClick={(e) => handleLinkClick(e, "#pricing")}>Passes</a></li>
-          <li><a href="#faq" onClick={(e) => handleLinkClick(e, "#faq")}>FAQ</a></li>
+          {navLinks.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={activeSection === item.id ? "active" : ""}
+                onClick={(e) => handleLinkClick(e, `#${item.id}`)}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
         </ul>
 
         <div className="nav-right-actions">
           <div className="badge-devs-online">
             <span className="pulsing-dot"></span>
-            <span>47 devs online</span>
+            <span>Registrations Open</span>
           </div>
           <Link to="/register" className="btn-primary" style={{ padding: "10px 24px" }}>
-            Join Hub &rarr;
+            Register Now &rarr;
           </Link>
         </div>
 
         <button
           className="hamburger-btn"
           aria-label="Open navigation drawer"
-          onClick={() => setIsOpen(true)}
+          onClick={() => setMobileOpen(true)}
         >
           <span></span>
           <span></span>
           <span></span>
         </button>
-      </nav>
+      </motion.nav>
 
-      {/* MOBILE NAVIGATION DRAWER OVERLAY */}
+      {/* MOBILE NAVIGATION DRAWER & BACKDROP */}
       <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="mobile-drawer"
-            style={{ transform: "none" }}
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          >
-            <button className="close-drawer" onClick={() => setIsOpen(false)}>
-              &times;
-            </button>
-            <a href="#about" onClick={(e) => handleLinkClick(e, "#about")}>About</a>
-            <a href="#tracks" onClick={(e) => handleLinkClick(e, "#tracks")}>Tracks</a>
-            <a href="#schedule" onClick={(e) => handleLinkClick(e, "#schedule")}>Schedule</a>
-            <a href="#pricing" onClick={(e) => handleLinkClick(e, "#pricing")}>Passes</a>
-            <a href="#faq" onClick={(e) => handleLinkClick(e, "#faq")}>FAQ</a>
-            <Link
-              to="/register"
-              className="btn-primary"
-              style={{ marginTop: "1.5rem" }}
-              onClick={() => setIsOpen(false)}
+        {mobileOpen && (
+          <>
+            <motion.div
+              className="drawer-backdrop"
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(3, 5, 16, 0.4)",
+                backdropFilter: "blur(4px)",
+                WebkitBackdropFilter: "blur(4px)",
+                zIndex: 998
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.div
+              className="mobile-drawer"
+              style={{ transform: "none", zIndex: 999 }}
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 300 }}
+              dragElastic={{ left: 0.1, right: 0.6 }}
+              onDragEnd={(_event, info) => {
+                if (info.offset.x > 100) {
+                  setMobileOpen(false);
+                }
+              }}
             >
-              Join Hub
-            </Link>
-          </motion.div>
+              {/* Top Section */}
+              <div className="drawer-top">
+                <div className="drawer-logo-row">
+                  <img
+                    src="/static/logos/DevLink_Text_Logo-white.png"
+                    alt="DevLinkHub Logo"
+                    className="drawer-logo"
+                  />
+                  <button className="drawer-close-btn" onClick={() => setMobileOpen(false)}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Drawer Content */}
+              <div className="drawer-content">
+                <div className="drawer-nav-list">
+                  {navLinks.map((item, index) => (
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      className={`drawer-card-item ${activeSection === item.id ? "active" : ""}`}
+                      onClick={(e) => handleLinkClick(e, `#${item.id}`)}
+                      tabIndex={0}
+                      autoFocus={index === 0}
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+
+                {/* CTA Stack - Only Register Now */}
+                <div className="drawer-cta-stack">
+                  <Link
+                    to="/register"
+                    className="drawer-btn-primary"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Register Now &rarr;
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

@@ -7,7 +7,7 @@ export default function ParticleBg() {
       options={{
         fpsLimit: 60,
         particles: {
-          number: { value: 65, limit: 120 },
+          number: { value: 35, limit: 50 },
           color: { value: "#00f5ff" },
           shape: { type: "circle" },
           opacity: {
@@ -22,14 +22,14 @@ export default function ParticleBg() {
           },
           links: {
             enable: true,
-            distance: 145,
+            distance: 130,
             color: "#7c3aed",
-            opacity: 0.16,
+            opacity: 0.14,
             width: 1
           },
           move: {
             enable: true,
-            speed: 1.0,
+            speed: 0.8,
             direction: "none",
             random: false,
             straight: false,
@@ -38,13 +38,13 @@ export default function ParticleBg() {
         },
         interactivity: {
           events: {
-            onHover: { enable: true, mode: "grab" },
-            onClick: { enable: true, mode: "push" },
+            onHover: { enable: false, mode: "grab" },
+            onClick: { enable: false, mode: "push" },
             resize: { enable: true }
           },
           modes: {
-            grab: { distance: 160, links: { opacity: 0.35 } },
-            push: { quantity: 2 }
+            grab: { distance: 150, links: { opacity: 0.25 } },
+            push: { quantity: 1 }
           }
         },
         detectRetina: true,
