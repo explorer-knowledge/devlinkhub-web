@@ -448,14 +448,14 @@ export default function Home() {
                 Explore Tracks &rarr;
               </a>
               <a
-                href="#pricing"
+                href="/register"
                 className="btn-secondary"
                 onClick={(e) => {
                   e.preventDefault();
-                  document.querySelector("#pricing")?.scrollIntoView({ behavior: "smooth" });
+                  navigate("/register");
                 }}
               >
-                Register Pass
+                Register Now
               </a>
             </div>
             <div className="hero-date-grid">
@@ -1014,7 +1014,11 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
               >
-                <TiltGlassCard className={`pricing-card ${plan.featured ? "featured" : ""}`}>
+                <TiltGlassCard
+                  className={`pricing-card ${plan.featured ? "featured" : ""}`}
+                  onClick={() => navigate("/register")}
+                  style={{ cursor: "pointer" }}
+                >
                   <span className="pricing-card-badge">{plan.badge}</span>
                   <h3 className="pricing-plan-title" style={{ marginTop: "1.5rem" }}>{plan.title}</h3>
                   <div className="pricing-price">{plan.price}</div>
@@ -1029,11 +1033,14 @@ export default function Home() {
                   </ul>
 
                   <button
-                    onClick={() => navigate(plan.key === "ignite_pass" ? `/register?plan=ignite_pass` : "#pricing")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate("/register");
+                    }}
                     className={plan.featured ? "btn-primary" : "btn-secondary"}
-                    style={{ width: "100%", justifyContent: "center", cursor: "pointer" }}
+                    style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "none" }}
                   >
-                    {plan.key === "ignite_pass" ? "Select Pass ➔" : "Unlock Promo Benefits"}
+                    {plan.key === "ignite_pass" ? "Select Pass ➔" : "Unlock Promo Benefits ➔"}
                   </button>
                 </TiltGlassCard>
               </motion.div>
