@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import { ParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
@@ -12,6 +12,18 @@ import Checkout from "./pages/Checkout";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
 import "./styles/mobile.css";
+
+/**
+ * Guards payment-flow routes.
+ * Only allows access if the user arrived via the proper flow
+ * (i.e. localStorage has the checkout payload or payment result).
+ * Direct URL entry without payload will redirect to /.
+ */
+function PaymentGuard({ children, checkKey }: { children: React.ReactNode; checkKey: string }) {
+  const hasData = !!localStorage.getItem(checkKey);
+  if (!hasData) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -56,10 +68,10 @@ function App() {
           {/* Registration form — standalone */}
           <Route path="/register" element={<Register />} />
 
-          {/* Payment flow — fully standalone pages, no navbar */}
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/payment-failed" element={<PaymentFailed />} />
+          {/* Payment flow — protected: only accessible via proper flow */}
+          <Route path="/checkout" element={<PaymentGuard checkKey="devlinkhub_checkout_payload"><Checkout /></PaymentGuard>} />
+          <Route path="/payment-success" element={<PaymentGuard checkKey="devlinkhub_payment_result"><PaymentSuccess /></PaymentGuard>} />
+          <Route path="/payment-failed" element={<PaymentGuard checkKey="devlinkhub_payment_result"><PaymentFailed /></PaymentGuard>} />
         </Routes>
       </Router>
     </ParticlesProvider>

@@ -103,6 +103,98 @@ const CustomSelect = ({
   );
 };
 
+const renderLeftItemIcon = (iconType: string) => {
+  switch (iconType) {
+    case "calendar":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)" }}>
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      );
+    case "users":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-violet)" }}>
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      );
+    case "education":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-pink)" }}>
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+          <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+        </svg>
+      );
+    case "trophy":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-green)" }}>
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+          <path d="M4 22h16" />
+          <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+          <path d="M12 2a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
+const renderZapIcon = (size = 14, extraStyle = {}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", verticalAlign: "middle", ...extraStyle }}>
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+);
+
+const renderWarningIcon = (size = 14, extraStyle = {}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-pink)", verticalAlign: "middle", ...extraStyle }}>
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+);
+
+const renderTrashIcon = (size = 14, extraStyle = {}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "currentColor", verticalAlign: "middle", ...extraStyle }}>
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    <line x1="10" y1="11" x2="10" y2="17" />
+    <line x1="14" y1="11" x2="14" y2="17" />
+  </svg>
+);
+
+const renderShieldIcon = (size = 16, extraStyle = {}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", verticalAlign: "middle", ...extraStyle }}>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+const renderClockIcon = (size = 12, extraStyle = {}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-pink)", verticalAlign: "middle", ...extraStyle }}>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const renderLockIcon = (size = 12, extraStyle = {}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-green)", verticalAlign: "middle", ...extraStyle }}>
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+const renderPromoIcon = (size = 16, extraStyle = {}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-violet)", verticalAlign: "middle", ...extraStyle }}>
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+    <line x1="7" y1="7" x2="7.01" y2="7" />
+  </svg>
+);
+
 export default function Register() {
   const navigate = useNavigate();
   const canvasRef   = useRef<HTMLCanvasElement>(null);
@@ -178,7 +270,7 @@ export default function Register() {
   useEffect(() => {
     if (checkoutTimeLeft === 0 && timerActive) {
       setTimerActive(false);
-      triggerToast("⏳ Session expired! Please register again.");
+      triggerToast("Session expired! Please register again.");
       setStep("form");
     }
   }, [checkoutTimeLeft, timerActive]);
@@ -206,7 +298,7 @@ export default function Register() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
-    if (window.innerWidth < 768) return; // Prevent heavy canvas lag on mobile
+    if (window.innerWidth < 1024 || 'ontouchstart' in window) return; // Prevent heavy canvas lag on touch/mobile devices
     let W = canvas.width  = window.innerWidth;
     let H = canvas.height = window.innerHeight;
     let animId: number;
@@ -583,8 +675,9 @@ export default function Register() {
           <img src="/static/logos/DevLink_Text_Logo-white.png" alt="DevLinkHub Logo" style={{ height: "32px", objectFit: "contain" }} />
         </button>
         <div className="rg-nav-center">
-          <span className="rg-nav-tag">⚡ IGNITE 2026</span>
-          <span className="rg-nav-seats">🔥 {seats} seats remaining</span>
+          <span className="rg-nav-tag" style={{ display: "inline-flex", alignItems: "center" }}>
+            {renderZapIcon(14, { marginRight: "6px" })} IGNITE 2026
+          </span>
         </div>
         <div className="rg-nav-right">
           <div className="rg-nav-countdown">
@@ -611,14 +704,19 @@ export default function Register() {
               {/* ────────────── LEFT PANEL ────────────── */}
               <aside className="rg-left">
                 <div className="rg-left-card">
-                  <div className="rg-left-badge">⚡ ignite.details</div>
+                  <div className="rg-left-badge" style={{ display: "inline-flex", alignItems: "center" }}>
+                    {renderZapIcon(12, { marginRight: "4px" })} ignite.details
+                  </div>
                   <h2 className="rg-left-title">DEVLINKHUB<br/><span>IGNITE 2026</span></h2>
                   <p className="rg-left-tagline">Build. Connect. Grow.</p>
 
                   {/* Seat counter */}
                   <div className="rg-seat-bar">
                     <div className="rg-seat-top">
-                      <span>🔥 {seats} Seats Remaining</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                        <span className="rg-pulse-dot" style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--accent-green)", boxShadow: "0 0 8px var(--accent-green)" }} />
+                        {seats} Seats Remaining
+                      </span>
                       <span className="rg-seat-pct">{Math.round((seats/100)*100)}%</span>
                     </div>
                     <div className="rg-seat-track">
@@ -629,13 +727,13 @@ export default function Register() {
                   {/* Event details */}
                   <div className="rg-left-items">
                     {[
-                      {icon:"📅", text:"20–21 June 2026", sub:"Mark your calendar"},
-                      {icon:"👥", text:"Team Size: 1–4 Members", sub:"Solo or squad"},
-                      {icon:"🎓", text:"Open for College Students", sub:"Undergrads & graduates"},
-                      {icon:"🏆", text:"Workshop + Hackathon", sub:"Full event access"},
+                      {icon:"calendar", text:"20–21 June 2026", sub:"Mark your calendar"},
+                      {icon:"users", text:"Team Size: 1–4 Members", sub:"Solo or squad"},
+                      {icon:"education", text:"Open for College Students", sub:"Undergrads & graduates"},
+                      {icon:"trophy", text:"Workshop + Hackathon", sub:"Full event access"},
                     ].map(d => (
                       <div key={d.text} className="rg-left-item">
-                        <span className="rg-li-icon">{d.icon}</span>
+                        <span className="rg-li-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>{renderLeftItemIcon(d.icon)}</span>
                         <div>
                           <div className="rg-li-text">{d.text}</div>
                           <div className="rg-li-sub">{d.sub}</div>
@@ -731,7 +829,7 @@ export default function Register() {
                             maxLength={30}
                           />
                           {teamName && !teamNameErr && <span className="rg-input-ok">✓</span>}
-                          {teamName && teamNameErr && <span className="rg-input-err">⚠</span>}
+                          {teamName && teamNameErr && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                         </div>
                         {teamNameErr && <div className="rg-err">{teamNameErr}</div>}
                       </div>
@@ -766,7 +864,7 @@ export default function Register() {
                               onChange={e => handleLeaderChange("name", e.target.value)}
                               onBlur={() => handleLeaderBlur("name")} />
                             {leaderTouched.name && !leaderErr.name && <span className="rg-input-ok">✓</span>}
-                            {leaderTouched.name && leaderErr.name && <span className="rg-input-err">⚠</span>}
+                            {leaderTouched.name && leaderErr.name && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                           </div>
                           {leaderTouched.name && leaderErr.name && <div className="rg-err">{leaderErr.name}</div>}
                         </div>
@@ -780,7 +878,7 @@ export default function Register() {
                               onChange={e => handleLeaderChange("email", e.target.value)}
                               onBlur={() => handleLeaderBlur("email")} />
                             {leaderTouched.email && !leaderErr.email && <span className="rg-input-ok">✓</span>}
-                            {leaderTouched.email && leaderErr.email && <span className="rg-input-err">⚠</span>}
+                            {leaderTouched.email && leaderErr.email && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                           </div>
                           {leaderTouched.email && leaderErr.email && <div className="rg-err">{leaderErr.email}</div>}
                         </div>
@@ -797,7 +895,7 @@ export default function Register() {
                               onChange={e => handleLeaderChange("mobile", e.target.value)}
                               onBlur={() => handleLeaderBlur("mobile")} />
                             {leaderTouched.mobile && !leaderErr.mobile && <span className="rg-input-ok">✓</span>}
-                            {leaderTouched.mobile && leaderErr.mobile && <span className="rg-input-err">⚠</span>}
+                            {leaderTouched.mobile && leaderErr.mobile && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                           </div>
                           {leaderTouched.mobile && leaderErr.mobile && <div className="rg-err">{leaderErr.mobile}</div>}
                         </div>
@@ -909,7 +1007,7 @@ export default function Register() {
                                         onChange={e => updateMember(i, "name", e.target.value)}
                                         onBlur={() => handleMemberBlur(i, "name")} />
                                       {membersTouched[i]?.name && !membersErr[i]?.name && <span className="rg-input-ok">✓</span>}
-                                      {membersTouched[i]?.name && membersErr[i]?.name && <span className="rg-input-err">⚠</span>}
+                                      {membersTouched[i]?.name && membersErr[i]?.name && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                                     </div>
                                     {membersTouched[i]?.name && membersErr[i]?.name && <div className="rg-err">{membersErr[i]?.name}</div>}
                                   </div>
@@ -923,7 +1021,7 @@ export default function Register() {
                                         onChange={e => updateMember(i, "email", e.target.value)}
                                         onBlur={() => handleMemberBlur(i, "email")} />
                                       {membersTouched[i]?.email && !membersErr[i]?.email && <span className="rg-input-ok">✓</span>}
-                                      {membersTouched[i]?.email && membersErr[i]?.email && <span className="rg-input-err">⚠</span>}
+                                      {membersTouched[i]?.email && membersErr[i]?.email && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                                     </div>
                                     {membersTouched[i]?.email && membersErr[i]?.email && <div className="rg-err">{membersErr[i]?.email}</div>}
                                   </div>
@@ -939,7 +1037,7 @@ export default function Register() {
                                         onChange={e => updateMember(i, "college", e.target.value)}
                                         onBlur={() => handleMemberBlur(i, "college")} />
                                       {membersTouched[i]?.college && !membersErr[i]?.college && <span className="rg-input-ok">✓</span>}
-                                      {membersTouched[i]?.college && membersErr[i]?.college && <span className="rg-input-err">⚠</span>}
+                                      {membersTouched[i]?.college && membersErr[i]?.college && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                                     </div>
                                     {membersTouched[i]?.college && membersErr[i]?.college && <div className="rg-err">{membersErr[i]?.college}</div>}
                                   </div>
@@ -953,7 +1051,7 @@ export default function Register() {
                                         onChange={e => updateMember(i, "branch", e.target.value)}
                                         onBlur={() => handleMemberBlur(i, "branch")} />
                                       {membersTouched[i]?.branch && !membersErr[i]?.branch && <span className="rg-input-ok">✓</span>}
-                                      {membersTouched[i]?.branch && membersErr[i]?.branch && <span className="rg-input-err">⚠</span>}
+                                      {membersTouched[i]?.branch && membersErr[i]?.branch && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                                     </div>
                                     {membersTouched[i]?.branch && membersErr[i]?.branch && <div className="rg-err">{membersErr[i]?.branch}</div>}
                                   </div>
@@ -998,13 +1096,13 @@ export default function Register() {
                                         onChange={e => updateMember(i, "mobile", e.target.value)}
                                         onBlur={() => handleMemberBlur(i, "mobile")} />
                                       {membersTouched[i]?.mobile && !membersErr[i]?.mobile && <span className="rg-input-ok">✓</span>}
-                                      {membersTouched[i]?.mobile && membersErr[i]?.mobile && <span className="rg-input-err">⚠</span>}
+                                      {membersTouched[i]?.mobile && membersErr[i]?.mobile && <span className="rg-input-err" style={{ display: "flex", alignItems: "center" }}>{renderWarningIcon(14)}</span>}
                                     </div>
                                     {membersTouched[i]?.mobile && membersErr[i]?.mobile && <div className="rg-err">{membersErr[i]?.mobile}</div>}
                                   </div>
                                 </div>
-                                <button className="rg-remove-btn" onClick={() => removeMember(i)}>
-                                  🗑 Remove Member
+                                <button className="rg-remove-btn" onClick={() => removeMember(i)} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                                  {renderTrashIcon(14)} Remove Member
                                 </button>
                               </motion.div>
                             )}
@@ -1069,15 +1167,17 @@ export default function Register() {
                         )}
                       </div>
 
-                      <div className="rg-review-note">
-                        <span>🛡</span>
+                      <div className="rg-review-note" style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                        {renderShieldIcon(18, { marginTop: "2px", flexShrink: 0 })}
                         <p>By proceeding with payment, you agree to DevLinkHub's event policies. Successful payments will instantly confirm your registration.</p>
                       </div>
 
                       <div className="rg-btn-row">
                         <button className="rg-back-btn" onClick={() => setFormStep(3)}>← Back</button>
                         <button className="rg-submit-btn" onClick={handleSubmit} disabled={isSubmitting}>
-                          <span>{isSubmitting ? "⏳ Processing..." : "🚀 Proceed to Payment"}</span>
+                          <span style={{ display: "inline-flex", alignItems: "center" }}>
+                            {isSubmitting ? "Processing..." : <>Proceed to Payment <span style={{ marginLeft: "6px" }}>➔</span></>}
+                          </span>
                           {!isSubmitting && <span className="rg-sb-amount">₹{finalAmount}</span>}
                         </button>
                       </div>
@@ -1113,8 +1213,10 @@ export default function Register() {
 
                 {/* Promo Code */}
                 <div className="rg-promo-wrap">
-                  <button className="rg-promo-toggle" onClick={() => setPromoOpen(p=>!p)}>
-                    <span>🎟 Have a promo code?</span>
+                  <button className="rg-promo-toggle" onClick={() => setPromoOpen(p=>!p)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      {renderPromoIcon(16, { marginRight: "6px" })} Have a promo code?
+                    </span>
                     <span className={`rg-promo-chevron ${promoOpen?"open":""}`}>▼</span>
                   </button>
                   <AnimatePresence>
@@ -1157,8 +1259,8 @@ export default function Register() {
                   if (formStep < 4) { nextStep(); } else { handleSubmit(); }
                 }}>
                   <div className="rg-cta-glow" />
-                  <span className="rg-cta-inner">
-                    {isSubmitting ? "⏳ Processing..." : (formStep < 4 ? "🚀 Continue to Next Step" : `🚀 Complete & Pay ₹${finalAmount}`)}
+                  <span className="rg-cta-inner" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    {isSubmitting ? "Processing..." : (formStep < 4 ? <>Continue to Next Step <span style={{ marginLeft: "6px" }}>➔</span></> : <>Complete & Pay ₹{finalAmount} <span style={{ marginLeft: "6px" }}>➔</span></>)}
                   </span>
                 </button>
 
@@ -1183,16 +1285,18 @@ export default function Register() {
               <div className="rg-checkout-card">
                 <div className="rg-co-header">
                   <div className="rg-co-brand">
-                    <span className="rg-co-logo">⚡</span>
+                    <span className="rg-co-logo" style={{ display: "inline-flex", alignItems: "center" }}>{renderZapIcon(16)}</span>
                     <div>
                       <div className="rg-co-name">DEVLINKHUB</div>
                       <div className="rg-co-event">IGNITE 2026</div>
                     </div>
                   </div>
-                  <div className="rg-co-right">
-                    <div className="rg-co-secure">🔒 Secure Checkout</div>
-                    <div className={`rg-co-timer ${checkoutTimeLeft<60?"urgent":""}`}>
-                      ⏱ {formatTime(checkoutTimeLeft)}
+                  <div className="rg-co-right" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div className="rg-co-secure" style={{ display: "inline-flex", alignItems: "center" }}>
+                      {renderLockIcon(12, { marginRight: "4px" })} Secure Checkout
+                    </div>
+                    <div className={`rg-co-timer ${checkoutTimeLeft<60?"urgent":""}`} style={{ display: "inline-flex", alignItems: "center" }}>
+                      {renderClockIcon(12, { marginRight: "4px" })} {formatTime(checkoutTimeLeft)}
                     </div>
                   </div>
                 </div>
@@ -1244,7 +1348,7 @@ export default function Register() {
                           Math.sin(x*y*0.017+2.3)>0.1?<rect key={`${x}-${y}`} x={x} y={y} width="7" height="7" rx="1" fill={y%20===5?"#8b5cf6":"#3b82f6"} opacity="0.85"/>:null
                         ))}
                         <rect x="84" y="84" width="32" height="32" rx="6" fill="#0a0a1a"/>
-                        <text x="100" y="105" textAnchor="middle" fontSize="18" fill="#3b82f6" fontWeight="bold">⚡</text>
+                        <path d="M102,89 L94,101 L100,101 L97,111 L106,99 L100,99 Z" fill="#3b82f6" />
                       </svg>
                     </div>
                     <div className="rg-co-qr-status"><span className="rg-qr-dot"/> Waiting for payment…</div>
@@ -1272,7 +1376,13 @@ export default function Register() {
                 <motion.div className="rg-success-icon" initial={{scale:0}} animate={{scale:1}} transition={{type:"spring",delay:0.1,stiffness:200}}>
                   ✓
                 </motion.div>
-                <h2 className="rg-success-title">🎉 Registration Confirmed!</h2>
+                <h2 className="rg-success-title" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-green)" }}>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                  Registration Confirmed!
+                </h2>
                 <p className="rg-success-sub">Welcome to DEVLINKHUB IGNITE 2026</p>
 
                 <div className="rg-success-details">
@@ -1287,12 +1397,12 @@ export default function Register() {
                 <div className="rg-whats-next">
                   <div className="rg-wn-title">What's Next?</div>
                   <ul className="rg-wn-list">
-                    <li>✅ Registration Confirmed</li>
-                    <li>✅ Event Pass Generated</li>
-                    <li>✅ Community Access Granted</li>
-                    <li>⏳ Venue Details Coming Soon</li>
-                    <li>⏳ Speaker Announcements Pending</li>
-                    <li>⏳ Hackathon Challenges Revealed at Event</li>
+                    <li><span style={{ color: "var(--accent-green)", marginRight: "8px" }}>✓</span>Registration Confirmed</li>
+                    <li><span style={{ color: "var(--accent-green)", marginRight: "8px" }}>✓</span>Event Pass Generated</li>
+                    <li><span style={{ color: "var(--accent-green)", marginRight: "8px" }}>✓</span>Community Access Granted</li>
+                    <li><span style={{ color: "var(--accent-pink)", marginRight: "8px" }}>➔</span>Venue Details Coming Soon</li>
+                    <li><span style={{ color: "var(--accent-pink)", marginRight: "8px" }}>➔</span>Speaker Announcements Pending</li>
+                    <li><span style={{ color: "var(--accent-pink)", marginRight: "8px" }}>➔</span>Hackathon Challenges Revealed at Event</li>
                   </ul>
                 </div>
 

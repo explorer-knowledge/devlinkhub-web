@@ -31,11 +31,25 @@ img, video, canvas, svg, iframe {
   .community-bento-grid { grid-template-columns: 1fr 1fr; }
   .comm-bento-card--full { grid-column: span 2; }
 
-  .footer-inner-cols { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .footer-inner-cols { 
+    grid-template-columns: 1fr 1fr !important; 
+    gap: 3rem !important; 
+  }
+  .footer-inner-cols > div:first-child {
+    grid-column: span 2 !important;
+  }
+  .footer-inner-cols > div:last-child {
+    grid-column: span 2 !important;
+  }
   .schedule-timeline { max-width: 100%; }
   .pricing-grid { grid-template-columns: 1fr 1fr; max-width: 100%; }
   .tracks-grid { grid-template-columns: 1fr 1fr; }
   .organizer-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Disable heavy background elements and animations on tablets */
+  .ambient-blob, .hero-particles-bg, .hero-water-bg {
+    display: none !important;
+  }
 }
 
 /* ── 768px: Core Mobile Breakpoint ── */
@@ -59,7 +73,9 @@ img, video, canvas, svg, iframe {
 
   /* Kill GPU-intensive CSS effects — but NOT animation-play-state on * 
      (that breaks framer-motion scroll triggers and visibility animations) */
-  *, *::before, *::after {
+  *:not(.mobile-drawer):not(.mobile-drawer *):not(.drawer-backdrop),
+  *:not(.mobile-drawer):not(.mobile-drawer *):not(.drawer-backdrop)::before,
+  *:not(.mobile-drawer):not(.mobile-drawer *):not(.drawer-backdrop)::after {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     filter: none !important;
@@ -126,16 +142,22 @@ img, video, canvas, svg, iframe {
   }
 
   /* Exceptions for full-screen overlays */
-  .mobile-drawer, .modal-overlay { max-width: 100vw !important; }
+  .mobile-drawer { max-width: 360px !important; }
+  .modal-overlay { max-width: 100vw !important; }
 
   /* === NAVBAR === */
   nav.frosted-navbar {
-    top: 8px !important;
-    width: calc(100% - 24px) !important;
-    padding: 10px 16px !important;
-    border-radius: 14px !important;
-    background: #04020d !important;
-    border: 1px solid rgba(255,255,255,0.07) !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    height: 64px !important;
+    padding: 0 20px !important;
+    border-radius: 0 !important;
+    background: #050816 !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: none !important;
   }
   .navbar-links { display: none !important; }
   .nav-right-actions .btn-primary { display: none !important; }
@@ -151,42 +173,7 @@ img, video, canvas, svg, iframe {
     justify-content: center !important;
   }
 
-  /* Mobile Navigation Drawer */
-  .mobile-drawer {
-    padding: 5.5rem 1.5rem 2rem !important;
-    gap: 0 !important;
-    justify-content: flex-start !important;
-    align-items: flex-start !important;
-    background: rgba(4, 2, 13, 0.98) !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  .mobile-drawer a {
-    font-size: 1.5rem !important;
-    padding: 1rem 0 !important;
-    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-    width: 100% !important;
-    min-height: 56px !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-  .mobile-drawer .btn-primary {
-    width: 100% !important;
-    justify-content: center !important;
-    margin-top: 1.5rem !important;
-    min-height: 52px !important;
-    font-size: 1rem !important;
-  }
-  .close-drawer {
-    top: 14px !important;
-    right: 14px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 1.8rem !important;
-  }
+  /* Mobile Navigation Drawer styles are managed in style.css to support premium glassmorphism. */
 
   /* === HERO SECTION === */
   .hero-wrapper {
@@ -448,6 +435,12 @@ img, video, canvas, svg, iframe {
   .organizer-avatar-placeholder { width: 56px !important; height: 56px !important; font-size: 1.3rem !important; }
 
   footer.frosted-footer-bar { padding: 2.5rem 1rem 1.5rem !important; }
+  .floating-back-to-top {
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
 }
 
 /* ── 390px: iPhone Pro ── */
