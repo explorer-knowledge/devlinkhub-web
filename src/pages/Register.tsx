@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { API } from "../services/api";
@@ -27,9 +27,7 @@ const FORM_STEPS = [
   { id: 4, label: "Review",         short: "04" },
 ];
 
-function generateId() {
-  return "DLH-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-}
+
 
 /* ── Avatar color palette ── */
 const AVATAR_COLORS = [
@@ -132,9 +130,9 @@ export default function Register() {
   /* ── Checkout / Success ── */
   const [checkoutTimeLeft, setCheckoutTimeLeft] = useState(300);
   const [timerActive,      setTimerActive]      = useState(false);
-  const [showRzpModal,     setShowRzpModal]      = useState(false);
-  const [registrationId,   setRegistrationId]   = useState("");
-  const [paymentId,        setPaymentId]         = useState("");
+  const [showRzpModal]     = useState(false);
+  const [registrationId]   = useState("");
+  const [paymentId]        = useState("");
 
   /* ── Toast ── */
   const [toast, setToast] = useState("");
@@ -144,7 +142,7 @@ export default function Register() {
   };
 
   /* ── Seat counter (animated) ── */
-  const [seats, setSeats] = useState(73);
+  const [seats] = useState(73);
 
   /* ── Countdown to event ── */
   const [countdown, setCountdown] = useState({ d: 0, h: 0, m: 0, s: 0 });
@@ -302,11 +300,7 @@ export default function Register() {
     return fields.every(f => !validateLeaderField(f, leader[f]));
   };
 
-  const canProceed = (s: number) => {
-    if (s === 1) return isStep1Valid();
-    if (s === 2) return isStep2Valid();
-    return true;
-  };
+
 
   const isStep3Valid = () => {
     if (members.length === 0) return true;
@@ -987,11 +981,11 @@ export default function Register() {
 
                 {/* CTA */}
                 <button className="rg-cta-btn" disabled={isSubmitting} onClick={() => {
-                  if (formStep < 4) { setFormStep(4); } else { handleSubmit(); }
+                  if (formStep < 4) { nextStep(); } else { handleSubmit(); }
                 }}>
                   <div className="rg-cta-glow" />
                   <span className="rg-cta-inner">
-                    {isSubmitting ? "⏳ Processing..." : `🚀 Complete Registration & Pay ₹${finalAmount}`}
+                    {isSubmitting ? "⏳ Processing..." : (formStep < 4 ? "🚀 Continue to Next Step" : `🚀 Complete & Pay ₹${finalAmount}`)}
                   </span>
                 </button>
 
@@ -1135,7 +1129,7 @@ export default function Register() {
                 </div>
 
                 <div className="rg-success-footer">
-                  <button className="rg-sf-link" onClick={() => { setStep("form"); setFormStep(1); setTeamName(""); setCategory(""); setLeader({name:"",email:"",mobile:"",college:"",branch:"",year:""}); setMembers([]); }}>
+                  <button className="rg-sf-link" onClick={() => { setStep("form"); setFormStep(1); setTeamName(""); setLeader({name:"",email:"",mobile:"",college:"",branch:"",year:""}); setMembers([]); }}>
                     [ Register Another Team ]
                   </button>
                   <button className="rg-sf-link" onClick={() => navigate("/")}>[ Return to Home ]</button>

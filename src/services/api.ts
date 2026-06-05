@@ -37,7 +37,7 @@ export interface VerifyPaymentPayload {
 }
 
 export const API = {
-  async saveRegistration(payload: RegisterPayload): Promise<{ success: boolean; regId: string }> {
+  async saveRegistration(_payload: RegisterPayload): Promise<{ success: boolean; regId: string }> {
     return { success: true, regId: "temp-id" };
   },
 
@@ -61,7 +61,7 @@ export const API = {
         college: payload.collegeName,
         isLeader: true
       },
-      ...(payload.members || []).map((m: any, i: number) => ({
+      ...(payload.members || []).map((m: any) => ({
         name: m.name,
         email: m.email || `${m.name.replace(/\s+/g, '').toLowerCase()}@team.com`,
         phone: m.mobile || payload.mobile,
@@ -85,7 +85,7 @@ export const API = {
     return { success: true, orderId: data.orderId, amount: data.amount, keyId: data.keyId };
   },
 
-  async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string }> {
+  async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string; regId?: string }> {
     // In a real system, the webhook handles the verification asynchronously.
     // We can poll the status endpoint to check if the registration was successful.
     for (let i = 0; i < 5; i++) {

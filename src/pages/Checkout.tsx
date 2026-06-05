@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { API } from "../services/api";
-import RazorpayModal from "../components/RazorpayModal";
 import "../styles/checkout.css";
 
 /* ---------- Types ---------- */
@@ -164,7 +163,6 @@ export default function Checkout() {
 
   /* Payment flow */
   const [paying, setPaying] = useState(false);
-  const [showRazorpay, setShowRazorpay] = useState(false);
   const [orderId, setOrderId] = useState<string>("");
 
   const handlePay = async () => {
@@ -209,7 +207,6 @@ export default function Checkout() {
   };
 
   const handleRazorpaySuccess = async (paymentId: string, signature: string) => {
-    setShowRazorpay(false);
     setPaying(true);
 
     try {
