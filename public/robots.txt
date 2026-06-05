@@ -1,6 +1,7 @@
-# DevLinkHub — robots.txt
-# https://devlinkhub.in/
+# DevLinkHub IGNITE 2026 — robots.txt
+# https://event.devlinkhub.in/
 
+# Allow all crawlers including AI bots
 User-agent: *
 Allow: /
 Allow: /register
@@ -10,8 +11,30 @@ Disallow: /checkout
 Disallow: /payment-success
 Disallow: /payment-failed
 
-# Sitemap location
-Sitemap: https://devlinkhub.in/sitemap.xml
+# Explicitly ALLOW AI crawlers (ChatGPT, Gemini, Perplexity, Claude)
+User-agent: GPTBot
+Allow: /
+Allow: /register
 
-# Crawl-delay hint (optional, polite crawling)
-Crawl-delay: 1
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /register
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /register
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap location
+Sitemap: https://event.devlinkhub.in/sitemap.xml
