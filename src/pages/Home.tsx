@@ -1160,7 +1160,7 @@ export default function Home() {
       </section>
 
       {/* SECTION 7.5: ABOUT DEVLINKHUB */}
-      <section className="about-devlinkhub-section" style={{ padding: "8rem 2rem", background: "var(--bg-secondary)", position: "relative", zIndex: 10 }}>
+      <section className="about-devlinkhub-section">
         <div className="section-wrapper">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1172,25 +1172,25 @@ export default function Home() {
             <h2 className="section-title-display">About DevLinkHub</h2>
           </motion.div>
 
-          <div className="glass-card" style={{ padding: "3.5rem", position: "relative", overflow: "hidden" }}>
+          <div className="glass-card about-devlink-card">
             <div className="dot-pattern" style={{ position: "absolute", opacity: 0.5 }} aria-hidden="true"></div>
-            <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "3rem", alignItems: "center" }}>
+            <div className="about-devlink-grid">
               <div>
-                <p style={{ fontSize: "1.25rem", color: "#fff", fontFamily: "var(--font-display)", fontWeight: "500", lineHeight: "1.8", marginBottom: "1.5rem" }}>
+                <p className="about-devlink-text">
                   DevLinkHub is a community built for students, developers, creators, and innovators who believe in learning together and building together.
                 </p>
-                <p style={{ fontSize: "1.05rem", color: "var(--white-secondary)", lineHeight: "1.7" }}>
+                <p className="about-devlink-subtext">
                   Our mission is simple: <strong>Build. Connect. Grow.</strong> Through hands-on workshops, innovation hackathons, networking meetups, and community-driven collaborative initiatives, we aim to create opportunities that help individuals grow both personally and professionally.
                 </p>
               </div>
 
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontFamily: "var(--font-display)", fontSize: "3rem", fontWeight: "900", lineHeight: "1.2", letterSpacing: "-0.03em" }}>
+              <div style={{ textAlign: "center", width: "100%" }}>
+                <div className="about-devlink-slogan">
                   <span style={{ color: "var(--accent-cyan)" }}>BUILD.</span><br />
                   <span style={{ color: "#fff" }}>CONNECT.</span><br />
                   <span style={{ color: "var(--accent-green)" }}>GROW.</span>
                 </div>
-                <div style={{ marginTop: "2rem" }}>
+                <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center", width: "100%" }}>
                   <a
                     href="https://discord.gg/devlinkhub"
                     target="_blank"

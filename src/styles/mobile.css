@@ -389,6 +389,36 @@ img, video, canvas, svg, iframe {
     border-radius: 12px !important;
     margin: 0 0 0.5rem !important;
   }
+
+  /* === ABOUT DEVLINKHUB RESPONSIVENESS === */
+  .about-devlinkhub-section {
+    padding: 4rem 1.25rem !important;
+  }
+  .about-devlink-card {
+    padding: 2rem 1.25rem !important;
+  }
+  .about-devlink-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+    text-align: center !important;
+  }
+  .about-devlink-text {
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1rem !important;
+  }
+  .about-devlink-subtext {
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+  .about-devlink-slogan {
+    font-size: 2.2rem !important;
+  }
+  .about-devlink-grid .btn-primary {
+    width: 100% !important;
+    max-width: 320px;
+    justify-content: center !important;
+  }
 }
 
 /* ── 480px: Compact Phones ── */

@@ -1256,6 +1256,48 @@ footer.frosted-footer-bar {
   letter-spacing: 0.1em;
 }
 
+/* --- ABOUT DEVLINKHUB SECTION --- */
+.about-devlinkhub-section {
+  padding: 8rem 2rem;
+  background: var(--bg-secondary);
+  position: relative;
+  z-index: 10;
+}
+.about-devlink-card {
+  padding: 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.about-devlink-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+.about-devlink-text {
+  font-size: 1.25rem;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+.about-devlink-subtext {
+  font-size: 1.05rem;
+  color: var(--white-secondary);
+  line-height: 1.7;
+}
+.about-devlink-slogan {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+
 @media (max-width: 1024px) {
   .schedule-timeline { max-width: 100%; }
   .pricing-grid { grid-template-columns: 1fr; max-width: 450px; }
