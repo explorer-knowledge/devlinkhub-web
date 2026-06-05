@@ -200,6 +200,7 @@ export default function Register() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
+    if (window.innerWidth < 768) return; // Prevent heavy canvas lag on mobile
     let W = canvas.width  = window.innerWidth;
     let H = canvas.height = window.innerHeight;
     let animId: number;
@@ -401,6 +402,7 @@ export default function Register() {
                  status: verifyRes.success ? "success" : "failed", 
                  registrationId: regId, 
                  paymentId: response.razorpay_payment_id,
+                 orderId: res.orderId,
                  finalAmount: payload.finalAmount, 
                  appliedPromo: payload.appliedPromo, 
                  teamName: payload.teamName,

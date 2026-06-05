@@ -7,7 +7,7 @@ interface MemberData {
   name: string; collegeName: string;
 }
 interface Result {
-  status: string; registrationId: string; paymentId: string;
+  status: string; registrationId: string; paymentId: string; orderId?: string;
   finalAmount: number; appliedPromo: string | null;
   teamName: string; leaderName: string; members: MemberData[];
   collegeName: string; email: string;
@@ -111,6 +111,7 @@ export default function PaymentSuccess() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
+    if (window.innerWidth < 768) return; // Prevent heavy canvas lag on mobile
     let W = canvas.width = window.innerWidth;
     let H = canvas.height = window.innerHeight;
     let animId: number;
@@ -153,6 +154,7 @@ export default function PaymentSuccess() {
   const rotateY = useTransform(x, [-100, 100], [-10, 10]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (window.innerWidth < 768) return; // Disable 3D tilt on mobile
     const rect = event.currentTarget.getBoundingClientRect();
     x.set(event.clientX - rect.left - rect.width / 2);
     y.set(event.clientY - rect.top - rect.height / 2);
@@ -257,8 +259,8 @@ export default function PaymentSuccess() {
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </motion.div>
             <div className="ps-status-text">
-              <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>Payment Successful</motion.h1>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>We've sent a receipt to <strong>{result.email}</strong></motion.p>
+              <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>Hello {result.leaderName}!</motion.h1>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>Payment Successful! We've sent a receipt to <strong>{result.email}</strong></motion.p>
             </div>
           </div>
 
@@ -274,6 +276,16 @@ export default function PaymentSuccess() {
               <div className="ps-term-row">
                 <span className="ps-term-lbl">Reference ID</span>
                 <span className="ps-term-val mono">{result.paymentId}</span>
+              </div>
+              {result.orderId && (
+                <div className="ps-term-row">
+                  <span className="ps-term-lbl">Order ID</span>
+                  <span className="ps-term-val mono">{result.orderId}</span>
+                </div>
+              )}
+              <div className="ps-term-row">
+                <span className="ps-term-lbl">Team Code (Reg ID)</span>
+                <span className="ps-term-val mono" style={{ color: '#00f2fe' }}>{result.registrationId}</span>
               </div>
               <div className="ps-term-row">
                 <span className="ps-term-lbl">Date & Time</span>

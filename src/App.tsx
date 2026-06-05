@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Checkout from "./pages/Checkout";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
+import "./styles/mobile.css";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -20,6 +21,10 @@ function ScrollToTop() {
 
 function MainLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    // Disable Lenis on mobile - it fights native touch scroll and causes lag
+    const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
+    if (isMobile) return; // Let the browser handle scroll natively on mobile
+
     const lenis = new Lenis({
       duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

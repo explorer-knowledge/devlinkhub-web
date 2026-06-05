@@ -73,7 +73,7 @@
     inset 0 1px 1px rgba(255,255,255,0.2);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: clip;
 }
 
 /* Glowing Border Animation */
@@ -323,14 +323,37 @@
    RESPONSIVE
    ──────────────────────────────────────────────────────────── */
 @media (max-width: 960px) {
-  .ps-container {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
+  .ps-container { grid-template-columns: 1fr; gap: 32px; }
   .ps-hologram-card { max-width: 360px; margin: 0 auto; }
 }
-@media (max-width: 480px) {
-  .ps-root { padding: 32px 16px; }
-  .ps-status-text h1 { font-size: 26px; }
-  .ps-terminal { padding: 24px; }
+
+@media (max-width: 768px) {
+  /* Kill GPU-heavy effects on mobile */
+  .ps-canvas, .ps-noise { display: none !important; }
+  *, *::before, *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    animation-play-state: paused !important;
+  }
+  .ps-hologram-card {
+    backdrop-filter: none !important;
+    background: rgba(13, 10, 30, 0.95) !important;
+  }
+  .ps-root { padding: 24px 16px; }
+  .ps-container { gap: 24px; }
+  .ps-hologram-card { max-width: 100%; aspect-ratio: 1 / 1.2; }
 }
+
+@media (max-width: 480px) {
+  .ps-root { padding: 20px 12px; }
+  .ps-status-text h1 { font-size: 24px !important; }
+  .ps-terminal { padding: 20px 16px !important; font-size: 11px !important; }
+  .ps-hologram-card { aspect-ratio: 1 / 1.1; }
+}
+
+@media (max-width: 390px) {
+  .ps-root { padding: 16px 10px; }
+  .ps-status-text h1 { font-size: 20px !important; }
+}
+

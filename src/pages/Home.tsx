@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import ParticleBg from "../components/ParticleBg";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import "../styles/style.css";
+
+const ParticleBg = lazy(() => import("../components/ParticleBg"));
 
 /* --- Tracks Data --- */
 const tracks = [
@@ -104,6 +105,7 @@ function TiltGlassCard({
   const [glowStyle, setGlowStyle] = useState<React.CSSProperties>({});
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (window.innerWidth < 768) return;
     const card = cardRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
@@ -121,6 +123,7 @@ function TiltGlassCard({
   };
 
   const handleMouseLeave = () => {
+    if (window.innerWidth < 768) return;
     const card = cardRef.current;
     if (!card) return;
     card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
@@ -146,14 +149,19 @@ export default function Home() {
   const navigate = useNavigate();
 
   /* --- States --- */
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [activeTab, setActiveTab] = useState<"day1" | "day2">("day1");
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [isTerminalSwapped, setIsTerminalSwapped] = useState(false);
-  const [terminalMinimized, setTerminalMinimized] = useState(true);
-  const [communityLogs, setCommunityLogs] = useState<string[]>(["connecting to devlinkhub network..."]);
 
-  // Hero Original CLI text lines ref
-  const [originalCliLines, setOriginalCliLines] = useState<string[]>([]);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Hero Original CLI text lines state
+  const [cliText, setCliText] = useState("");
   // Swapped Hackathon CLI printing steps
   const [hackathonCliText, setHackathonCliText] = useState("");
   const [hackathonCliDone, setHackathonCliDone] = useState(false);
@@ -163,6 +171,7 @@ export default function Home() {
 
   /* --- 1. Water Canvas Sine Mesh Animations --- */
   useEffect(() => {
+    if (isMobile) return; // Completely abort heavy canvas render on mobile
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
@@ -170,6 +179,7 @@ export default function Home() {
     let h = (canvas.height = canvas.parentElement?.clientHeight || 400);
 
     const handleResize = () => {
+      if (window.innerWidth < 768) return;
       w = canvas.width = canvas.parentElement?.clientWidth || 500;
       h = canvas.height = canvas.parentElement?.clientHeight || 400;
     };
@@ -220,73 +230,89 @@ export default function Home() {
     };
   }, []);
 
-  /* --- 2. Community logs appending loop --- */
+  /* --- 2. Hero Original CLI (npm install loop) --- */
   useEffect(() => {
-    let index = 1;
-    const interval = setInterval(() => {
-      setCommunityLogs((prev) => {
-        const next = [...prev, `> ${communityLogLibrary[index]}`];
-        if (next.length > 10) next.shift(); // keep last 10 lines
-        return next;
-      });
-      index = (index + 1) % communityLogLibrary.length;
-    }, 2500);
+    if (isTerminalSwapped) return;
 
-    return () => clearInterval(interval);
-  }, []);
-
-  /* --- 3. Hero Original CLI (npm install loop) --- */
-  useEffect(() => {
     const steps = [
-      { text: "admin@devlinkhub:~ $ npm install @devlinkhub/ignite\n", delay: 800 },
-      { text: "[░░░░░░░░░░░░░░░░░░░░] 0% - fetching packages...\n", delay: 500, overwriteLast: true },
-      { text: "[████░░░░░░░░░░░░░░░░] 20% - resolving dependencies...\n", delay: 500, overwriteLast: true },
-      { text: "[████████████░░░░░░░░] 60% - loading workshop modules...\n", delay: 500, overwriteLast: true },
-      { text: "[████████████████████] 100% - done!\n", delay: 400, overwriteLast: true },
-      { text: "+ @devlinkhub/ignite@2026.1.0\nadded 62 packages, and audited 84 packages in 2.1s\n\n", delay: 700 },
-      { text: "admin@devlinkhub:~ $ npm run dev\n", delay: 800 },
-      { text: "> devlinkhub-ignite@2026.0.0 dev\n> vite\n\n", delay: 500 },
-      { text: "  VITE v5.4.1  ready in 186 ms\n", delay: 400 },
-      { text: "  ➜  Local:   http://localhost:5173/\n", delay: 300 },
-      { text: "  ➜  Network: use --host to expose\n", delay: 300 },
-      { text: "  ➜  press h + enter to show help\n\n", delay: 4500, clearAfter: true }
+      { type: "type", text: "npm install devlinkhub" },
+      { type: "wait", delay: 400 },
+      { type: "print", text: "\n<span style='color:var(--accent-green)'>✔</span> Building community...\n" },
+      { type: "wait", delay: 300 },
+      { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Connecting developers...\n" },
+      { type: "wait", delay: 300 },
+      { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Launching IGNITE 2026...\n" },
+      { type: "wait", delay: 350 },
+      { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Loading opportunities...\n" },
+      { type: "wait", delay: 300 },
+      { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Ready.\n\n" },
+      { type: "wait", delay: 500 },
+      { type: "print", text: "+ devlinkhub-ignite@2026.1.0\nadded 142 packages, and audited 143 packages in 1.8s\n\n" },
+      { type: "wait", delay: 1000 },
+      { type: "type", text: "npm run dev" },
+      { type: "wait", delay: 400 },
+      { type: "print", text: "\n\n  VITE v5.4.1  ready in 124 ms\n" },
+      { type: "print", text: "  ➜  Local:   <span style='color:var(--accent-cyan)'>http://localhost:5173/</span>\n" },
+      { type: "print", text: "  ➜  Network: use --host to expose\n" },
+      { type: "print", text: "  ➜  press h + enter to show help\n\n" },
+      { type: "wait", delay: 1500 },
+      { type: "print", text: "<span style='color:var(--white-secondary)'>[Click terminal card to query details]</span>\n" },
+      { type: "wait", delay: 6000 },
+      { type: "clear" }
     ];
 
-    let current = 0;
-    let lines: string[] = [];
-    let timeoutId: number;
+    let currentText = "admin@devlinkhub:~ $ ";
+    setCliText(currentText);
+
+    let stepIdx = 0;
+    let charIdx = 0;
+    let timeoutId: any;
+
+
 
     const execute = () => {
-      if (current >= steps.length) {
-        current = 0;
-      }
-      const step = steps[current];
-
-      if (step.clearAfter) {
-        timeoutId = window.setTimeout(() => {
-          lines = [];
-          setOriginalCliLines([]);
-          current++;
-          execute();
-        }, step.delay);
-        return;
+      if (stepIdx >= steps.length) {
+        stepIdx = 0;
+        charIdx = 0;
+        currentText = "admin@devlinkhub:~ $ ";
+        setCliText(currentText);
       }
 
-      if (step.overwriteLast && lines.length > 0) {
-        lines.pop();
-      }
+      const step = steps[stepIdx];
 
-      lines.push(step.text);
-      setOriginalCliLines([...lines]);
-      current++;
-      timeoutId = window.setTimeout(execute, step.delay);
+      if (step.type === "type") {
+        if (charIdx < step.text.length) {
+          currentText += step.text[charIdx];
+          setCliText(currentText);
+          charIdx++;
+          timeoutId = setTimeout(execute, 50);
+        } else {
+          stepIdx++;
+          charIdx = 0;
+          timeoutId = setTimeout(execute, 100);
+        }
+      } else if (step.type === "print") {
+        currentText += step.text;
+        setCliText(currentText);
+        stepIdx++;
+        timeoutId = setTimeout(execute, 40);
+      } else if (step.type === "wait") {
+        stepIdx++;
+        timeoutId = setTimeout(execute, step.delay);
+      } else if (step.type === "clear") {
+        currentText = "admin@devlinkhub:~ $ ";
+        setCliText(currentText);
+        stepIdx = 0;
+        charIdx = 0;
+        timeoutId = setTimeout(execute, 300);
+      }
     };
 
-    execute();
+    timeoutId = setTimeout(execute, 500);
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [isTerminalSwapped, isMobile]);
 
-  /* --- 4. Swapped CLI (Hackathon sequence) --- */
+  /* --- 3. Swapped CLI (Hackathon sequence) --- */
   useEffect(() => {
     if (!isTerminalSwapped) {
       setHackathonCliText("");
@@ -295,38 +321,71 @@ export default function Home() {
     }
 
     const steps = [
-      { text: "admin@devlinkhub:~ $ ./ignite2026.sh --info\n", delay: 700 },
-      { text: "[STAGING] Loading DevLinkHub Ignite registry...\n", delay: 500 },
-      { text: '<span style="color:var(--accent-cyan)">[OK]</span> Event: DevLinkHub Ignite 2026\n', delay: 300 },
-      { text: '<span style="color:var(--accent-cyan)">[OK]</span> Venue: Bhopal, Madhya Pradesh (TBA)\n', delay: 300 },
-      { text: '<span style="color:var(--accent-cyan)">[OK]</span> Status: REGISTRATION ACTIVE\n', delay: 300 },
-      { text: '<span style="color:var(--accent-cyan)">[OK]</span> Modules: BuildX Workshop + Auraxis Hackathon\n', delay: 400 },
-      { text: '<span style="color:var(--accent-cyan)">[OK]</span> Entry Model: Solo or Teams (1-4 members)\n', delay: 300 },
-      { text: '<span style="color:var(--accent-cyan)">[OK]</span> Perks: Certificate | Refreshments | Mentorship\n', delay: 300 },
-      { text: "admin@devlinkhub:~ $ \n", delay: 500 }
+      { type: "type", text: "./ignite2026.sh --info" },
+      { type: "wait", delay: 500 },
+      { type: "print", text: "\n[STAGING] Loading DevLinkHub Ignite registry...\n" },
+      { type: "wait", delay: 400 },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Event: DevLinkHub Ignite 2026\n" },
+      { type: "wait", delay: 200 },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Venue: Bhopal, Madhya Pradesh (TBA)\n" },
+      { type: "wait", delay: 200 },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Status: REGISTRATION ACTIVE\n" },
+      { type: "wait", delay: 200 },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Modules: BuildX Workshop + Auraxis Hackathon\n" },
+      { type: "wait", delay: 200 },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Entry Model: Solo or Teams (1-4 members)\n" },
+      { type: "wait", delay: 200 },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Perks: Certificate | Refreshments | Mentorship\n" },
+      { type: "wait", delay: 200 },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Community: 500+ developers synced\n\n" },
+      { type: "print", text: "admin@devlinkhub:~ $ \n" }
     ];
 
-    let current = 0;
-    let printed = "";
-    let timeoutId: number;
+    let currentText = "admin@devlinkhub:~ $ ";
+    setHackathonCliText(currentText);
+    setHackathonCliDone(false);
+
+    let stepIdx = 0;
+    let charIdx = 0;
+    let timeoutId: any;
+
+
 
     const execute = () => {
-      if (current >= steps.length) {
+      if (stepIdx >= steps.length) {
         setHackathonCliDone(true);
         return;
       }
-      const step = steps[current];
-      printed += step.text;
-      setHackathonCliText(printed);
-      current++;
-      timeoutId = window.setTimeout(execute, step.delay);
+
+      const step = steps[stepIdx];
+
+      if (step.type === "type") {
+        if (charIdx < step.text.length) {
+          currentText += step.text[charIdx];
+          setHackathonCliText(currentText);
+          charIdx++;
+          timeoutId = setTimeout(execute, 50);
+        } else {
+          stepIdx++;
+          charIdx = 0;
+          timeoutId = setTimeout(execute, 100);
+        }
+      } else if (step.type === "print") {
+        currentText += step.text;
+        setHackathonCliText(currentText);
+        stepIdx++;
+        timeoutId = setTimeout(execute, 40);
+      } else if (step.type === "wait") {
+        stepIdx++;
+        timeoutId = setTimeout(execute, step.delay);
+      }
     };
 
-    execute();
+    timeoutId = setTimeout(execute, 400);
     return () => clearTimeout(timeoutId);
-  }, [isTerminalSwapped]);
+  }, [isTerminalSwapped, isMobile]);
 
-  /* --- 5. Global Escape key listener --- */
+  /* --- 4. Global Escape key listener --- */
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isTerminalSwapped) {
@@ -338,7 +397,7 @@ export default function Home() {
   }, [isTerminalSwapped]);
 
   return (
-    <>
+    <MotionConfig reducedMotion={isMobile ? "always" : "user"}>
       {/* GLOBAL EFFECTS LAYERS (Depth Layer 0) */}
       <div className="noise-texture" aria-hidden="true"></div>
       <div className="dot-pattern" aria-hidden="true"></div>
@@ -349,10 +408,14 @@ export default function Home() {
 
       {/* SECTION 1: HERO SECTION */}
       <section className="hero-wrapper" id="home">
-        <div className="hero-particles-bg" aria-hidden="true">
-          <ParticleBg />
-        </div>
-        <canvas ref={heroCanvasRef} className="hero-water-bg" aria-hidden="true"></canvas>
+        {!isMobile && (
+          <Suspense fallback={null}>
+            <div className="hero-particles-bg" aria-hidden="true">
+              <ParticleBg />
+            </div>
+          </Suspense>
+        )}
+        {!isMobile && <canvas ref={heroCanvasRef} className="hero-water-bg" aria-hidden="true"></canvas>}
 
         <div className="hero-inner-grid">
           <motion.div
@@ -393,7 +456,7 @@ export default function Home() {
                 Register Pass
               </a>
             </div>
-            <div style={{ marginTop: "2.5rem", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--white-secondary)" }}>
+            <div className="hero-date-grid">
               <div>📅 20-21 June 2026</div>
               <div>👥 Team Size: 1-4 Members</div>
               <div>🎓 Open for Students &amp; Developers</div>
@@ -403,7 +466,7 @@ export default function Home() {
 
           {/* CLI Terminal */}
           <div className="hero-visual-block" aria-hidden="true">
-            <svg style={{ position: "absolute", width: "120%", height: "120%", zIndex: 0, opacity: 0.25, mixBlendMode: "screen", filter: "blur(10px)" }}>
+            <svg style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "100%", height: "100%", zIndex: 0, opacity: 0.18, mixBlendMode: "screen", filter: "blur(20px)", pointerEvents: "none" }}>
               <defs>
                 <radialGradient id="hero-blob-grad" cx="50%" cy="50%" r="50%">
                   <stop offset="0%" stopColor="var(--accent-cyan)" />
@@ -420,100 +483,130 @@ export default function Home() {
               layoutId="cli-terminal"
               transition={{ type: "spring", stiffness: 180, damping: 25 }}
               className="glass-card hero-visual-card"
+              onClick={() => setIsTerminalSwapped(!isTerminalSwapped)}
               style={{
                 zIndex: 10,
+                cursor: "pointer",
                 transform: isTerminalSwapped ? "perspective(1200px) rotateY(0deg) scale(1.02)" : "perspective(1200px) rotateY(-8deg)"
               }}
             >
-              {!isTerminalSwapped ? (
-                // Original CLI
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--glass-border)", paddingBottom: "12px", marginBottom: "16px" }}>
-                  <div style={{ display: "flex", gap: "6px" }}>
-                    <span className="pulsing-dot" style={{ background: "#ff5f56", boxShadow: "none" }}></span>
-                    <span className="pulsing-dot" style={{ background: "#ffbd2e", boxShadow: "none" }}></span>
-                    <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
-                  </div>
-                  <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255,255,255,0.6)" }}>
-                    bash - devlinkhub.sh
-                  </span>
-                </div>
-              ) : (
-                // Hackathon CLI Header
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--glass-border)", paddingBottom: "12px", marginBottom: "16px" }}>
-                  <div style={{ display: "flex", gap: "6px" }}>
-                    <span
-                      onClick={() => setIsTerminalSwapped(false)}
-                      className="pulsing-dot"
-                      style={{ background: "#ff5f56", boxShadow: "none", cursor: "pointer" }}
-                      title="Close and Restore"
-                    ></span>
-                    <span className="pulsing-dot" style={{ background: "#ffbd2e", boxShadow: "none" }}></span>
-                    <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
-                  </div>
-                  <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "var(--accent-cyan)" }}>
-                    /devlinkhub/ignite/info
-                  </span>
-                  <button
-                    onClick={() => setIsTerminalSwapped(false)}
-                    style={{ background: "transparent", border: "none", color: "var(--white-secondary)", cursor: "pointer", fontSize: "12px", fontFamily: "var(--font-mono)" }}
-                  >
-                    [ESC] X
-                  </button>
-                </div>
-              )}
-
-              {/* Terminal Body */}
-              <div
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "13.5px",
-                  lineHeight: 1.7,
-                  color: "var(--accent-green)",
-                  overflow: "hidden",
-                  flex: 1,
-                  textAlign: "left",
-                  whiteSpace: "pre-wrap"
-                }}
-              >
+              <AnimatePresence mode="wait">
                 {!isTerminalSwapped ? (
-                  <>
-                    {originalCliLines.join("")}
-                    <span className="blinking-caret"></span>
-                  </>
-                ) : (
-                  <>
-                    <span dangerouslySetInnerHTML={{ __html: hackathonCliText }}></span>
-                    {hackathonCliDone && (
-                      <div style={{ marginTop: "1rem" }}>
-                        <button
-                          className="cyber-register-btn"
-                          style={{ border: "none", cursor: "pointer" }}
-                          onClick={() => navigate("/register")}
-                        >
-                          Launch Registration <span>⏎</span>
-                        </button>
+                  <motion.div
+                    key="original-cli"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.25 }}
+                    style={{ display: "flex", flexDirection: "column", height: "100%", flex: 1, width: "100%" }}
+                  >
+                    {/* Original CLI */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--glass-border)", paddingBottom: "12px", marginBottom: "16px" }}>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <span className="pulsing-dot" style={{ background: "#ff5f56", boxShadow: "none" }}></span>
+                        <span className="pulsing-dot" style={{ background: "#ffbd2e", boxShadow: "none" }}></span>
+                        <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
                       </div>
-                    )}
-                    {!hackathonCliDone && <span className="blinking-caret"></span>}
-                  </>
-                )}
-              </div>
+                      <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255,255,255,0.6)" }}>
+                        bash - devlinkhub.sh
+                      </span>
+                    </div>
 
-              {/* Terminal Footer */}
-              <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--accent-green)" }}>
-                <span>// status: active</span>
-                {!isTerminalSwapped ? (
-                  <span>v2026.1.0 Stable</span>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "13.5px",
+                        lineHeight: 1.7,
+                        color: "var(--accent-green)",
+                        overflow: "hidden",
+                        flex: 1,
+                        textAlign: "left",
+                        whiteSpace: "pre-wrap"
+                      }}
+                    >
+                      <span dangerouslySetInnerHTML={{ __html: cliText }}></span>
+                      <span className="blinking-caret"></span>
+                    </div>
+
+                    {/* Terminal Footer */}
+                    <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--accent-green)", marginTop: "16px" }}>
+                      <span>// status: active</span>
+                      <span>v2026.1.0 Stable</span>
+                    </div>
+                  </motion.div>
                 ) : (
-                  <span
-                    onClick={() => navigate("/register")}
-                    className="cyber-register-btn"
-                    style={{ padding: "8px 16px", fontSize: "11px", marginTop: 0, textDecoration: "none", color: "inherit", cursor: "pointer" }}
+                  <motion.div
+                    key="swapped-cli"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.25 }}
+                    style={{ display: "flex", flexDirection: "column", height: "100%", flex: 1, width: "100%" }}
                   >
-                    Register Spot ⏎
-                  </span>
+                    {/* Hackathon CLI Header */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--glass-border)", paddingBottom: "12px", marginBottom: "16px" }}>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <span
+                          onClick={(e) => { e.stopPropagation(); setIsTerminalSwapped(false); }}
+                          className="pulsing-dot"
+                          style={{ background: "#ff5f56", boxShadow: "none", cursor: "pointer" }}
+                          title="Close and Restore"
+                        ></span>
+                        <span className="pulsing-dot" style={{ background: "#ffbd2e", boxShadow: "none" }}></span>
+                        <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
+                      </div>
+                      <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "var(--accent-cyan)" }}>
+                        /devlinkhub/ignite/info
+                      </span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setIsTerminalSwapped(false); }}
+                        style={{ background: "transparent", border: "none", color: "var(--white-secondary)", cursor: "pointer", fontSize: "12px", fontFamily: "var(--font-mono)" }}
+                      >
+                        [ESC] X
+                      </button>
+                    </div>
+
+                    <div
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "13.5px",
+                        lineHeight: 1.7,
+                        color: "var(--accent-green)",
+                        overflow: "hidden",
+                        flex: 1,
+                        textAlign: "left",
+                        whiteSpace: "pre-wrap"
+                      }}
+                    >
+                      <span dangerouslySetInnerHTML={{ __html: hackathonCliText }}></span>
+                      {hackathonCliDone && (
+                        <div style={{ marginTop: "1rem" }}>
+                          <button
+                            className="cyber-register-btn"
+                            style={{ border: "none", cursor: "pointer" }}
+                            onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
+                          >
+                            Launch Registration <span>⏎</span>
+                          </button>
+                        </div>
+                      )}
+                      {!hackathonCliDone && <span className="blinking-caret"></span>}
+                    </div>
+
+                    {/* Terminal Footer */}
+                    <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--accent-green)", marginTop: "16px" }}>
+                      <span>// status: active</span>
+                      <span
+                        onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
+                        className="cyber-register-btn"
+                        style={{ padding: "8px 16px", fontSize: "11px", marginTop: 0, textDecoration: "none", color: "inherit", cursor: "pointer" }}
+                      >
+                        Register Spot ⏎
+                      </span>
+                    </div>
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
             </motion.div>
           </div>
         </div>
@@ -575,7 +668,7 @@ export default function Home() {
             <h2 className="section-title-display">The Beginning of Something Bigger</h2>
           </motion.div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "3rem", marginBottom: "4rem", alignItems: "center" }}>
+          <div className="about-2col-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "3rem", marginBottom: "4rem", alignItems: "center" }}>
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -627,7 +720,7 @@ export default function Home() {
               Why Join IGNITE 2026?
             </h3>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
+            <div className="perks-auto-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1148,67 +1241,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PERSISTENT FLOATING TERMINAL OVERLAY */}
-      <AnimatePresence>
-        {!isTerminalSwapped && (
-          <motion.div
-            layoutId="cli-terminal"
-            transition={{ type: "spring", stiffness: 180, damping: 25 }}
-            className={`persistent-terminal ${terminalMinimized ? "minimized" : ""}`}
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-              setTimeout(() => {
-                setIsTerminalSwapped(true);
-              }, 400);
-            }}
-          >
-            <div className="terminal-window-header">
-              <div className="terminal-window-dots">
-                <span className="t-dot t-dot--red"></span>
-                <span className="t-dot t-dot--yellow"></span>
-                <span className="t-dot t-dot--green"></span>
-              </div>
-              <span className="mono" style={{ fontSize: "10px", color: "var(--white-secondary)" }}>
-                /devlinkhub/ignite/info
-              </span>
-              <button
-                className="terminal-minimize-btn"
-                aria-label="Minimize terminal window"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setTerminalMinimized((prev) => !prev);
-                }}
-              >
-                {terminalMinimized ? "▲" : "▼"}
-              </button>
-            </div>
-
-            <div className="terminal-console-body">
-              {communityLogs.map((log, i) => (
-                <div key={i}>{log}</div>
-              ))}
-              <span className="blinking-caret"></span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+    </MotionConfig>
   );
 }
-
-/* --- Persistent Terminal Simulated Logs --- */
-const communityLogLibrary = [
-  "connecting to devlinkhub network...",
-  "[████████░░] 80% loading community nodes...",
-  "node_modules installed: 62 packages online",
-  "git checkout -b ignite-2026",
-  "ping community.devlinkhub.io — response: 2ms",
-  "checking active compiler guilds...",
-  "successfully synched staged repositories.",
-  "connection stable. Awaiting dispatches...",
-  "ignite_node: 0x7c3aed active",
-  "member_joined: pawan_k has entered hub",
-  "compiler_guild: compiling WebAssembly build...",
-  "stage_ops: dynamic routes initialized successfully"
-];

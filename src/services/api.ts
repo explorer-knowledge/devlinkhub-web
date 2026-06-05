@@ -3,7 +3,7 @@
  * In a real application, these functions would perform fetch/axios calls to your backend.
  */
 
-const BACKEND_URL = "https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon";
+const BACKEND_URL = `http://${window.location.hostname}:10003/api/hackathon`;
 
 export interface RegisterPayload {
   teamName: string;
@@ -88,7 +88,7 @@ export const API = {
   async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string; regId?: string }> {
     // In a real system, the webhook handles the verification asynchronously.
     // We can poll the status endpoint to check if the registration was successful.
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
       try {
         const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`,
           {
@@ -103,7 +103,7 @@ export const API = {
       } catch (err) {
         console.error("Polling error", err);
       }
-      await new Promise(res => setTimeout(res, 2000)); // wait 2 seconds before retrying
+      await new Promise(res => setTimeout(res, 1000)); // wait 1 second before retrying
     }
     // Assume success for UX if polling takes too long (webhook might be delayed)
     return { success: true, message: "Payment successful. Awaiting final confirmation." };
