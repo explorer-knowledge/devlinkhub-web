@@ -281,7 +281,13 @@ export default function PaymentSuccess() {
               <span className="ignite-eyebrow">Registration Confirmed</span>
               <h2 className="ignite-heading">Welcome to IGNITE 2026</h2>
               <p className="ignite-subheading">Your registration has been successfully secured.</p>
-              <div className="ignite-mantra">
+              {result.email && (
+                <p className="ignite-email-sent-msg" style={{ fontSize: '14px', color: '#10b981', marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 500 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  Confirmation sent to {result.email}
+                </p>
+              )}
+              <div className="ignite-mantra" style={{ marginTop: '24px' }}>
                 <span>Build</span> <span className="dot">•</span> <span>Connect</span> <span className="dot">•</span> <span>Grow</span>
               </div>
             </div>
