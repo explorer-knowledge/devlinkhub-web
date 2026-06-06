@@ -1,0 +1,69 @@
+'use strict';
+
+const crypto = require('crypto');
+const prisma = require('../db/prismaClient');
+const razorpay = require('../config/razorpay');
+const {validateRegistrationBody} = require('../config/validation');
+const {sendHackathonInvite} = require('../config/mailer');
+
+
+async function initiatePayent(req,res){
+    try{
+        const validationError = validateRegistrationBody(req.body);
+
+        if (validationError){
+            return res.status(400).json({error: validationError});
+        }
+        const { teamName,participants} = req.body;
+        
+        const leader = participants.filter(p=>p.isLeader);
+        const leaderEmail = leader.email.trim().toLowerCase().split("@");
+
+        const amountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE,10);
+        const receipt = `devlinkhub_hack_${Date.now()}_${leaderEmail[0].replace(/[^a-z0-9]/gi, '').slice(0, 20)}`
+   
+        const order = await razorpay.orders.create({
+            amount: amountPaise,
+            currency: 'INR',
+            receipt,
+            notes:{
+                teamName , leaderEmail: leaderEmail[0]
+            },
+        });
+
+        const expiresAt = new Date(Date.now() + 10*60*1000);
+
+        await prisma.pendingRegistration.upsert({
+            where: {razorpayOrderId: order.id},
+            create: {
+                razaorpayOrderId: order.id,
+                payload:{
+                    teamName:  teamName.trim(),
+                    participants: participants.map(m => ({
+                        name: m.name.trim(),
+                        email: m.email.trim().toLowerCase(),
+                        phone: m.phone.trim(),
+                        college: m.college.trim(),
+                        isLeader: m.isLeader,
+                    })),
+                },
+                expiresAt,
+            },
+            update: {expiresAt},
+        });
+
+        console.log(`[Hackathon] 🕐 Pending registration stored for order ${order.id} | team: ${teamName}`);
+        res.status(201).json({
+            orderId: order.id,
+            amount: order.amount,
+            currency: order.currency,
+            keyId: process.env.RAZORPAY_KEY_ID,
+        });
+
+    }catch(err){
+        console.error('Initiate PAyment Error: ',err);
+        res.status(500).json({ error: 'Failed to create payment order. Please try again.' });
+    }
+}
+
+

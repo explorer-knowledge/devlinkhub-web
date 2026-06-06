@@ -1,0 +1,72 @@
+// ─── Prisma Schema — devlink-hackathon-backend ─────────────────────────────────
+// Webhook-gated registration:
+//   PendingRegistration is created on /initiate (before payment)
+//   HackathonTeam + HackathonMember are created ONLY after Razorpay webhook fires
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ─── Pending Registration ──────────────────────────────────────────────────────
+// Holds all team/member data between "initiate" and the webhook confirmation.
+// Cleaned up (deleted) once the team is fully registered.
+
+model PendingRegistration {
+  id            String   @id @default(uuid())
+  razorpayOrderId String @unique
+  payload       Json     // full registration JSON: team + members
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime // TTL — set to createdAt + 30 min
+
+  @@map("pending_registrations")
+}
+
+// ─── Confirmed Registration ────────────────────────────────────────────────────
+// Written ONLY after Razorpay sends a verified "payment.captured" webhook.
+//
+// All participants (leader + members) live in ONE table — HackathonParticipant.
+// They share the same teamId and are distinguished by isLeader.
+
+model HackathonParticipant {
+  id      String   @id @default(uuid())
+
+  // ── Team identity (same for every row in the same team) ─────────────────────
+  teamId            String               // shared UUID for all team members
+  teamName          String
+
+  // ── Payment metadata (denormalised — same value on every row of the team) ───
+  razorpayOrderId   String
+  razorpayPaymentId String
+  amountPaid        Int                  // paise
+  status            String   @default("registered")
+
+  // ── Per-participant fields ───────────────────────────────────────────────────
+  isLeader  Boolean
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  college   String
+
+  createdAt DateTime @default(now())
+
+  @@index([teamId])
+  @@map("hackathon_participants")
+}
+
+// ─── Webhook Event Log ─────────────────────────────────────────────────────────
+// Idempotency guard: prevents the same Razorpay event from being processed twice
+// (Razorpay retries webhooks on 5xx, so this is essential).
+
+model WebhookEvent {
+  id          String   @id @default(uuid())
+  razorpayEventId String @unique   // event["id"] from the Razorpay payload
+  event       String               // e.g. "payment.captured"
+  processedAt DateTime @default(now())
+
+  @@map("webhook_events")
+}
