@@ -1,6 +1,6 @@
 'use strict';
 
-const { rateLimit } = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const { RedisStore } = require('rate-limit-redis');
 const redis          = require('../db/rateLimitRedis');
 
@@ -15,10 +15,13 @@ function makeRedisLimiter({ windowMs, max, keyPrefix, message }) {
     // Cloudflare sends the real IP in CF-Connecting-IP.
     // Render proxy sends it in X-Forwarded-For.
     // Fall back to req.ip (works locally).
-    keyGenerator: (req) =>
-      req.headers['cf-connecting-ip'] ||
-      (req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
-      req.ip,
+    keyGenerator: (req) => {
+      const ip =
+        req.headers['cf-connecting-ip'] ||
+        (req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
+        req.ip;
+      return ipKeyGenerator(ip);
+    },
 
     store: new RedisStore({
       prefix:      keyPrefix,
