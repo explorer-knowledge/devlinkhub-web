@@ -5,7 +5,8 @@ const express     = require('express');
 const {
   initiatePayment,
   handleWebhook,
-  getRegistrationStatus
+  getRegistrationStatus,
+  applyPromoCode
 } = require('../controllers/hackController');
 const { liveCount } = require('../controllers/countController');
 const {
@@ -13,6 +14,7 @@ const {
   statusLimiter,
   webhookLimiter,
   liveCountLimiter,
+  promoLimiter,
 } = require('../middleware/rateLimiter');
 
 const router = Router();
@@ -46,6 +48,7 @@ router.get('/status/:orderId', statusLimiter, getRegistrationStatus);
 // GET  /api/hackathon/team/:teamId
 // Full registration details for confirmation page
 // router.get('/team/:teamId', getTeam);
+router.post('/promo', promoLimiter, applyPromoCode);
 
 router.get('/live-count', liveCountLimiter, liveCount);
 
