@@ -7,6 +7,7 @@ const {
   handleWebhook,
   getRegistrationStatus
 } = require('../controllers/hackController');
+const { liveCount } = require('../controllers/countController');
 
 const router = Router();
 
@@ -38,5 +39,7 @@ router.get('/status/:orderId', getRegistrationStatus);
 // GET  /api/hackathon/team/:teamId
 // Full registration details for confirmation page
 // router.get('/team/:teamId', getTeam);
+
+router.get('/live-count', liveCount);
 
 module.exports = router;

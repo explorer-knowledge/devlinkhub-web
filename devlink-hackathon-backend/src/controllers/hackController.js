@@ -8,6 +8,7 @@ const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils
 const { validateRegistrationBody } = require('../config/validation');
 const { orderIdExists, getOrderData,getOrderCount, addOrderIdtoCache } = require('../services/orderIdService');
 const { eventIdExists, addEventIdtoCache } = require('../services/webhookEventId');
+const { broadcast } = require('./countController');
 const { sendHackathonInvite } = require('../config/mailer');
 
 // 11. Fire invite emails to non-leader participants (non-blocking — don't await)
@@ -233,6 +234,7 @@ async function handleWebhook(req, res) {
   try {
     addOrderIdtoCache(payload);
     addEventIdtoCache(eventId);
+    broadcast();
     await redis.lpush('registration_queue', JSON.stringify(queue));
     
     await redis.del(`pending_registration:${orderId}`);

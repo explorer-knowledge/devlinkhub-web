@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 10003;
 app.use(cors({
   origin:  [
       process.env.FRONTEND_URL,
-      'http://localhost:4000',
+      'http://localhost:5173',
       'https://juliette-hokey-pacifically.ngrok-free.dev',
       'https://temporary.404lab.xyz',
     ],

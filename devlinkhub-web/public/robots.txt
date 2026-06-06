@@ -1,0 +1,40 @@
+# DevLinkHub IGNITE 2026 — robots.txt
+# https://event.devlinkhub.in/
+
+# Allow all crawlers including AI bots
+User-agent: *
+Allow: /
+Allow: /register
+
+# Block payment/confirmation pages (no SEO value, require session state)
+Disallow: /checkout
+Disallow: /payment-success
+Disallow: /payment-failed
+
+# Explicitly ALLOW AI crawlers (ChatGPT, Gemini, Perplexity, Claude)
+User-agent: GPTBot
+Allow: /
+Allow: /register
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /register
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /register
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemap location
+Sitemap: https://event.devlinkhub.in/sitemap.xml
