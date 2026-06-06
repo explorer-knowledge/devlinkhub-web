@@ -44,7 +44,7 @@ app.use(globalLimiter); // ─── Global rate limit: 120 req/min per IP ─�
 app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') return next();
   if (req.path === '/api/hackathon/webhook') return next(); // Razorpay bypasses CF
-  if (req.headers['x-cf-secret'] !== process.env.CF_SECRET) {
+  if (req.headers['X-Origin'] !== process.env.CF_SECRET) {
     return res.status(403).json({ error: 'Forbidden' });
   }
   next();
