@@ -6,26 +6,10 @@ const redis = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
 const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 const { validateRegistrationBody } = require('../config/validation');
-const { orderIdExists, getOrderData,getOrderCount, addOrderIdtoCache } = require('../services/orderIdService');
+const { orderIdExists, getOrderData,getOrderCount,getPromoCodeUseCount, addOrderIdtoCache } = require('../services/orderIdService');
 const { eventIdExists, addEventIdtoCache } = require('../services/webhookEventId');
 const { broadcast } = require('./countController');
-const { sendHackathonInvite } = require('../config/mailer');
 
-// 11. Fire invite emails to non-leader participants (non-blocking — don't await)
-    // const leader  = p.participants.find(participant => participant.isLeader);
-    // const members = p.participants.filter(participant => !participant.isLeader);
-
-    // for (const member of members) {
-    //   const confirmToken = crypto.randomBytes(32).toString('hex');
-    //   sendHackathonInvite({
-    //     toEmail:     member.email,
-    //     teamName:    p.teamName,
-    //     leaderName:  leader ? leader.name : 'Team Leader',
-    //     confirmToken,
-    //   }).catch(mailErr => {
-    //     console.error(`[Webhook] Failed to send invite to ${member.email}:`, mailErr.message);
-    //   });
-    // }
 // ─── POST /api/hackathon/initiate ─────────────────────────────────────────────
 //
 // Step 1 — Frontend sends ALL team + participant details.
@@ -64,7 +48,7 @@ async function initiatePayment(req, res) {
       const result = resolvePromoCode(req.body.promoCode,amountPaise);
       if (result.valid) {
       amountPaise = result.finalAmountPaise;
-      console.log(`[Hackathon] Promo "${req.body.promoCode.trim().toUpperCase()}" applied — ${result.discountPercent} Rs off → ₹${(amountPaise / 100).toFixed(2)}`);
+      console.log(`[Hackathon] Promo "${req.body.promoCode.trim().toUpperCase()}" applied — ₹${(result.discountPaise / 100).toFixed(2)} off → ₹${(amountPaise / 100).toFixed(2)}`);
       } else {
         console.warn(`[Hackathon] Unknown promo code submitted: "${req.body.promoCode}" — ignoring.`);
       }
@@ -319,7 +303,7 @@ async function getRegistrationStatus(req, res) {
 // Response (invalid): { valid: false, message: string }
 
 const PROMO_CODES = {
-  'DEVLINKHUB100': 100,
+  'DEVLINKHUB100': 10000,
   //'EARLY20':   20,
 };
 
@@ -332,17 +316,12 @@ async function applyPromoCode(req, res) {
     }
 
     const code = promoCode.trim().toUpperCase();
-    // const discountPaise = PROMO_CODES[code];
-
-    // if (discountPaise === undefined) {
-    //   return res.status(200).json({ valid: false, message: 'Invalid promo code.' });
-    // }
 
     const baseAmountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE, 10);
     const result = resolvePromoCode(code, baseAmountPaise);
 
     if (!result.valid) {
-      return res.status(200).json({ valid: false, message: 'Invalid promo code.' });
+      return res.status(200).json({ valid: false, message: result.message ||'Invalid promo code.' });
     }
 
     return res.status(200).json({
@@ -366,6 +345,13 @@ function resolvePromoCode(code, baseAmountPaise) {
   if (discountPaise === undefined) {
     return { valid: false };
   }
+
+  const currentUses = getPromoCodeUseCount();
+  const maxUses = parseInt(process.env.MAX_PROMO_USES, 10);
+  if (currentUses >= maxUses) {
+    return { valid: false, message: 'Promo code usage limit has been reached.' };
+  }
+
   const finalAmountPaise    = parseInt(baseAmountPaise - discountPaise, 10);
   return { valid: true, discountPaise, finalAmountPaise };
 }
