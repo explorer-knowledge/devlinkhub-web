@@ -1,2 +1,2 @@
-devlink-hackathon-backend/node_modules/
-devlink-hackathon-backend/.env
+node_modules/
+.env

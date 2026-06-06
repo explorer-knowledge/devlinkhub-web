@@ -56,9 +56,19 @@ async function initiatePayment(req, res) {
     const leaderPhone = leader.phone.trim();
 
     //Create Razorpay order
-    const amountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE || '49900', 10);
+    let amountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE, 10);
     const safeLocal = leaderEmail.split('@')[0].replace(/[^a-z0-9]/gi, '').slice(0, 10);
     const receipt = `devlinkhub_hack_${Date.now()}_${safeLocal}`;
+
+    if(req.body.promoCode){
+      const result = resolvePromoCode(req.body.promoCode,amountPaise);
+      if (result.valid) {
+      amountPaise = result.finalAmountPaise;
+      console.log(`[Hackathon] Promo "${req.body.promoCode.trim().toUpperCase()}" applied — ${result.discountPercent} Rs off → ₹${(amountPaise / 100).toFixed(2)}`);
+      } else {
+        console.warn(`[Hackathon] Unknown promo code submitted: "${req.body.promoCode}" — ignoring.`);
+      }
+    }
 
     const order = await razorpay.orders.create({
       amount: amountPaise,
@@ -189,6 +199,12 @@ async function handleWebhook(req, res) {
   const paymentId = payment.id;
   const amount = payment.amount; // paise
 
+  const expectedAmountPaise = parseInt(24900, 10);
+  if (amount < expectedAmountPaise) {
+    console.error(`[Webhook] Underpayment! Expected ${expectedAmountPaise}, got ${amount}`);
+    return;
+  }
+
   if (typeof orderId !== 'string' || typeof paymentId !== 'string' || !paymentId || !orderId) {
     console.error('[Webhook] Invalid or missing orderId/paymentId');
     return;
@@ -292,6 +308,72 @@ async function getRegistrationStatus(req, res) {
   }
 }
 
+
+// ─── POST /api/hackathon/promo ─────────────────────────────────────────────────
+//
+// Frontend calls this to validate a promo code BEFORE initiating payment.
+// Returns the discounted amount (in paise) if the code is valid.
+//
+// Body: { promoCode: string }
+// Response (valid):   { valid: true,  discount: number, finalAmountPaise: number, message: string }
+// Response (invalid): { valid: false, message: string }
+
+const PROMO_CODES = {
+  'DEVLINKHUB100': 100,
+  //'EARLY20':   20,
+};
+
+async function applyPromoCode(req, res) {
+  try {
+    const { promoCode } = req.body;
+
+    if (!promoCode || typeof promoCode !== 'string') {
+      return res.status(400).json({ valid: false, message: 'Promo code is required.' });
+    }
+
+    const code = promoCode.trim().toUpperCase();
+    // const discountPaise = PROMO_CODES[code];
+
+    // if (discountPaise === undefined) {
+    //   return res.status(200).json({ valid: false, message: 'Invalid promo code.' });
+    // }
+
+    const baseAmountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE, 10);
+    const result = resolvePromoCode(code, baseAmountPaise);
+
+    if (!result.valid) {
+      return res.status(200).json({ valid: false, message: 'Invalid promo code.' });
+    }
+
+    return res.status(200).json({
+      valid:            true,
+      discount:         result.discountPaise,
+      finalAmountPaise: result.finalAmountPaise,
+      message:          `Promo applied! ${(result.discountPaise / 100).toFixed(2)} Rs off — you pay ₹${(result.finalAmountPaise / 100).toFixed(2)}.`,
+    });
+
+
+  } catch (err) {
+    console.error('[Hackathon] applyPromoCode error:', err);
+    res.status(500).json({ valid: false, message: 'Something went wrong. Please try again.' });
+  }
+}
+
+
+function resolvePromoCode(code, baseAmountPaise) {
+  const normalized     = code.trim().toUpperCase();
+  const discountPaise = PROMO_CODES[normalized];
+  if (discountPaise === undefined) {
+    return { valid: false };
+  }
+  const finalAmountPaise    = parseInt(baseAmountPaise - discountPaise, 10);
+  return { valid: true, discountPaise, finalAmountPaise };
+}
+
+
+
+
+
 // ─── GET /api/hackathon/team/:teamId ─────────────────────────────────────────
 //
 // Retrieve full registration details for a confirmed team (for confirmation page).
@@ -348,5 +430,6 @@ module.exports = {
   initiatePayment,
   handleWebhook,
   getRegistrationStatus,
+  applyPromoCode,
   // getTeam,
 };

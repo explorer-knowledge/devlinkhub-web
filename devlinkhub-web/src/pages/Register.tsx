@@ -577,12 +577,34 @@ export default function Register() {
   };
 
   /* ── Promo ── */
-  const handleApplyPromo = () => {
+  const [promoLoading, setPromoLoading] = useState(false);
+
+  const handleApplyPromo = async () => {
     if (!promoInput.trim()) { setPromoError("Enter a promo code first"); return; }
-    // Codes provided externally — no codes embedded in frontend
-    setPromoError("Invalid promo code. Please try a valid code.");
-    setAppliedPromo(null); setDiscountAmt(0); setFinalAmount(349);
+    
+    setPromoLoading(true);
+    setPromoError("");
+
+    try {
+      const result = await API.validatePromoCode(promoInput.trim());
+      if (result.valid && result.finalAmountPaise !== undefined) {
+        const basePrice = 349 * 100; // 349 in paise = 34900 ... wait, check your base
+        const discountPaise = basePrice - result.finalAmountPaise;
+        setAppliedPromo(promoInput.trim().toUpperCase());
+        setDiscountAmt(Math.round(discountPaise / 100));            // convert to rupees for display
+        setFinalAmount(Math.round(result.finalAmountPaise / 100));  // convert to rupees for display
+        setPromoError("");
+      } else {
+        setPromoError(result.message || "Invalid promo code.");
+        setAppliedPromo(null); setDiscountAmt(0); setFinalAmount(349);
+      }
+    } catch {
+      setPromoError("Could not validate. Please try again.");
+    } finally {
+      setPromoLoading(false);
+    }
   };
+
   const handleRemovePromo = () => {
     setPromoInput(""); setAppliedPromo(null); setDiscountAmt(0); setFinalAmount(349); setPromoError("");
   };
@@ -610,8 +632,8 @@ export default function Register() {
         collegeName: m.college,
         academicYear: m.year
       })),
-      appliedPromo: null,
-      discountAmount: 0,
+      appliedPromo: appliedPromo,
+      discountAmount: discountAmt * 100,  // back to paise for backend
       finalAmount
     };
 
@@ -639,6 +661,7 @@ export default function Register() {
               localStorage.setItem("devlinkhub_payment_result", JSON.stringify({
                 status: verifyRes.success ? "success" : "failed",
                 registrationId: regId,
+                teamId: verifyRes.regId ?? null,
                 paymentId: response.razorpay_payment_id,
                 orderId: res.orderId,
                 finalAmount: payload.finalAmount,
@@ -1276,7 +1299,9 @@ export default function Register() {
                             disabled={!!appliedPromo} />
                           {appliedPromo
                             ? <button className="rg-promo-btn remove" onClick={handleRemovePromo}>Remove</button>
-                            : <button className="rg-promo-btn apply" onClick={handleApplyPromo}>Apply</button>
+                            : <button className="rg-promo-btn apply" onClick={handleApplyPromo} disabled={promoLoading}>
+                                {promoLoading ? "..." : "Apply"}
+                              </button>
                           }
                         </div>
                         {promoError && <div className="rg-promo-err">{promoError}</div>}

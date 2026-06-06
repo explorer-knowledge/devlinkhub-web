@@ -48,7 +48,7 @@ const initiateLimiter = makeRedisLimiter({
 // GET /api/hackathon/status/:orderId
 // Frontend polls every ~3s for ~90s after payment = ~30 requests; 40 gives headroom
 const statusLimiter = makeRedisLimiter({
-  windowMs:  60 * 1000,
+  windowMs:  5 * 60 * 1000,
   max:       40,
   keyPrefix: 'rl:status:',
   message:   'Too many status checks. Please slow down.',
@@ -57,7 +57,7 @@ const statusLimiter = makeRedisLimiter({
 // POST /api/hackathon/webhook
 // Called only by Razorpay servers; real security is HMAC verification
 const webhookLimiter = makeRedisLimiter({
-  windowMs:  60 * 1000,
+  windowMs:  5 * 60 * 1000,
   max:       30,
   keyPrefix: 'rl:webhook:',
   message:   'Too many webhook requests.',
@@ -72,9 +72,18 @@ const liveCountLimiter = makeRedisLimiter({
   message:   'Too many requests.',
 });
 
+// POST /api/hackathon/promo
+// Frontend polls this to validate promo codes; strict limit to prevent brute-forcing
+const promoLimiter = makeRedisLimiter({
+  windowMs:  5 * 60 * 1000,  
+  max:       5,           
+  keyPrefix: 'rl:promo:',
+  message:   'Too many promo code attempts. Please wait a minute and try again.',
+});
+
 // Applied globally in index.js — hard ceiling for every route
 const globalLimiter = makeRedisLimiter({
-  windowMs:  60 * 1000,
+  windowMs:  5 * 60 * 1000,
   max:       120,
   keyPrefix: 'rl:global:',
   message:   'Too many requests. Please slow down.',
@@ -85,5 +94,6 @@ module.exports = {
   statusLimiter,
   webhookLimiter,
   liveCountLimiter,
+  promoLimiter,
   globalLimiter,
 };

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import QRCode from "qrcode";
 import "../styles/payment-success.css";
 
 interface MemberData {
@@ -8,13 +9,14 @@ interface MemberData {
 }
 interface Result {
   status: string; registrationId: string; paymentId: string; orderId?: string;
+  teamId?: string;
   finalAmount: number; appliedPromo: string | null;
   teamName: string; leaderName: string; members: MemberData[];
   collegeName: string; email: string;
 }
 
 /* ── Digital ticket canvas (Hidden, for Download only) ── */
-function generateTicket(result: Result) {
+function generateTicket(result: Result, qrDataUrl: string) {
   const canvas = document.createElement("canvas");
   canvas.width = 700; canvas.height = 340;
   const ctx = canvas.getContext("2d")!;
@@ -79,19 +81,34 @@ function generateTicket(result: Result) {
   ctx.fillText("STATUS", 500, 172);
   ctx.fillStyle = "#00ff87"; ctx.font = "bold 13px Arial";
   ctx.fillText("✓ CONFIRMED", 500, 190);
+  // QR Code
+  if (qrDataUrl) {
+    const qrImg = new Image();
+    qrImg.src = qrDataUrl;
+    ctx.drawImage(qrImg, 495, 205, 80, 80);
+  }
+  // Team ID below QR
+  if (result.teamId) {
+    ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.font = "7px monospace";
+    ctx.fillText("TEAM ID", 500, 296);
+    ctx.fillStyle = "rgba(0,242,254,0.8)"; ctx.font = "7px monospace";
+    ctx.fillText(result.teamId.slice(0, 20), 500, 307);
+    ctx.fillText(result.teamId.slice(20), 500, 317);
+  }
   // Decorative circles
   ctx.strokeStyle = "rgba(0,242,254,0.15)"; ctx.lineWidth = 20;
   ctx.beginPath(); ctx.arc(700, 0, 80, 0, Math.PI * 2); ctx.stroke();
   ctx.beginPath(); ctx.arc(0, 340, 60, 0, Math.PI * 2); ctx.stroke();
   // Payment ID
   ctx.fillStyle = "rgba(255,255,255,0.2)"; ctx.font = "8px monospace";
-  ctx.fillText(`Pay ID: ${result.paymentId}`, 500, 320);
+  ctx.fillText(`Pay ID: ${result.paymentId}`, 500, 330);
   return canvas;
 }
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
   const [result, setResult] = useState<Result | null>(null);
+  const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -105,6 +122,16 @@ export default function PaymentSuccess() {
       navigate("/register");
     }
   }, [navigate]);
+
+  /* Generate QR from teamId once result is loaded */
+  useEffect(() => {
+    if (!result?.teamId) return;
+    QRCode.toDataURL(result.teamId, {
+      width: 160,
+      margin: 1,
+      color: { dark: "#04020d", light: "#ffffff" },
+    }).then(setQrDataUrl).catch(console.error);
+  }, [result]);
 
   /* Animated Canvas Background */
   useEffect(() => {
@@ -165,7 +192,7 @@ export default function PaymentSuccess() {
 
   const downloadTicket = () => {
     if (!result) return;
-    const canvas = generateTicket(result);
+    const canvas = generateTicket(result, qrDataUrl);
     const link = document.createElement("a");
     link.download = `DevLinkHub_IGNITE_2026_${result.registrationId}.png`;
     link.href = canvas.toDataURL("image/png");
@@ -220,6 +247,14 @@ export default function PaymentSuccess() {
                   {(result.members?.filter(m => m.name.trim()).length || 0) + 1}
                 </span>
               </div>
+              {result.teamId && (
+                <div className="ps-holo-row">
+                  <span className="ps-holo-lbl">TEAM ID</span>
+                  <span className="ps-holo-val accent" style={{ fontSize: '10px', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                    {result.teamId}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="ps-holo-footer">
@@ -228,15 +263,29 @@ export default function PaymentSuccess() {
                 <span style={{ color: '#00ff87', fontWeight: 700, fontSize: '14px' }}>✓ SECURED</span>
               </div>
               <div className="ps-qr-mock">
-                <svg viewBox="0 0 200 200">
-                  <rect x="10" y="10" width="50" height="50" rx="8" fill="none" stroke="#04020d" strokeWidth="12" />
-                  <rect x="25" y="25" width="20" height="20" rx="4" fill="#04020d" />
-                  <rect x="140" y="10" width="50" height="50" rx="8" fill="none" stroke="#04020d" strokeWidth="12" />
-                  <rect x="155" y="25" width="20" height="20" rx="4" fill="#04020d" />
-                  <rect x="10" y="140" width="50" height="50" rx="8" fill="none" stroke="#04020d" strokeWidth="12" />
-                  <rect x="25" y="155" width="20" height="20" rx="4" fill="#04020d" />
-                  <rect x="85" y="85" width="30" height="30" rx="4" fill="#04020d" />
-                </svg>
+                {qrDataUrl
+                  ? <img src={qrDataUrl} alt="Team QR Code" style={{ width: '80px', height: '80px', borderRadius: '8px', display: 'block' }} />
+                  : (
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '80px',
+                      textAlign: 'center',
+                      gap: '4px',
+                    }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,165,0,0.8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                      </svg>
+                      <span style={{ fontSize: '7px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>
+                        QR not found.<br />
+                        Check your <span style={{ color: '#00f2fe' }}>email</span>.<br />
+                        If missing, <span style={{ color: 'rgba(255,165,0,0.9)' }}>contact support</span>.
+                      </span>
+                    </div>
+                  )
+                }
               </div>
             </div>
           </motion.div>

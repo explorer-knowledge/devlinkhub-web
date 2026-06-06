@@ -18,9 +18,11 @@ export interface RegisterPayload {
 
 export interface PromoResponse {
   valid: boolean;
-  discountAmount: number;
+  discountAmount: number;   // discount in paise
+  finalAmountPaise?: number; // final amount in paise after discount
   message: string;
 }
+
 
 export interface OrderResponse {
   success: boolean;
@@ -44,15 +46,29 @@ export const API = {
   },
 
   async validatePromoCode(code: string): Promise<PromoResponse> {
-    const upperCode = code.trim().toUpperCase();
-    const PROMO_MAP: Record<string, number> = {
-      EARLYBIRD: 100, DEVLINK10: 50, CORETEAM: 349, PARTNER25: 87, CAMPUSAMB: 100,
-    };
-    if (PROMO_MAP[upperCode]) {
-      return { valid: true, discountAmount: PROMO_MAP[upperCode], message: "Promo applied successfully!" };
+    const response = await fetch(`${BACKEND_URL}/promo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true",
+      },
+      body: JSON.stringify({ promoCode: code.trim().toUpperCase() }),
+    });
+
+    if (!response.ok) {
+      // Rate limited (429) or server error
+      const err = await response.json().catch(() => ({}));
+      return { valid: false, discountAmount: 0, message: err.error || "Could not validate code. Try again later." };
     }
-    return { valid: false, discountAmount: 0, message: "Invalid or expired promo code." };
+
+    const data = await response.json();
+    return {
+      valid: data.valid,
+      discountAmount: data.valid ? data.finalAmountPaise : 0,  // finalAmountPaise from backend
+      message: data.message,
+    };
   },
+
 
   async createOrder(payload: any): Promise<OrderResponse> {
     const participants = [
@@ -78,7 +94,12 @@ export const API = {
 	    "Content-Type": "application/json",
 	    "ngrok-skip-browser-warning": "true" 
       },
-      body: JSON.stringify({ teamName: payload.teamName, participants })
+      body: JSON.stringify({ 
+        teamName: payload.teamName, 
+        participants,
+        promoCode: payload.appliedPromo ?? undefined,
+      })
+
     });
 
     if (!response.ok) {
@@ -94,28 +115,31 @@ export const API = {
   
 
   async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string; regId?: string }> {
-    // In a real system, the webhook handles the verification asynchronously.
-    // We can poll the status endpoint to check if the registration was successful.
-    for (let i = 0; i < 2; i++) {
+    const MAX_POLLS = 20;
+    const POLL_INTERVAL = 3000; // 3 seconds
+
+    for (let i = 0; i < MAX_POLLS; i++) {
+      await new Promise(res => setTimeout(res, POLL_INTERVAL));
       try {
-        const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`,
-          {
-            headers: { 
-              "ngrok-skip-browser-warning": "true"
-            },
-          });
+        const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`, {
+          headers: { 
+            "ngrok-skip-browser-warning": "true"
+          },
+        });
         const data = await response.json();
         if (data.status === "registered") {
-          return { success: true, message: "Payment verified successfully." };
+          return { success: true, message: "Payment verified successfully.", regId: data.team?.id };
         }
+        // status === "pending" or "not_found" → keep polling
       } catch (err) {
         console.error("Polling error", err);
       }
-      await new Promise(res => setTimeout(res, 1000)); // wait 1 second before retrying
     }
-    // Assume success for UX if polling takes too long (webhook might be delayed)
-    return { success: true, message: "Payment successful. Awaiting final confirmation." };
+
+    // Webhook did not confirm within 60 seconds
+    return { success: false, message: "Payment confirmation timed out. Please contact support with your payment ID and leader details." };
   }
+
 };
 
 
