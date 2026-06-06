@@ -18,12 +18,12 @@ const PORT = process.env.PORT || 10003;
 
 // ─── CORS ───────────
 app.use(cors({
-  origin:  [
-      process.env.FRONTEND_URL,
-      'http://localhost:5173',
-      'https://temporary.404lab.xyz',
-      'https://event.devlinkhub.in',
-    ],
+  origin: [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    'https://temporary.404lab.xyz',
+    'https://event.devlinkhub.in',
+  ],
   credentials: true,
 }));
 app.use(globalLimiter); // ─── Global rate limit: 120 req/min per IP ───────────
@@ -45,7 +45,7 @@ app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') return next();
   if (req.path === '/api/hackathon/webhook') return next();
   if (req.path === '/health') return next(); // Razorpay bypasses CF
-  if (req.headers['X-Origin'] !== process.env.CF_SECRET) {
+  if (req.headers['x-origin'] !== process.env.CF_SECRET) {
     return res.status(403).json({ error: 'Forbidden' });
   }
   next();
@@ -118,8 +118,8 @@ async function start() {
     console.log(`   POST /api/hackathon/initiate        → validate + create Razorpay order + save pending`);
     console.log(`   POST /api/hackathon/webhook         → Razorpay event → verify sig → save to DB`);
     console.log(`   GET  /api/hackathon/status/:orderId → poll registration status`);
-    });
-  require('./services/redisToDb'); 
+  });
+  require('./services/redisToDb');
 }
 
 start().catch(err => {
