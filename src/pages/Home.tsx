@@ -521,9 +521,7 @@ export default function Home() {
       { type: "print", text: "  ➜  Network: use --host to expose\n" },
       { type: "print", text: "  ➜  press h + enter to show help\n\n" },
       { type: "wait", delay: 1500 },
-      { type: "print", text: "<span style='color:var(--white-secondary)'>[Click terminal card to query details]</span>\n" },
-      { type: "wait", delay: 6000 },
-      { type: "clear" }
+      { type: "print", text: "<span style='color:var(--white-secondary)'>[Click terminal card to query details]</span>\n" }
     ];
 
     let currentText = "admin@devlinkhub:~ $ ";
@@ -544,10 +542,7 @@ export default function Home() {
       if (!alive) return;
 
       if (stepIdx >= steps.length) {
-        stepIdx = 0;
-        charIdx = 0;
-        currentText = "admin@devlinkhub:~ $ ";
-        setCliText(currentText);
+        return; // Stop the animation sequence permanently when finished
       }
 
       const step = steps[stepIdx];
@@ -1206,8 +1201,6 @@ export default function Home() {
               { role: "Developers", icon: "developers", desc: "Software engineers, backend, frontend, and fullstack builders." },
               { role: "Designers", icon: "designers", desc: "UI/UX designers creating intuitive and premium interfaces." },
               { role: "AI Enthusiasts", icon: "ai", desc: "Builders leveraging models, embeddings, and cognitive pipelines." },
-              { role: "Entrepreneurs", icon: "entrepreneurs", desc: "Future founders looking to build a proof of concept or MVP." },
-              { role: "Tech Communities", icon: "communities", desc: "Active community members wishing to collaborate on stage." },
               { role: "Beginners & Pros", icon: "beginners", desc: "Both first-time hackathon attendees and seasoned developers." }
             ].map((item, idx) => (
               <motion.div 
