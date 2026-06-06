@@ -78,7 +78,6 @@ app.use((req, _res, next) => {
 app.get('/health', (_req, res) =>
   res.json({
     status: 'ok',
-    service: 'devlink-hackathon-backend',
     time: new Date().toISOString(),
   })
 );
