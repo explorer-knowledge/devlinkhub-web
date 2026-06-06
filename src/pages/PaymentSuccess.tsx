@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import QRCode from "qrcode";
@@ -25,7 +25,7 @@ interface Result {
 }
 
 /* ── Digital ticket canvas (Hidden, for Download only) ── */
-function generateTicket(result: Result, qrDataUrl: string, displayId: string) {
+function generateTicket(_result: Result, qrDataUrl: string, displayId: string) {
   const canvas = document.createElement("canvas");
   canvas.width = 1200; canvas.height = 800;
   const ctx = canvas.getContext("2d")!;

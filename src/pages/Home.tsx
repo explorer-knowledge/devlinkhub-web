@@ -237,7 +237,7 @@ const organizers = [
     bio: "Visionary behind DevLinkHub — building a developer community that empowers students and creators across India through collaboration, learning, and innovation.",
     badge: "FOUNDER",
     badgeColor: "var(--accent-cyan)",
-    skills: ["Community Building", "Leadership", "Event Management", "Developer Relations", "Startup Ecosystem"]
+    skills: ["Community Building", "Leadership", "Event Management", "Startup Ecosystem"]
   },
   {
     name: "Prince Kumar",
@@ -402,6 +402,18 @@ export default function Home() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedOrg, isTerminalSwapped]);
+
+  // Lock body scroll when organizer modal is active
+  useEffect(() => {
+    if (selectedOrg) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedOrg]);
 
   // Hero Original CLI text lines state
   const [cliText, setCliText] = useState("");
