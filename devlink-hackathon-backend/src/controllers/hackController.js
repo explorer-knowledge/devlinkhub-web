@@ -40,9 +40,10 @@ const { sendHackathonInvite } = require('../config/mailer');
 
 async function initiatePayment(req, res) {
   try {
-    if (getOrderCount > 61){
+    if (getOrderCount() > 61){
       return res.status(601).json({error: "Registration Over"});
     }
+    console.log("/initiate route fired");
     const validationError = validateRegistrationBody(req.body);
     if (validationError) {
       return res.status(400).json({ error: validationError });
@@ -121,6 +122,7 @@ async function initiatePayment(req, res) {
 //   6. Fire invite emails to non-leader participants (non-blocking)
 
 async function handleWebhook(req, res) {
+  console.log("/webhook route fired");
   // Grab raw body and signature header
   const rawBody = req.body; // Buffer — because of express.raw()
   const webhookSignature = req.headers['x-razorpay-signature'];
@@ -258,6 +260,7 @@ async function handleWebhook(req, res) {
 
 async function getRegistrationStatus(req, res) {
   try {
+    console.log("/status route fired");
     const { orderId } = req.params;
 
     if (orderIdExists(orderId)) {
@@ -277,9 +280,10 @@ async function getRegistrationStatus(req, res) {
     // Check pending table
     const pending = await redis.get(`pending_registration:${orderId}`);
     if (pending) {
+      console.log("not hello");
       return res.json({ status: 'pending', orderId });
     }
-
+    console.log("not hello not found");
     res.status(404).json({ status: 'not_found', orderId });
 
   } catch (err) {

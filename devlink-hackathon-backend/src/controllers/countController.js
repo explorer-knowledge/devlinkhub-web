@@ -3,8 +3,12 @@ const { getOrderCount } = require('../services/orderIdService');
 // Store active connections to broadcast to
 let clients = [];
 const MAX_SEATS = parseInt(process.env.MAX_SEATS || '60', 10);
+const MAX_CONNECTIONS = 200;
 
 function liveCount (req, res)  {
+  if (clients.length >= MAX_CONNECTIONS) {
+    return res.status(429).json({ error: 'Too many live connections. Try again later.' });
+  }
   // Headers to establish SSE connection
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');

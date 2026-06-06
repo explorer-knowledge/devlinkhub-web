@@ -8,6 +8,12 @@ const {
   getRegistrationStatus
 } = require('../controllers/hackController');
 const { liveCount } = require('../controllers/countController');
+const {
+  initiateLimiter,
+  statusLimiter,
+  webhookLimiter,
+  liveCountLimiter,
+} = require('../middleware/rateLimiter');
 
 const router = Router();
 
@@ -22,6 +28,7 @@ const router = Router();
 
 router.post(
   '/webhook',
+  webhookLimiter,
   express.raw({ type: 'application/json' }),
   handleWebhook,
 );
@@ -30,16 +37,16 @@ router.post(
 
 // POST /api/hackathon/initiate
 // Step 1 — validate all details + create Razorpay order + save PendingRegistration
-router.post('/initiate', initiatePayment);
+router.post('/initiate', initiateLimiter, initiatePayment);
 
 // GET  /api/hackathon/status/:orderId
 // Frontend polls this to check if webhook has fired and team is registered
-router.get('/status/:orderId', getRegistrationStatus);
+router.get('/status/:orderId', statusLimiter, getRegistrationStatus);
 
 // GET  /api/hackathon/team/:teamId
 // Full registration details for confirmation page
 // router.get('/team/:teamId', getTeam);
 
-router.get('/live-count', liveCount);
+router.get('/live-count', liveCountLimiter, liveCount);
 
 module.exports = router;

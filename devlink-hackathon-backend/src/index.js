@@ -5,7 +5,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const hackathonRoutes = require('./routes/hackathonRoutes');
+const { globalLimiter } = require('./middleware/rateLimiter');
 const app = express();
+app.set('trust proxy', 1)
 const { loadEmails } = require('./services/emailLoadService');
 const { loadOrderId } = require('./services/orderIdService');
 const { loadPhone } = require('./services/phoneLoadService');
@@ -16,15 +18,38 @@ const PORT = process.env.PORT || 10003;
 
 // ─── CORS ───────────
 app.use(cors({
-  origin:  [
-      process.env.FRONTEND_URL,
-      'http://localhost:5173',
-      'https://juliette-hokey-pacifically.ngrok-free.dev',
-      'https://temporary.404lab.xyz',
-    ],
+  origin: [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173',
+    'https://temporary.404lab.xyz',
+    'https://event.devlinkhub.in',
+  ],
   credentials: true,
 }));
+app.use(globalLimiter); // ─── Global rate limit: 120 req/min per IP ───────────
 // app.use(cors());
+
+// ─── Cloudflare Origin Guard ───────────────────────────────────────────────────
+//
+// In production, Cloudflare Transform Rules inject X-CF-Secret on every proxied
+// request. Any direct hit to the raw .onrender.com URL (bypassing Cloudflare)
+// will be missing this header and gets a 403.
+//
+// ⚠️  EXEMPT /api/hackathon/webhook — Razorpay calls Render directly, not through
+//     Cloudflare, so it will never carry the CF secret header.
+//
+// Set CF_SECRET in both:
+//   • Cloudflare → Rules → Transform Rules → Modify Request Header (inject header)
+//   • Render → Environment Variables (same value)
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV !== 'production') return next();
+  if (req.path === '/api/hackathon/webhook') return next();
+  if (req.path === '/health') return next(); // Razorpay bypasses CF
+  if (req.headers['x-origin'] !== process.env.CF_SECRET) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  next();
+});
 
 // ─── Body Parsing ─────────────────────────────────────────────────────────────
 //
@@ -53,7 +78,6 @@ app.use((req, _res, next) => {
 app.get('/health', (_req, res) =>
   res.json({
     status: 'ok',
-    service: 'devlink-hackathon-backend',
     time: new Date().toISOString(),
   })
 );
@@ -93,8 +117,8 @@ async function start() {
     console.log(`   POST /api/hackathon/initiate        → validate + create Razorpay order + save pending`);
     console.log(`   POST /api/hackathon/webhook         → Razorpay event → verify sig → save to DB`);
     console.log(`   GET  /api/hackathon/status/:orderId → poll registration status`);
-    });
-  require('./services/redisToDb'); 
+  });
+  require('./services/redisToDb');
 }
 
 start().catch(err => {
