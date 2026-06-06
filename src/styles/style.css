@@ -616,7 +616,7 @@ nav.frosted-navbar.scrolled {
 
 /* --- WHAT WE DO (BENTO LAYOUT) --- */
 .pillars-section {
-  padding: 8rem 2rem; position: relative; z-index: 10;
+  padding: 8rem 2rem 3rem 2rem; position: relative; z-index: 10;
 }
 .bento-pillars-grid {
   display: grid;
@@ -1729,7 +1729,7 @@ footer.frosted-footer-bar::before {
 
 /* --- FAQ ACCORDION --- */
 .faq-section {
-  padding: 8rem 2rem;
+  padding: 3rem 2rem 8rem 2rem;
   position: relative;
   z-index: 10;
   background: var(--bg-secondary);

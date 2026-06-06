@@ -26,10 +26,10 @@ interface LeaderData {
 const emptyMember = (): MemberData => ({ name: "", email: "", mobile: "", college: "", branch: "", year: "" });
 
 const FORM_STEPS = [
-  { id: 1, label: "Team Details", short: "Step 1" },
-  { id: 2, label: "Leader Info", short: "Step 2" },
-  { id: 3, label: "Team Members", short: "Step 3" },
-  { id: 4, label: "Review", short: "Step 4" },
+  { id: 1, label: "Team Details", short: "Step 01" },
+  { id: 2, label: "Leader Info", short: "Step 02" },
+  { id: 3, label: "Team Members", short: "Step 03" },
+  { id: 4, label: "Review", short: "Step 04" },
 ];
 
 
