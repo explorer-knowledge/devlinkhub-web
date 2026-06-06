@@ -15,75 +15,47 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("about");
-  const [visible, setVisible] = useState(true);
   
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Scroll visibility (hide on scroll down, show on scroll up)
-  useEffect(() => {
-    let lastY = window.scrollY;
-
-    const onScroll = () => {
-      const currentY = window.scrollY;
-
-      // Update frosted scrolled state
-      if (currentY > 80) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-
-      // Hide or show navbar
-      if (currentY < 50) {
-        setVisible(true);
-        lastY = currentY;
-        return;
-      }
-
-      if (currentY > lastY && currentY > 150) {
-        setVisible(false); // Hide on scroll down
-      } else if (currentY < lastY) {
-        setVisible(true); // Show on scroll up
-      }
-
-      lastY = currentY;
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Intersection Observer to highlight current active section
+  // Scroll visibility & scrollspy active link highlighter
   useEffect(() => {
     if (location.pathname !== "/") {
       setActiveSection("");
-      return;
+      const onScrollMini = () => {
+        setIsScrolled(window.scrollY > 80);
+      };
+      window.addEventListener("scroll", onScrollMini, { passive: true });
+      return () => window.removeEventListener("scroll", onScrollMini);
     }
 
-    const sections = navLinks.map((item) =>
-      document.getElementById(item.id)
-    );
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      setIsScrolled(currentY > 80);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+      // Scrollspy active highlight detection
+      let active = "";
+      for (const link of navLinks) {
+        const el = document.getElementById(link.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          // If the section top is past 35% of the viewport height, it becomes the active section candidate
+          if (rect.top <= window.innerHeight * 0.35) {
+            active = link.id;
           }
-        });
-      },
-      {
-        rootMargin: "-25% 0px -55% 0px",
-        threshold: 0.1,
+        }
       }
-    );
+      if (active) {
+        setActiveSection(active);
+      }
+    };
 
-    sections.forEach((section) => {
-      if (section) observer.observe(section);
-    });
+    // Run on initial mount/route change
+    onScroll();
 
-    return () => observer.disconnect();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, [location.pathname]);
 
   // Lock body scroll when mobile drawer is open
@@ -124,7 +96,7 @@ export default function Navbar() {
         initial={{ x: "-50%", y: 0 }}
         animate={{
           x: "-50%",
-          y: visible ? 0 : -120,
+          y: 0,
         }}
         transition={{
           duration: 0.3,
