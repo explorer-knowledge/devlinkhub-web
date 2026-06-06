@@ -374,7 +374,8 @@ nav.frosted-navbar.scrolled {
   position: fixed;
   top: 0; right: 0; bottom: 0;
   width: 85%; max-width: 360px;
-  z-index: 999;
+  height: 100dvh;
+  z-index: 9999;
   background: rgba(5, 8, 22, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -382,7 +383,9 @@ nav.frosted-navbar.scrolled {
   flex-direction: column;
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
   border-left: 1px solid rgba(255, 255, 255, 0.08);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   padding: 24px 20px;
   touch-action: none;
 }

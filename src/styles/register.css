@@ -317,15 +317,23 @@ body {
 .rg-step-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
 .rg-step-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* Step Panel */
 .rg-step-panel {
+  padding: 32px;
+  position: relative;
+  overflow: visible !important;
+  /* backdrop-filter, background, border, and border-radius moved to ::before to prevent clipping descendants */
+}
+.rg-step-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
   background: var(--glass);
   backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 32px;
-  position: relative;
+  z-index: -1;
+  pointer-events: none;
 }
 .rg-step-panel::after {
   content: '';
@@ -913,6 +921,9 @@ body {
   position: relative;
   width: 100%;
 }
+.rg-custom-select-wrap.is-open {
+  z-index: 9999;
+}
 .rg-custom-select-btn {
   display: flex;
   align-items: center;
@@ -940,7 +951,7 @@ body {
   border: 1px solid rgba(0, 242, 254, 0.2);
   border-radius: 12px;
   padding: 8px;
-  z-index: 100;
+  z-index: 9999;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 242, 254, 0.15);
 }
 .rg-custom-select-option {

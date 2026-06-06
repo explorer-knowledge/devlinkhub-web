@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { API, BACKEND_URL } from "../services/api";
@@ -25,10 +26,10 @@ interface LeaderData {
 const emptyMember = (): MemberData => ({ name: "", email: "", mobile: "", college: "", branch: "", year: "" });
 
 const FORM_STEPS = [
-  { id: 1, label: "Team Details", short: "01" },
-  { id: 2, label: "Leader Info", short: "02" },
-  { id: 3, label: "Team Members", short: "03" },
-  { id: 4, label: "Review", short: "04" },
+  { id: 1, label: "Team Details", short: "Step 1" },
+  { id: 2, label: "Leader Info", short: "Step 2" },
+  { id: 3, label: "Team Members", short: "Step 3" },
+  { id: 4, label: "Review", short: "Step 4" },
 ];
 
 
@@ -48,18 +49,77 @@ const CustomSelect = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setIsOpen(false);
-        // Only trigger blur/validation when closing WITHOUT selecting
         if (isOpen && onBlur) onBlur();
       }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [isOpen, onBlur]);
+
+  useEffect(() => {
+    if (!isOpen || !ref.current) return;
+    const updateCoords = () => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        width: rect.width
+      });
+    };
+    updateCoords();
+    window.addEventListener("scroll", updateCoords, true);
+    window.addEventListener("resize", updateCoords);
+    return () => {
+      window.removeEventListener("scroll", updateCoords, true);
+      window.removeEventListener("resize", updateCoords);
+    };
+  }, [isOpen]);
+
+  const menuContent = (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="rg-custom-select-menu"
+          style={{
+            position: "absolute",
+            top: coords.top + 8,
+            left: coords.left,
+            width: coords.width,
+            zIndex: 99999,
+          }}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.15 }}
+        >
+          {options.map(opt => (
+            <div
+              key={opt}
+              className={`rg-custom-select-option ${value === opt ? "selected" : ""}`}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              onClick={() => {
+                onChange(opt);
+                setIsOpen(false);
+              }}
+            >
+              {opt}
+              {value === opt && <span className="rg-cso-check">✓</span>}
+            </div>
+          ))}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <div className="rg-custom-select-wrap" ref={ref}>
@@ -74,35 +134,7 @@ const CustomSelect = ({
         <span className={`rg-custom-select-arrow ${isOpen ? "open" : ""}`}>▼</span>
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="rg-custom-select-menu"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.15 }}
-          >
-            {options.map(opt => (
-              <div
-                key={opt}
-                className={`rg-custom-select-option ${value === opt ? "selected" : ""}`}
-                onMouseDown={(e) => e.stopPropagation()} /* prevent outside-click blur firing */
-                onClick={() => {
-                  onChange(opt);
-                  setIsOpen(false);
-                  /* Do NOT call onBlur here — onChange already updates the value.
-                     Calling onBlur immediately causes validation to run against
-                     the stale (empty) value before React flushes the new state. */
-                }}
-              >
-                {opt}
-                {value === opt && <span className="rg-cso-check">✓</span>}
-              </div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {createPortal(menuContent, document.body)}
     </div>
   );
 };
@@ -249,7 +281,7 @@ export default function Register() {
   /* ── Live Registration Count via SSE ── */
   useEffect(() => {
     const source = new EventSource(`${BACKEND_URL}/live-count`);
-    
+
     source.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -581,7 +613,7 @@ export default function Register() {
 
   const handleApplyPromo = async () => {
     if (!promoInput.trim()) { setPromoError("Enter a promo code first"); return; }
-    
+
     setPromoLoading(true);
     setPromoError("");
 
@@ -647,6 +679,13 @@ export default function Register() {
           name: "DevLinkHub Ignite 2026",
           description: "Hackathon Registration",
           order_id: res.orderId,
+          timeout: 300,
+          modal: {
+            ondismiss: function() {
+              setIsSubmitting(false);
+              triggerToast("Registration session expired (5-minute limit). Please try again.");
+            }
+          },
           handler: async function (response: any) {
             setIsSubmitting(true);
             try {
@@ -1300,8 +1339,8 @@ export default function Register() {
                           {appliedPromo
                             ? <button className="rg-promo-btn remove" onClick={handleRemovePromo}>Remove</button>
                             : <button className="rg-promo-btn apply" onClick={handleApplyPromo} disabled={promoLoading}>
-                                {promoLoading ? "..." : "Apply"}
-                              </button>
+                              {promoLoading ? "..." : "Apply"}
+                            </button>
                           }
                         </div>
                         {promoError && <div className="rg-promo-err">{promoError}</div>}
@@ -1327,22 +1366,9 @@ export default function Register() {
                   </div>
                 </div>
 
-                {/* CTA */}
-                <button className="rg-cta-btn" disabled={isSubmitting} onClick={() => {
-                  if (formStep < 4) { nextStep(); } else { handleSubmit(); }
-                }}>
-                  <div className="rg-cta-glow" />
-                  <span className="rg-cta-inner" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                    {isSubmitting ? "Processing..." : (formStep < 4 ? <>Continue to Next Step <span style={{ marginLeft: "6px" }}>➔</span></> : <>Complete & Pay ₹{finalAmount} <span style={{ marginLeft: "6px" }}>➔</span></>)}
-                  </span>
-                </button>
 
-                {/* Trust badges */}
-                <div className="rg-trust">
-                  {["256-bit SSL", "Instant Verify", "Razorpay Trusted", "Safe Payments", "No Hidden Charges"].map(b => (
-                    <div key={b} className="rg-trust-badge">{b}</div>
-                  ))}
-                </div>
+
+
 
               </aside>
 

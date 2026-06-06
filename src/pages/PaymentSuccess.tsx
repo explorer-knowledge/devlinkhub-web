@@ -1,107 +1,53 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import QRCode from "qrcode";
+import { jsPDF } from "jspdf";
 import "../styles/payment-success.css";
 
 interface MemberData {
-  name: string; collegeName: string;
+  name: string;
+  collegeName: string;
 }
 interface Result {
-  status: string; registrationId: string; paymentId: string; orderId?: string;
+  status: string;
+  registrationId: string;
+  paymentId: string;
+  orderId?: string;
   teamId?: string;
-  finalAmount: number; appliedPromo: string | null;
-  teamName: string; leaderName: string; members: MemberData[];
-  collegeName: string; email: string;
+  finalAmount: number;
+  appliedPromo: string | null;
+  teamName: string;
+  leaderName: string;
+  members: MemberData[];
+  collegeName: string;
+  email: string;
 }
 
 /* ── Digital ticket canvas (Hidden, for Download only) ── */
-function generateTicket(result: Result, qrDataUrl: string) {
+function generateTicket(result: Result, qrDataUrl: string, displayId: string) {
   const canvas = document.createElement("canvas");
-  canvas.width = 700; canvas.height = 340;
+  canvas.width = 1200; canvas.height = 800;
   const ctx = canvas.getContext("2d")!;
+  
   // Background
-  const bg = ctx.createLinearGradient(0, 0, 700, 340);
-  bg.addColorStop(0, "#050816"); bg.addColorStop(0.5, "#0e0a20"); bg.addColorStop(1, "#03020a");
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, 700, 340);
-  // Border glow
-  ctx.strokeStyle = "rgba(0,242,254,0.5)"; ctx.lineWidth = 1.5;
-  ctx.strokeRect(1, 1, 698, 338);
-  // Dashed separator
-  ctx.setLineDash([4, 4]); ctx.strokeStyle = "rgba(255,255,255,0.1)"; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(480, 20); ctx.lineTo(480, 320); ctx.stroke(); ctx.setLineDash([]);
-  // Left section
-  ctx.fillStyle = "rgba(0,242,254,0.05)"; ctx.fillRect(0, 0, 480, 340);
-  // Event tag
-  ctx.fillStyle = "#00f2fe"; ctx.font = "bold 10px monospace";
-  ctx.fillText("DEVLINKHUB IGNITE 2026", 30, 42);
-  // Title
-  const grad = ctx.createLinearGradient(30, 0, 250, 0);
-  grad.addColorStop(0, "#00f2fe"); grad.addColorStop(1, "#8b5cf6");
-  ctx.fillStyle = grad; ctx.font = "bold 28px 'Arial', sans-serif";
-  ctx.fillText("IGNITE PASS", 30, 80);
-  // Reg ID
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("REGISTRATION ID", 30, 106);
-  ctx.fillStyle = "#00f2fe"; ctx.font = "bold 13px monospace";
-  ctx.fillText(result.registrationId, 30, 122);
-  // Team info
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("TEAM", 30, 150);
-  ctx.fillStyle = "#fff"; ctx.font = "bold 14px Arial";
-  ctx.fillText(result.teamName, 30, 166);
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("LEADER", 30, 190);
-  ctx.fillStyle = "#fff"; ctx.font = "bold 13px Arial";
-  ctx.fillText(result.leaderName, 30, 206);
-  // Members
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("TEAM MEMBERS", 30, 230);
-  ctx.fillStyle = "#fff"; ctx.font = "12px Arial";
-  let mY = 246;
-  result.members?.filter(m => m.name.trim()).forEach((m, i) => {
-    ctx.fillText(`${i + 2}. ${m.name}`, 30, mY); mY += 15;
-  });
-  // Amount
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("AMOUNT PAID", 30, 314);
-  ctx.fillStyle = "#00ff87"; ctx.font = "bold 16px Arial";
-  ctx.fillText(`₹${result.finalAmount}`, 30, 330);
-  // Right QR stub
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("EVENT", 500, 60);
-  ctx.fillStyle = "#fff"; ctx.font = "bold 12px Arial";
-  ctx.fillText("BuildX Workshop", 500, 80);
-  ctx.fillText("Auraxis Hackathon", 500, 98);
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("DATE", 500, 126);
-  ctx.fillStyle = "#fff"; ctx.font = "bold 12px Arial";
-  ctx.fillText("20-21 Jun 2026", 500, 144);
-  ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.font = "9px monospace";
-  ctx.fillText("STATUS", 500, 172);
-  ctx.fillStyle = "#00ff87"; ctx.font = "bold 13px Arial";
-  ctx.fillText("✓ CONFIRMED", 500, 190);
-  // QR Code
+  const bg = ctx.createLinearGradient(0, 0, 1200, 800);
+  bg.addColorStop(0, "#010512"); bg.addColorStop(1, "#030A18");
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, 1200, 800);
+  
+  ctx.fillStyle = "#00f2fe"; ctx.font = "bold 90px Arial";
+  ctx.fillText("IGNITE PASS", 60, 180);
+  ctx.fillStyle = "rgba(255,255,255,0.5)"; ctx.font = "18px monospace";
+  ctx.fillText("REGISTRATION ID: " + displayId, 60, 260);
+
   if (qrDataUrl) {
     const qrImg = new Image();
     qrImg.src = qrDataUrl;
-    ctx.drawImage(qrImg, 495, 205, 80, 80);
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(850, 420, 250, 250);
+    ctx.drawImage(qrImg, 855, 425, 240, 240);
   }
-  // Team ID below QR
-  if (result.teamId) {
-    ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.font = "7px monospace";
-    ctx.fillText("TEAM ID", 500, 296);
-    ctx.fillStyle = "rgba(0,242,254,0.8)"; ctx.font = "7px monospace";
-    ctx.fillText(result.teamId.slice(0, 20), 500, 307);
-    ctx.fillText(result.teamId.slice(20), 500, 317);
-  }
-  // Decorative circles
-  ctx.strokeStyle = "rgba(0,242,254,0.15)"; ctx.lineWidth = 20;
-  ctx.beginPath(); ctx.arc(700, 0, 80, 0, Math.PI * 2); ctx.stroke();
-  ctx.beginPath(); ctx.arc(0, 340, 60, 0, Math.PI * 2); ctx.stroke();
-  // Payment ID
-  ctx.fillStyle = "rgba(255,255,255,0.2)"; ctx.font = "8px monospace";
-  ctx.fillText(`Pay ID: ${result.paymentId}`, 500, 330);
+
   return canvas;
 }
 
@@ -109,7 +55,8 @@ export default function PaymentSuccess() {
   const navigate = useNavigate();
   const [result, setResult] = useState<Result | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [displayId, setDisplayId] = useState<string>("");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem("devlinkhub_payment_result");
@@ -118,258 +65,168 @@ export default function PaymentSuccess() {
       const data = JSON.parse(raw);
       if (data.status !== "success") { navigate("/payment-failed"); return; }
       setResult(data);
+      setDisplayId(data.registrationId || data.teamId || "PENDING");
     } catch {
       navigate("/register");
     }
   }, [navigate]);
 
-  /* Generate QR from teamId once result is loaded */
   useEffect(() => {
-    if (!result?.teamId) return;
-    QRCode.toDataURL(result.teamId, {
-      width: 160,
-      margin: 1,
-      color: { dark: "#04020d", light: "#ffffff" },
+    if (!displayId) return;
+    QRCode.toDataURL(displayId, {
+      width: 600,
+      margin: 0,
+      color: { dark: "#000000", light: "#ffffff" },
     }).then(setQrDataUrl).catch(console.error);
-  }, [result]);
+  }, [displayId]);
 
-  /* Animated Canvas Background */
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    if (window.innerWidth < 768) return; // Prevent heavy canvas lag on mobile
-    let W = canvas.width = window.innerWidth;
-    let H = canvas.height = window.innerHeight;
-    let animId: number;
-    let t = 0;
-
-    const onResize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
-    window.addEventListener("resize", onResize);
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      ctx.strokeStyle = "rgba(0,242,254,0.02)";
-      ctx.lineWidth = 1;
-      const gs = 100;
-      for (let x = 0; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-      for (let y = 0; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-
-      const ax = W * 0.2 + Math.sin(t * 0.3) * 200;
-      const ay = H * 0.3 + Math.cos(t * 0.2) * 200;
-      const g1 = ctx.createRadialGradient(ax, ay, 0, ax, ay, 800);
-      g1.addColorStop(0, "rgba(0,242,254,0.06)"); g1.addColorStop(1, "transparent");
-      ctx.fillStyle = g1; ctx.fillRect(0,0,W,H);
-
-      const bx = W * 0.8 + Math.cos(t * 0.25) * 200;
-      const by = H * 0.7 + Math.sin(t * 0.35) * 200;
-      const g2 = ctx.createRadialGradient(bx, by, 0, bx, by, 700);
-      g2.addColorStop(0, "rgba(139,92,246,0.08)"); g2.addColorStop(1, "transparent");
-      ctx.fillStyle = g2; ctx.fillRect(0,0,W,H);
-
-      t += 0.003;
-      animId = requestAnimationFrame(draw);
-    };
-    animId = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", onResize); };
-  }, []);
-
-  /* Hologram 3D Tilt */
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [10, -10]);
-  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (window.innerWidth < 768) return; // Disable 3D tilt on mobile
-    const rect = event.currentTarget.getBoundingClientRect();
-    x.set(event.clientX - rect.left - rect.width / 2);
-    y.set(event.clientY - rect.top - rect.height / 2);
-  };
-  const handleMouseLeave = () => {
-    x.set(0); y.set(0);
-  };
-
-  const downloadTicket = () => {
+  const handleDownload = () => {
     if (!result) return;
-    const canvas = generateTicket(result, qrDataUrl);
-    const link = document.createElement("a");
-    link.download = `DevLinkHub_IGNITE_2026_${result.registrationId}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    const canvas = generateTicket(result, qrDataUrl, displayId);
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [1200, 800] });
+    pdf.addImage(imgData, 'PNG', 0, 0, 1200, 800);
+    pdf.save(`${displayId}-IGNITE-PASS.pdf`);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(displayId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   if (!result) return null;
 
+  const totalMembers = (result.members?.filter(m => m.name.trim()).length || 0) + 1;
+
   return (
-    <div className="ps-root">
-      <canvas ref={canvasRef} className="ps-canvas" />
-      <div className="ps-noise" />
+    <div className="ignite-layout">
+      {/* Background Ambience */}
+      <div className="ignite-glow"></div>
 
-      <div className="ps-container">
+      <div className="ignite-container">
         
-        {/* LEFT: 3D Holographic Pass */}
+        {/* LEFT SIDE: Premium Digital Pass */}
         <motion.div 
-          className="ps-left"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="ignite-pass-section"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
-          <motion.div 
-            className="ps-hologram-card"
-            style={{ rotateX, rotateY }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            <div className="ps-foil" />
+          <div className="ignite-pass-card">
+            <div className="ignite-pass-header">
+              <span className="ignite-vip-badge">VIP ACCESS</span>
+              <span className="ignite-year-badge">2026</span>
+            </div>
             
-            <div className="ps-holo-header">
-              <div className="ps-holo-tag">DEVLINKHUB IGNITE 2026</div>
-              <div className="ps-holo-title">VIP PASS</div>
-            </div>
-
-            <div className="ps-holo-body">
-              <div className="ps-holo-row">
-                <span className="ps-holo-lbl">REGISTRATION ID</span>
-                <span className="ps-holo-val accent">{result.registrationId}</span>
-              </div>
-              <div className="ps-holo-row">
-                <span className="ps-holo-lbl">TEAM NAME</span>
-                <span className="ps-holo-val">{result.teamName}</span>
-              </div>
-              <div className="ps-holo-row">
-                <span className="ps-holo-lbl">LEAD</span>
-                <span className="ps-holo-val" style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)' }}>{result.leaderName}</span>
-              </div>
-              <div className="ps-holo-row">
-                <span className="ps-holo-lbl">TOTAL MEMBERS</span>
-                <span className="ps-holo-val" style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)' }}>
-                  {(result.members?.filter(m => m.name.trim()).length || 0) + 1}
-                </span>
-              </div>
-              {result.teamId && (
-                <div className="ps-holo-row">
-                  <span className="ps-holo-lbl">TEAM ID</span>
-                  <span className="ps-holo-val accent" style={{ fontSize: '10px', fontFamily: 'monospace', wordBreak: 'break-all' }}>
-                    {result.teamId}
-                  </span>
+            <h1 className="ignite-pass-title">IGNITE<br/>PASS</h1>
+            
+            <div className="ignite-pass-details">
+              <div className="ignite-pass-col">
+                <div className="ignite-pass-item">
+                  <span className="ignite-label">Team</span>
+                  <span className="ignite-value">{result.teamName || "FSF"}</span>
                 </div>
-              )}
+                <div className="ignite-pass-item" style={{ marginTop: '24px' }}>
+                  <span className="ignite-label">Members</span>
+                  <span className="ignite-value">{totalMembers.toString().padStart(2, '0')}</span>
+                </div>
+              </div>
+
+              {/* QR Code with frame */}
+              <div className="ignite-qr-container">
+                <div className="ignite-qr-frame">
+                  <span className="qr-corner top-left"></span>
+                  <span className="qr-corner top-right"></span>
+                  <span className="qr-corner bottom-left"></span>
+                  <span className="qr-corner bottom-right"></span>
+                  {qrDataUrl && <img src={qrDataUrl} alt="QR Code" className="ignite-qr-img" />}
+                </div>
+              </div>
             </div>
 
-            <div className="ps-holo-footer">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span className="ps-holo-lbl" style={{ color: 'rgba(255,255,255,0.5)' }}>STATUS</span>
-                <span style={{ color: '#00ff87', fontWeight: 700, fontSize: '14px' }}>✓ SECURED</span>
-              </div>
-              <div className="ps-qr-mock">
-                {qrDataUrl
-                  ? <img src={qrDataUrl} alt="Team QR Code" style={{ width: '80px', height: '80px', borderRadius: '8px', display: 'block' }} />
-                  : (
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '80px',
-                      textAlign: 'center',
-                      gap: '4px',
-                    }}>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,165,0,0.8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                      </svg>
-                      <span style={{ fontSize: '7px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>
-                        QR not found.<br />
-                        Check your <span style={{ color: '#00f2fe' }}>email</span>.<br />
-                        If missing, <span style={{ color: 'rgba(255,165,0,0.9)' }}>contact support</span>.
-                      </span>
-                    </div>
-                  )
-                }
+            <div className="ignite-pass-footer">
+              <span className="ignite-label">Registration ID</span>
+              <div className="ignite-reg-code-wrapper">
+                <span className="ignite-reg-code">{displayId || "IGN-26-VIP-6875"}</span>
+                <button 
+                  className={`ignite-copy-btn ${copied ? 'copied' : ''}`} 
+                  onClick={copyToClipboard}
+                  title="Copy ID"
+                >
+                  {copied ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  )}
+                </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
 
-        {/* RIGHT: Terminal Summary */}
+        {/* RIGHT SIDE: Success Experience */}
         <motion.div 
-          className="ps-right"
-          initial={{ opacity: 0, x: 50 }}
+          className="ignite-content-right"
+          initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="ps-status-block">
-            <motion.div 
-              className="ps-check-icon"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.6 }}
-            >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </motion.div>
-            <div className="ps-status-text">
-              <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>Hello {result.leaderName}!</motion.h1>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>Payment Successful! We've sent a receipt to <strong>{result.email}</strong></motion.p>
+          {/* Success Header */}
+          <div className="ignite-success-header">
+            
+            <div className="ignite-success-text">
+              <span className="ignite-eyebrow">Registration Confirmed</span>
+              <h2 className="ignite-heading">Welcome to IGNITE 2026</h2>
+              <p className="ignite-subheading">Your registration has been successfully secured.</p>
+              <div className="ignite-mantra">
+                <span>Build</span> <span className="dot">•</span> <span>Connect</span> <span className="dot">•</span> <span>Grow</span>
+              </div>
             </div>
           </div>
 
-          <motion.div 
-            className="ps-terminal"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-          >
-            <div className="ps-term-header">Transaction Receipt</div>
-            
-            <div className="ps-term-grid">
-              <div className="ps-term-row">
-                <span className="ps-term-lbl">Reference ID</span>
-                <span className="ps-term-val mono">{result.paymentId}</span>
-              </div>
-              {result.orderId && (
-                <div className="ps-term-row">
-                  <span className="ps-term-lbl">Order ID</span>
-                  <span className="ps-term-val mono">{result.orderId}</span>
-                </div>
-              )}
-              <div className="ps-term-row">
-                <span className="ps-term-lbl">Team Code (Reg ID)</span>
-                <span className="ps-term-val mono" style={{ color: '#00f2fe' }}>{result.registrationId}</span>
-              </div>
-              <div className="ps-term-row">
-                <span className="ps-term-lbl">Date & Time</span>
-                <span className="ps-term-val">Just Now</span>
-              </div>
-              <div className="ps-term-row">
-                <span className="ps-term-lbl">Base Amount</span>
-                <span className="ps-term-val">₹349</span>
-              </div>
-              
-              {result.appliedPromo && (
-                <div className="ps-term-row">
-                  <span className="ps-term-lbl">Promo ({result.appliedPromo})</span>
-                  <span className="ps-term-val green">- ₹{(349 - result.finalAmount)}</span>
-                </div>
-              )}
-              
-              <div className="ps-term-divider" />
-              
-              <div className="ps-term-row">
-                <span className="ps-term-lbl" style={{ color: '#fff', fontWeight: 600 }}>Total Paid</span>
-                <span className="ps-term-val" style={{ fontSize: '20px', fontFamily: "'Space Grotesk', sans-serif", color: '#00f2fe' }}>₹{result.finalAmount}</span>
+          {/* Event Details */}
+          <div className="ignite-details-grid">
+            <div className="ignite-detail-card">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <div className="detail-content">
+                <span className="detail-label">Date</span>
+                <span className="detail-value">June 20 - 21, 2026</span>
               </div>
             </div>
+            <div className="ignite-detail-card">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <div className="detail-content">
+                <span className="detail-label">Venue</span>
+                <span className="detail-value">TBA</span>
+              </div>
+            </div>
+            <div className="ignite-detail-card">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <div className="detail-content">
+                <span className="detail-label">Reporting Time</span>
+                <span className="detail-value">8:30 AM</span>
+              </div>
+            </div>
+          </div>
 
-            <div className="ps-actions">
-              <button className="ps-btn-main" onClick={downloadTicket}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download Digital Pass
-              </button>
-              <button className="ps-btn-sec" onClick={() => navigate("/")}>
-                Return to Homepage
-              </button>
-            </div>
-          </motion.div>
+          {/* Actions */}
+          <div className="ignite-actions-grid">
+            <button className="ignite-action-btn primary" onClick={handleDownload}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Pass
+            </button>
+            <a href="https://wa.me/mock" target="_blank" rel="noreferrer" className="ignite-action-btn secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+              Join WhatsApp
+            </a>
+            <button className="ignite-action-btn tertiary" onClick={() => navigate("/")}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              Return Home
+            </button>
+          </div>
+
+         
         </motion.div>
 
       </div>
