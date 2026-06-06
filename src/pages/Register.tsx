@@ -245,21 +245,22 @@ export default function Register() {
 
   /* ── Seat counter (animated) ── */
   const [seats, setSeats] = useState<number | null>(null);
-
+  const [maxSeats, setMaxSeats] = useState<number>(60);
   /* ── Live Registration Count via SSE ── */
   useEffect(() => {
     const source = new EventSource(`${BACKEND_URL}/live-count`);
-
+    
     source.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // data.count = teams registered. You can derive remaining seats:
-        const TOTAL_SEATS = 100; // or whatever your max is
-        setSeats(TOTAL_SEATS - data.count);
+        // Backend provides both count and maxSeats
+        setMaxSeats(data.maxSeats);
+        setSeats(data.maxSeats - data.count);
       } catch (err) {
         console.error('Failed to parse SSE count:', err);
       }
     };
+
 
     source.onerror = () => {
       console.warn('SSE connection lost. Browser will retry automatically.');
@@ -759,13 +760,13 @@ export default function Register() {
                         {seats === null ? "—" : `${seats} Seats Remaining`}
                       </span>
                       <span className="rg-seat-pct">
-                        {seats === null ? "—" : `${Math.round((seats / 100) * 100)}%`}
+                        {seats === null ? "—" : `${Math.round((seats / maxSeats) * 100)}%`}
                       </span>
                     </div>
                     <div className="rg-seat-track">
                       <motion.div
                         className="rg-seat-fill"
-                        animate={{ width: seats === null ? "0%" : `${seats}%` }}
+                        animate={{ width: seats === null ? "0%" : `${(seats / maxSeats) * 100}%` }}
                       />
                     </div>
                   </div>
