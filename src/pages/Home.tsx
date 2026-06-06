@@ -497,7 +497,10 @@ export default function Home() {
 
   /* --- 2. Hero Original CLI (npm install loop) --- */
   useEffect(() => {
-    if (isTerminalSwapped) return;
+    if (!isTerminalSwapped) {
+      setCliText("admin@devlinkhub:~ $ ");
+      return;
+    }
 
     const steps = [
       { type: "type", text: "npm install devlinkhub" },
@@ -587,7 +590,7 @@ export default function Home() {
 
   /* --- 3. Swapped CLI (Hackathon sequence) --- */
   useEffect(() => {
-    if (!isTerminalSwapped) {
+    if (isTerminalSwapped) {
       setHackathonCliText("");
       setHackathonCliDone(false);
       return;
@@ -610,8 +613,7 @@ export default function Home() {
       { type: "wait", delay: 200 },
       { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Perks: Certificate | Refreshments | Mentorship\n" },
       { type: "wait", delay: 200 },
-      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Community: 500+ developers synced\n\n" },
-      { type: "print", text: "admin@devlinkhub:~ $ \n" }
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Community: 500+ developers synced\n\n" }
     ];
 
     let currentText = "admin@devlinkhub:~ $ ";
@@ -783,11 +785,10 @@ export default function Home() {
               layoutId="cli-terminal"
               transition={{ type: "spring", stiffness: 180, damping: 25 }}
               className="glass-card hero-visual-card"
-              onClick={() => setIsTerminalSwapped(!isTerminalSwapped)}
               style={{
                 zIndex: 10,
-                cursor: "pointer",
-                transform: isTerminalSwapped ? "perspective(1200px) rotateY(0deg) scale(1.02)" : "perspective(1200px) rotateY(-8deg)"
+                cursor: "default",
+                transform: "perspective(1200px) rotateY(-8deg)"
               }}
             >
               <AnimatePresence mode="wait">
@@ -800,16 +801,76 @@ export default function Home() {
                     transition={{ duration: 0.25 }}
                     style={{ display: "flex", flexDirection: "column", height: "100%", flex: 1, width: "100%" }}
                   >
-                    {/* Original CLI */}
+                    {/* Hackathon CLI Header (Default view, no close button) */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--glass-border)", paddingBottom: "12px", marginBottom: "16px" }}>
                       <div style={{ display: "flex", gap: "6px" }}>
                         <span className="pulsing-dot" style={{ background: "#ff5f56", boxShadow: "none" }}></span>
                         <span className="pulsing-dot" style={{ background: "#ffbd2e", boxShadow: "none" }}></span>
                         <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
                       </div>
+                      <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "var(--accent-cyan)" }}>
+                        /devlinkhub/ignite/info
+                      </span>
+                    </div>
+
+                    <div
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "13.5px",
+                        lineHeight: 1.7,
+                        color: "var(--accent-green)",
+                        overflow: "hidden",
+                        flex: 1,
+                        textAlign: "left",
+                        whiteSpace: "pre-wrap"
+                      }}
+                    >
+                      <span dangerouslySetInnerHTML={{ __html: hackathonCliText }}></span>
+                      {!hackathonCliDone && <span className="blinking-caret"></span>}
+                    </div>
+
+                    {/* Terminal Footer */}
+                    <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--accent-green)", marginTop: "16px" }}>
+                      <span>// status: active</span>
+                      <span
+                        onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
+                        className="cyber-register-btn"
+                        style={{ padding: "8px 16px", fontSize: "14px", marginTop: 0, textDecoration: "none", color: "inherit", cursor: "pointer" }}
+                      >
+                        Register Spot <span style={{ fontSize: "18px", fontWeight: "bold", marginLeft: "6px" }}>⏎</span>
+                      </span>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="swapped-cli"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.25 }}
+                    style={{ display: "flex", flexDirection: "column", height: "100%", flex: 1, width: "100%" }}
+                  >
+                    {/* Original CLI Header (Swapped view, with close buttons) */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--glass-border)", paddingBottom: "12px", marginBottom: "16px" }}>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <span
+                          onClick={(e) => { e.stopPropagation(); setIsTerminalSwapped(false); }}
+                          className="pulsing-dot"
+                          style={{ background: "#ff5f56", boxShadow: "none", cursor: "pointer" }}
+                          title="Close and Restore"
+                        ></span>
+                        <span className="pulsing-dot" style={{ background: "#ffbd2e", boxShadow: "none" }}></span>
+                        <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
+                      </div>
                       <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "rgba(255,255,255,0.6)" }}>
                         bash - devlinkhub.sh
                       </span>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setIsTerminalSwapped(false); }}
+                        style={{ background: "transparent", border: "none", color: "var(--white-secondary)", cursor: "pointer", fontSize: "12px", fontFamily: "var(--font-mono)" }}
+                      >
+                        [ESC] X
+                      </button>
                     </div>
 
                     <div
@@ -832,77 +893,6 @@ export default function Home() {
                     <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--accent-green)", marginTop: "16px" }}>
                       <span>// status: active</span>
                       <span>v2026.1.0 Stable</span>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="swapped-cli"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.25 }}
-                    style={{ display: "flex", flexDirection: "column", height: "100%", flex: 1, width: "100%" }}
-                  >
-                    {/* Hackathon CLI Header */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--glass-border)", paddingBottom: "12px", marginBottom: "16px" }}>
-                      <div style={{ display: "flex", gap: "6px" }}>
-                        <span
-                          onClick={(e) => { e.stopPropagation(); setIsTerminalSwapped(false); }}
-                          className="pulsing-dot"
-                          style={{ background: "#ff5f56", boxShadow: "none", cursor: "pointer" }}
-                          title="Close and Restore"
-                        ></span>
-                        <span className="pulsing-dot" style={{ background: "#ffbd2e", boxShadow: "none" }}></span>
-                        <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
-                      </div>
-                      <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "var(--accent-cyan)" }}>
-                        /devlinkhub/ignite/info
-                      </span>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setIsTerminalSwapped(false); }}
-                        style={{ background: "transparent", border: "none", color: "var(--white-secondary)", cursor: "pointer", fontSize: "12px", fontFamily: "var(--font-mono)" }}
-                      >
-                        [ESC] X
-                      </button>
-                    </div>
-
-                    <div
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "13.5px",
-                        lineHeight: 1.7,
-                        color: "var(--accent-green)",
-                        overflow: "hidden",
-                        flex: 1,
-                        textAlign: "left",
-                        whiteSpace: "pre-wrap"
-                      }}
-                    >
-                      <span dangerouslySetInnerHTML={{ __html: hackathonCliText }}></span>
-                      {hackathonCliDone && (
-                        <div style={{ marginTop: "1rem" }}>
-                          <button
-                            className="cyber-register-btn"
-                            style={{ border: "none", cursor: "pointer" }}
-                            onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
-                          >
-                            Launch Registration <span>⏎</span>
-                          </button>
-                        </div>
-                      )}
-                      {!hackathonCliDone && <span className="blinking-caret"></span>}
-                    </div>
-
-                    {/* Terminal Footer */}
-                    <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--accent-green)", marginTop: "16px" }}>
-                      <span>// status: active</span>
-                      <span
-                        onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
-                        className="cyber-register-btn"
-                        style={{ padding: "8px 16px", fontSize: "11px", marginTop: 0, textDecoration: "none", color: "inherit", cursor: "pointer" }}
-                      >
-                        Register Spot ⏎
-                      </span>
                     </div>
                   </motion.div>
                 )}

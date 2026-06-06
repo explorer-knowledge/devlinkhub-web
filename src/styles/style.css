@@ -463,7 +463,7 @@ nav.frosted-navbar.scrolled {
 .hero-wrapper {
   min-height: 100svh;  /* svh excludes mobile browser chrome — no content cut off */
   position: relative; display: flex; align-items: center;
-  padding: 8rem 2rem 4rem;
+  padding: 6rem 2rem 4rem;
   background-color: var(--bg-primary); z-index: 5;
   /* overflow: visible — never clip hero content */
 }
