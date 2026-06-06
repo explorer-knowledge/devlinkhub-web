@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import QRCode from "qrcode";
@@ -24,29 +24,131 @@ interface Result {
   email: string;
 }
 
-/* ── Digital ticket canvas (Hidden, for Download only) ── */
-function generateTicket(result: Result, qrDataUrl: string, displayId: string) {
+/* ── Premium Digital Ticket Canvas (Hidden, for Download only) ── */
+async function generateTicket(result: Result, qrDataUrl: string, displayId: string): Promise<HTMLCanvasElement> {
   const canvas = document.createElement("canvas");
-  canvas.width = 1200; canvas.height = 800;
+  canvas.width = 1200; canvas.height = 600;
   const ctx = canvas.getContext("2d")!;
   
-  // Background
-  const bg = ctx.createLinearGradient(0, 0, 1200, 800);
-  bg.addColorStop(0, "#010512"); bg.addColorStop(1, "#030A18");
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, 1200, 800);
-  
-  ctx.fillStyle = "#00f2fe"; ctx.font = "bold 90px Arial";
-  ctx.fillText("IGNITE PASS", 60, 180);
-  ctx.fillStyle = "rgba(255,255,255,0.5)"; ctx.font = "18px monospace";
-  ctx.fillText("REGISTRATION ID: " + displayId, 60, 260);
+  // 1. Background
+  ctx.fillStyle = "#080B12";
+  ctx.fillRect(0, 0, 1200, 600);
 
+  // 2. Corner Circles (Accents)
+  ctx.beginPath();
+  ctx.arc(1200, 0, 150, 0, 2 * Math.PI);
+  ctx.fillStyle = "rgba(0, 242, 254, 0.08)";
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(0, 600, 150, 0, 2 * Math.PI);
+  ctx.fillStyle = "rgba(0, 242, 254, 0.08)";
+  ctx.fill();
+
+  // 3. Ticket Dashed Line (The Stub)
+  ctx.beginPath();
+  ctx.setLineDash([8, 8]);
+  ctx.moveTo(850, 0);
+  ctx.lineTo(850, 600);
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.setLineDash([]); // reset
+
+  // Semi-circle cutouts on the dashed line
+  ctx.beginPath();
+  ctx.arc(850, 0, 16, 0, 2 * Math.PI);
+  ctx.fillStyle = "#030406";
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(850, 600, 16, 0, 2 * Math.PI);
+  ctx.fillStyle = "#030406";
+  ctx.fill();
+
+  // Helper for text
+  const drawLabel = (text: string, x: number, y: number) => {
+    ctx.fillStyle = "#8892b0";
+    ctx.font = "600 12px 'Inter', Arial";
+    ctx.fillText(text.toUpperCase(), x, y);
+  };
+
+  const drawValue = (text: string, x: number, y: number, color = "#ffffff", size = "20px", font = "'Inter', Arial") => {
+    ctx.fillStyle = color;
+    ctx.font = `bold ${size} ${font}`;
+    ctx.fillText(text, x, y);
+  };
+
+  // ── LEFT SIDE (0 to 850) ──
+  ctx.fillStyle = "#00f2fe";
+  ctx.font = "bold 14px 'Inter', Arial";
+  ctx.fillText("DEVLINKHUB IGNITE 2026", 60, 60);
+
+  // Gradient Title
+  const titleGrad = ctx.createLinearGradient(60, 120, 500, 120);
+  titleGrad.addColorStop(0, "#00f2fe");
+  titleGrad.addColorStop(1, "#8b5cf6");
+  ctx.fillStyle = titleGrad;
+  ctx.font = "bold 64px 'Inter', Arial";
+  ctx.fillText("IGNITE PASS", 55, 130);
+
+  // Registration ID
+  drawLabel("REGISTRATION ID", 60, 190);
+  drawValue(displayId, 60, 220, "#00f2fe", "18px", "'JetBrains Mono', monospace");
+
+  // Team
+  drawLabel("TEAM", 60, 280);
+  drawValue(result.teamName || "Solo Hacker", 60, 310, "#ffffff", "22px");
+
+  // Leader
+  drawLabel("LEADER", 60, 370);
+  drawValue(result.leaderName || result.email?.split("@")[0] || "Unknown", 60, 400, "#ffffff", "22px");
+
+  // Members
+  const totalMembers = (result.members?.filter(m => m.name.trim()).length || 0) + 1;
+  drawLabel("TEAM MEMBERS", 60, 460);
+  drawValue(`${totalMembers}`, 60, 490, "#ffffff", "22px");
+
+  // Amount Paid
+  drawLabel("AMOUNT PAID", 60, 540);
+  drawValue(`₹${result.finalAmount || 0}`, 60, 570, "#00E676", "28px");
+
+  // ── RIGHT SIDE (850 to 1200) ──
+  const rx = 900;
+  
+  drawLabel("EVENT", rx, 90);
+  drawValue("BuildX Workshop", rx, 115, "#ffffff", "18px");
+  drawValue("Auraxis Hackathon", rx, 140, "#ffffff", "18px");
+
+  drawLabel("DATE", rx, 200);
+  drawValue("20-21 Jun 2026", rx, 225, "#ffffff", "18px");
+
+  drawLabel("STATUS", rx, 285);
+  drawValue("✓ CONFIRMED", rx, 310, "#00E676", "18px");
+
+  // QR Code
   if (qrDataUrl) {
-    const qrImg = new Image();
-    qrImg.src = qrDataUrl;
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(850, 420, 250, 250);
-    ctx.drawImage(qrImg, 855, 425, 240, 240);
+    await new Promise<void>((resolve) => {
+      const qrImg = new Image();
+      qrImg.onload = () => {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(rx, 340, 160, 160);
+        ctx.drawImage(qrImg, rx + 5, 345, 150, 150);
+        resolve();
+      };
+      qrImg.src = qrDataUrl;
+    });
   }
+
+  // Small IDs below QR
+  ctx.fillStyle = "#8892b0";
+  ctx.font = "500 10px 'Inter', Arial";
+  ctx.fillText("TEAM ID", rx, 530);
+  ctx.fillStyle = "#00f2fe";
+  ctx.fillText(result.teamId || displayId, rx, 545);
+
+  ctx.fillStyle = "#475569";
+  ctx.fillText(`Pay ID: ${result.paymentId || 'N/A'}`, rx, 570);
 
   return canvas;
 }
@@ -80,12 +182,12 @@ export default function PaymentSuccess() {
     }).then(setQrDataUrl).catch(console.error);
   }, [displayId]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!result) return;
-    const canvas = generateTicket(result, qrDataUrl, displayId);
+    const canvas = await generateTicket(result, qrDataUrl, displayId);
     const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [1200, 800] });
-    pdf.addImage(imgData, 'PNG', 0, 0, 1200, 800);
+    const pdf = new jsPDF({ orientation: "landscape", unit: "px", format: [1200, 600] });
+    pdf.addImage(imgData, 'PNG', 0, 0, 1200, 600);
     pdf.save(`${displayId}-IGNITE-PASS.pdf`);
   };
 
@@ -216,7 +318,7 @@ export default function PaymentSuccess() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download Pass
             </button>
-            <a href="https://wa.me/mock" target="_blank" rel="noreferrer" className="ignite-action-btn secondary">
+            <a href="https://chat.whatsapp.com/FSOIqeiec3hAb5LF9tTcJ3" target="_blank" rel="noreferrer" className="ignite-action-btn secondary">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
               Join WhatsApp
             </a>
