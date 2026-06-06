@@ -1,7 +1,5 @@
 'use strict';
 
-const crypto = require('crypto');
-const prisma = require('../db/prismaClient');
 const redis = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
 const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
@@ -24,8 +22,8 @@ const { broadcast } = require('./countController');
 
 async function initiatePayment(req, res) {
   try {
-    if (getOrderCount() > 61){
-      return res.status(601).json({error: "Registration Over"});
+    if (getOrderCount() > process.env.MAX_SEAT+1){
+      return res.status(601).json({error: "Registration are Closed Now"});
     }
     console.log("/initiate route fired");
     const validationError = validateRegistrationBody(req.body);
@@ -213,7 +211,8 @@ async function handleWebhook(req, res) {
 
 
   const payload = JSON.parse(pending);
-  const teamId = crypto.randomUUID(); // shared UUID for every row in this team
+  const teamNumber = getOrderCount() + 1;
+  const teamId = `DLH-${String(teamNumber).padStart(2, '0')}`; // e.g. DLH-01, DLH-02
 
   payload.teamId = teamId.trim();
   payload.razorpayOrderId = orderId.trim();

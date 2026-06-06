@@ -86,63 +86,374 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
     ],
     html: `
       <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8" />
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DevLinkHub IGNITE 2026 Registration Confirmation</title>
+
         <style>
-          body { margin: 0; padding: 0; background: #0a0a0f; font-family: Inter, Arial, sans-serif; color: #f1f1f5; }
-          .wrapper { max-width: 560px; margin: 40px auto; background: #13131f; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden; }
-          .header { background: linear-gradient(135deg, #00f2fe, #4facfe); padding: 36px; text-align: center; }
-          .header h1 { margin: 0; font-size: 26px; color: #04020d; letter-spacing: -0.5px; }
-          .header p { margin: 8px 0 0; color: rgba(4,2,13,0.7); font-size: 14px; }
-          .body { padding: 36px; }
-          .body p { color: #9898b0; font-size: 15px; line-height: 1.7; margin: 0 0 16px; }
-          .body strong { color: #f1f1f5; }
-          .qr-box { background: #fff; display: inline-block; padding: 16px; border-radius: 16px; margin: 16px 0; }
-          .qr-box img { display: block; width: 160px; height: 160px; }
-          .team-id { font-family: monospace; font-size: 11px; color: rgba(0,242,254,0.8); word-break: break-all; margin-top: 6px; }
-          .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
-          .lbl { color: #55556a; }
-          .val { color: #f1f1f5; font-weight: 600; }
-          .footer { padding: 20px 36px; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; }
-          .footer p { margin: 0; font-size: 12px; color: #55556a; }
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:#080812;
+            font-family:Inter,Arial,sans-serif;
+            color:#ffffff;
+            padding:30px 15px;
+        }
+
+        .wrapper{
+            max-width:620px;
+            margin:auto;
+            background:#11111d;
+            border:1px solid rgba(255,255,255,0.08);
+            border-radius:24px;
+            overflow:hidden;
+        }
+
+        .hero{
+            background:
+            radial-gradient(circle at top left,#6d5dfc 0%,transparent 40%),
+            radial-gradient(circle at top right,#00d4ff 0%,transparent 40%),
+            linear-gradient(135deg,#0f172a,#15152b);
+            padding:50px 35px;
+            text-align:center;
+        }
+
+        .logo{
+            font-size:13px;
+            letter-spacing:4px;
+            text-transform:uppercase;
+            opacity:.75;
+            margin-bottom:15px;
+        }
+
+        .hero h1{
+            font-size:34px;
+            font-weight:800;
+            letter-spacing:-1px;
+        }
+
+        .hero h1 span{
+            color:#00e5ff;
+        }
+
+        .hero p{
+            margin-top:12px;
+            color:rgba(255,255,255,.8);
+            font-size:14px;
+        }
+
+        .content{
+            padding:35px;
+        }
+
+        .content h2{
+            font-size:22px;
+            margin-bottom:18px;
+        }
+
+        .content p{
+            color:#b9bfd3;
+            line-height:1.8;
+            font-size:15px;
+            margin-bottom:16px;
+        }
+
+        .highlight{
+            color:#ffffff;
+            font-weight:700;
+        }
+
+        .info-card{
+            background:#171727;
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:18px;
+            padding:22px;
+            margin:25px 0;
+        }
+
+        .row{
+            display:flex;
+            justify-content:space-between;
+            padding:12px 0;
+            border-bottom:1px solid rgba(255,255,255,.06);
+        }
+
+        .row:last-child{
+            border-bottom:none;
+        }
+
+        .label{
+            color:#8d92a7;
+            font-size:14px;
+        }
+
+        .value{
+            color:#ffffff;
+            font-weight:600;
+            font-size:14px;
+        }
+
+        .qr-section{
+            text-align:center;
+            margin:30px 0;
+        }
+
+        .qr-box{
+            display:inline-block;
+            background:#fff;
+            padding:18px;
+            border-radius:18px;
+        }
+
+        .qr-box img{
+            width:180px;
+            height:180px;
+            display:block;
+        }
+
+        .team-id{
+            margin-top:12px;
+            color:#00e5ff;
+            font-family:monospace;
+            font-size:13px;
+        }
+
+        .section{
+            margin-top:30px;
+        }
+
+        .section-title{
+            font-size:18px;
+            font-weight:700;
+            margin-bottom:15px;
+        }
+
+        .timeline{
+            background:#171727;
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:18px;
+            padding:20px;
+        }
+
+        .timeline-item{
+            padding:12px 0;
+            border-bottom:1px solid rgba(255,255,255,.06);
+        }
+
+        .timeline-item:last-child{
+            border-bottom:none;
+        }
+
+        .timeline-item strong{
+            display:block;
+            color:#ffffff;
+            margin-bottom:5px;
+        }
+
+        .notice{
+            margin-top:25px;
+            background:rgba(0,229,255,.08);
+            border:1px solid rgba(0,229,255,.18);
+            padding:18px;
+            border-radius:16px;
+        }
+
+        .notice h3{
+            margin-bottom:10px;
+        }
+
+        .notice ul{
+            padding-left:18px;
+        }
+
+        .notice li{
+            color:#b9bfd3;
+            margin-bottom:8px;
+            line-height:1.6;
+        }
+
+        .footer{
+            padding:30px;
+            text-align:center;
+            border-top:1px solid rgba(255,255,255,.06);
+        }
+
+        .footer p{
+            color:#73788f;
+            font-size:13px;
+            line-height:1.8;
+        }
+
+        .cta{
+            margin-top:18px;
+            font-weight:600;
+            color:#00e5ff;
+        }
         </style>
-      </head>
-      <body>
+        </head>
+
+        <body>
+
         <div class="wrapper">
-          <div class="header">
-            <h1>⚡ IGNITE 2026</h1>
-            <p>Registration Confirmed</p>
-          </div>
-          <div class="body">
-            <p>Hey <strong>${leaderName}</strong>! 🎉</p>
-            <p>Your team <strong>"${teamName}"</strong> has been successfully registered for <strong>DevLinkHub Ignite 2026</strong>.</p>
-            <p>Please find your team QR code below. <strong>Keep it safe</strong> — you'll need to show it at the event for check-in.</p>
 
-            <div style="text-align: center;">
-              <div class="qr-box">
-                <img src="cid:teamqr" alt="Team QR Code" />
-              </div>
-              <div class="team-id">Team ID: ${teamId}</div>
+            <div class="hero">
+                <div class="logo">DEVLINKHUB PRESENTS</div>
+
+                <h1>IGNITE <span>2026</span></h1>
+
+                <p>
+                    Registration Confirmed
+                </p>
+
+                <p>
+                    Build • Connect • Grow
+                </p>
             </div>
 
-            <div style="margin-top: 28px;">
-              <div class="row"><span class="lbl">Team Name</span><span class="val">${teamName}</span></div>
-              <div class="row"><span class="lbl">Leader</span><span class="val">${leaderName}</span></div>
-              <div class="row"><span class="lbl">Amount Paid</span><span class="val">₹${amountRs}</span></div>
-              <div class="row"><span class="lbl">Event Date</span><span class="val">20–21 June 2026</span></div>
+            <div class="content">
+
+                <h2>🎉 Welcome to DevLinkHub IGNITE 2026</h2>
+
+                <p>
+                    Hey <span class="highlight">${leaderName}</span>,
+                </p>
+
+                <p>
+                    Congratulations! Your team
+                    <span class="highlight">"${teamName}"</span>
+                    has been successfully registered for
+                    <span class="highlight">DevLinkHub IGNITE 2K26</span>.
+                </p>
+
+                <p>
+                    We're excited to welcome you to a community of builders,
+                    innovators, developers, creators and future leaders.
+                </p>
+
+                <!-- TEAM DETAILS -->
+                <div class="info-card">
+
+                    <div class="row">
+                        <span class="label">Team Name</span>
+                        <span class="value">${teamName}</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">Team Leader</span>
+                        <span class="value">${leaderName}</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">Amount Paid</span>
+                        <span class="value">₹${amountRs}</span>
+                    </div>
+
+                    <div class="row">
+                        <span class="label">Event</span>
+                        <span class="value">DevLinkHub IGNITE 2026</span>
+                    </div>
+
+                </div>
+
+                <!-- QR -->
+
+                <div class="qr-section">
+
+                    <div class="qr-box">
+                        <img src="cid:teamqr" alt="QR Code">
+                    </div>
+
+                    <div class="team-id">
+                        Team ID: ${teamId}
+                    </div>
+
+                </div>
+
+                <!-- EVENT SCHEDULE -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        📅 Event Schedule
+                    </div>
+
+                    <div class="timeline">
+
+                        <div class="timeline-item">
+                            <strong>Day 1 — BuildX Workshop</strong>
+                            Community Launch • Speaker Sessions • Networking • Technical Workshop
+                        </div>
+
+                        <div class="timeline-item">
+                            <strong>Day 2 — Auraxis Hackathon</strong>
+                            Team Collaboration • Product Building • Mentorship • Final Presentations
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- WHAT NEXT -->
+
+                <div class="notice">
+
+                    <h3>🚀 What Happens Next?</h3>
+
+                    <ul>
+                        <li>Venue details will be shared soon.</li>
+                        <li>Speaker announcements will be emailed.</li>
+                        <li>Hackathon guidelines will be released before the event.</li>
+                        <li>Please keep your QR Code safe for event check-in.</li>
+                        <li>Follow our updates and announcements regularly.</li>
+                    </ul>
+
+                </div>
+
+                <div class="section">
+
+                    <div class="section-title">
+                        Need Help?
+                    </div>
+
+                    <p>
+                        If you have any questions regarding your registration,
+                        team participation or event details, feel free to contact us.
+                    </p>
+
+                    <p>
+                        📧 support@devlinkhub.in<br>
+                        🌐 devlinkhub.in
+                    </p>
+
+                </div>
+
             </div>
 
-            <p style="margin-top:24px; font-size: 13px; color: #55556a;">
-              If you have any issues, reply to this email or contact us at 
-              <a href="mailto:${process.env.SMTP_FROM}" style="color: #00f2fe;">${process.env.SMTP_FROM}</a>.
-            </p>
-          </div>
-          <div class="footer">
-            <p>© 2026 DevLinkHub — Build. Connect. Grow.</p>
-          </div>
+            <div class="footer">
+
+                <p>
+                    Thank you for registering for DevLinkHub IGNITE 2026.
+                </p>
+
+                <p class="cta">
+                    Build. Connect. Grow.
+                </p>
+
+                <p>
+                    DevLinkHub © 2026
+                </p>
+
+            </div>
+
         </div>
-      </body>
+
+        </body>
       </html>
     `,
   });
