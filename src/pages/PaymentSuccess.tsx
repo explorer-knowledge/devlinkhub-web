@@ -24,8 +24,13 @@ interface Result {
   email: string;
 }
 
+<<<<<<< HEAD
 /* ── Premium Digital Ticket Canvas (Hidden, for Download only) ── */
 async function generateTicket(result: Result, qrDataUrl: string, displayId: string): Promise<HTMLCanvasElement> {
+=======
+/* ── Digital ticket canvas (Hidden, for Download only) ── */
+function generateTicket(_result: Result, qrDataUrl: string, displayId: string) {
+>>>>>>> origin/ranjan-frontend
   const canvas = document.createElement("canvas");
   canvas.width = 1200; canvas.height = 600;
   const ctx = canvas.getContext("2d")!;

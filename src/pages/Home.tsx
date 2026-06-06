@@ -237,7 +237,7 @@ const organizers = [
     bio: "Visionary behind DevLinkHub — building a developer community that empowers students and creators across India through collaboration, learning, and innovation.",
     badge: "FOUNDER",
     badgeColor: "var(--accent-cyan)",
-    skills: ["Community Building", "Leadership", "Event Management", "Developer Relations", "Startup Ecosystem"]
+    skills: ["Community Building", "Leadership", "Event Management", "Startup Ecosystem"]
   },
   {
     name: "Prince Kumar",
@@ -402,6 +402,18 @@ export default function Home() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedOrg, isTerminalSwapped]);
+
+  // Lock body scroll when organizer modal is active
+  useEffect(() => {
+    if (selectedOrg) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedOrg]);
 
   // Hero Original CLI text lines state
   const [cliText, setCliText] = useState("");
@@ -1446,11 +1458,11 @@ export default function Home() {
               </div>
             </TiltGlassCard>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-              <TiltGlassCard className="pillar-card" style={{ minHeight: "180px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", height: "100%" }}>
+              <TiltGlassCard className="pillar-card" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "2rem" }}>
                 <div>
-                  <h3 className="pillar-title violet" style={{ fontSize: "28px" }}>Podium Awards</h3>
-                  <div className="pillar-body" style={{ fontSize: "14px", marginTop: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <h3 className="pillar-title violet" style={{ fontSize: "32px", textAlign: "center", margin: 0 }}>Main Prizes</h3>
+                  <div className="pillar-body" style={{ fontSize: "14px", marginTop: "1rem", display: "flex", flexDirection: "column", gap: "10px" }}>
                     <div>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#ffd700", marginRight: "8px", verticalAlign: "middle" }}>
                         <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
@@ -1471,23 +1483,13 @@ export default function Home() {
                       </svg>
                       <strong>Runner-Up</strong>: Cash Prize + Certificate
                     </div>
-                    <div>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#cd7f32", marginRight: "8px", verticalAlign: "middle" }}>
-                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-                        <path d="M4 22h16" />
-                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
-                        <path d="M12 2a6 6 0 0 1 6 6v3a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z" />
-                      </svg>
-                      <strong>Second Runner-Up</strong>: Cash Prize + Certificate
-                    </div>
                   </div>
                 </div>
               </TiltGlassCard>
-              <TiltGlassCard className="pillar-card" style={{ minHeight: "220px" }}>
+              <TiltGlassCard className="pillar-card" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "2rem" }}>
                 <div>
-                  <h3 className="pillar-title green" style={{ fontSize: "28px" }}>Special Awards</h3>
-                  <div className="pillar-body" style={{ fontSize: "14px", marginTop: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <h3 className="pillar-title green" style={{ fontSize: "32px", textAlign: "center", margin: 0 }}>Spotlights</h3>
+                  <div className="pillar-body" style={{ fontSize: "14px", marginTop: "1rem", display: "flex", flexDirection: "column", gap: "8px" }}>
                     <div>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-cyan)", marginRight: "8px", verticalAlign: "middle" }}>
                         <circle cx="12" cy="8" r="7" />

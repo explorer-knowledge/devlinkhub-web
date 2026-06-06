@@ -3,5 +3,10 @@ dwad
 dasas
 sdasd
 sdasd
+<<<<<<< HEAD
 sdasd
+sdasd
+=======
+hi
+>>>>>>> origin/ranjan-frontend
 sdasd
