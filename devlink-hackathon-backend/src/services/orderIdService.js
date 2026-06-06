@@ -10,7 +10,7 @@ async function loadOrderId(){
     // });
     const leaderRow = await prisma.hackathonParticipant.findMany({
       where:  { isLeader: true },
-      select: { razorpayOrderId: true,teamId: true, teamName: true,name:true,email: true,phone:true,status: true,createdAt: true },
+      select: { razorpayOrderId: true,teamId: true, teamName: true,name:true,email: true,phone:true,status: true,amountPaid:true,createdAt: true },
     });
     orderMap.clear();
 
@@ -46,6 +46,7 @@ function addOrderIdtoCache(payload,number=0){
       email: leaderRow.email,
       phone: leaderRow.phone,
       status: payload.status,
+      amountPaid: payload.amountPaid,
       createdAt: payload.createdAt
     }
     const normalized = memCache.razorpayOrderId.trim();
@@ -54,4 +55,14 @@ function addOrderIdtoCache(payload,number=0){
     return [true,memCache,payload][number] ?? true;
 }
 
-module.exports  = {loadOrderId,orderIdExists,getOrderData,addOrderIdtoCache,getOrderCount};
+function getPromoCodeUseCount() {
+  let count = 0;
+  for (const order of orderMap.values()) {
+    if (order.amountPaid === 24900) {
+      count++;
+    }
+  }
+  return count;
+}
+
+module.exports  = {loadOrderId,orderIdExists,getOrderData,addOrderIdtoCache,getOrderCount,getPromoCodeUseCount};

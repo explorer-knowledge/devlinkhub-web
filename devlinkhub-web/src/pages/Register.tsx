@@ -248,8 +248,8 @@ export default function Register() {
   const [maxSeats, setMaxSeats] = useState<number>(60);
   /* ── Live Registration Count via SSE ── */
   useEffect(() => {
-    const source = new EventSource(`${BACKEND_URL}/live-count`);
-    
+    const source = new EventSource(`${BACKEND_URL}/live-count?ngrok-skip-browser-warning=true`);
+
     source.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -581,7 +581,7 @@ export default function Register() {
 
   const handleApplyPromo = async () => {
     if (!promoInput.trim()) { setPromoError("Enter a promo code first"); return; }
-    
+
     setPromoLoading(true);
     setPromoError("");
 
@@ -1300,8 +1300,8 @@ export default function Register() {
                           {appliedPromo
                             ? <button className="rg-promo-btn remove" onClick={handleRemovePromo}>Remove</button>
                             : <button className="rg-promo-btn apply" onClick={handleApplyPromo} disabled={promoLoading}>
-                                {promoLoading ? "..." : "Apply"}
-                              </button>
+                              {promoLoading ? "..." : "Apply"}
+                            </button>
                           }
                         </div>
                         {promoError && <div className="rg-promo-err">{promoError}</div>}

@@ -3,7 +3,7 @@
  * In a real application, these functions would perform fetch/axios calls to your backend.
  */
 
-export const BACKEND_URL = `http://localhost:10003/api/hackathon`;
+export const BACKEND_URL = `https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon`;
 
 export interface RegisterPayload {
   teamName: string;
@@ -64,7 +64,8 @@ export const API = {
     const data = await response.json();
     return {
       valid: data.valid,
-      discountAmount: data.valid ? data.finalAmountPaise : 0,  // finalAmountPaise from backend
+      discountAmount: data.valid ? data.discount : 0,           // actual discount in paise
+      finalAmountPaise: data.valid ? data.finalAmountPaise : 0, // final amount in paise after discount
       message: data.message,
     };
   },

@@ -57,7 +57,7 @@ const statusLimiter = makeRedisLimiter({
 // POST /api/hackathon/webhook
 // Called only by Razorpay servers; real security is HMAC verification
 const webhookLimiter = makeRedisLimiter({
-  windowMs:  5 * 60 * 1000,
+  windowMs:  60 * 1000,
   max:       30,
   keyPrefix: 'rl:webhook:',
   message:   'Too many webhook requests.',
@@ -66,7 +66,7 @@ const webhookLimiter = makeRedisLimiter({
 // GET /api/hackathon/live-count
 // Public-facing counter — polled by the UI; keep generous but bounded
 const liveCountLimiter = makeRedisLimiter({
-  windowMs:  60 * 1000,
+  windowMs:  5*60 * 1000,
   max:       60,
   keyPrefix: 'rl:livecount:',
   message:   'Too many requests.',
