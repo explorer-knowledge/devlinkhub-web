@@ -237,7 +237,13 @@ const organizers = [
     bio: "Visionary behind DevLinkHub — building a developer community that empowers students and creators across India through collaboration, learning, and innovation.",
     badge: "FOUNDER",
     badgeColor: "var(--accent-cyan)",
-    skills: ["Community Building", "Leadership", "Event Management", "Startup Ecosystem"]
+    skills: ["Community Building", "Leadership", "Event Management", "Startup Ecosystem"],
+    socials: { 
+      linkedin: "https://www.linkedin.com/in/pawan-kushwaha-ai", 
+      twitter: "#", 
+      github: "https://github.com/Pawankus6261",
+      instagram: "https://www.instagram.com/_age_of_souls_" 
+    }
   },
   {
     name: "Prince Kumar",
@@ -247,7 +253,8 @@ const organizers = [
     bio: "Drives the operational backbone of DevLinkHub AURAXIS, ensuring everything runs smoothly — from logistics and coordination to participant experience.",
     badge: "OPERATIONS",
     badgeColor: "var(--accent-green)",
-    skills: ["Logistics", "Team Coordination", "Project Planning", "Execution"]
+    skills: ["Logistics", "Team Coordination", "Project Planning", "Execution"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Ayush Kumar",
@@ -257,7 +264,8 @@ const organizers = [
     bio: "Bridges the gap between the community and the event — managing outreach, partnerships, and ensuring every participant feels welcomed and valued.",
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
-    skills: ["Outreach", "Partnership Building", "Communication", "Brand Relations"]
+    skills: ["Outreach", "Partnership Building", "Communication", "Brand Relations"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Kartik Raj",
@@ -267,7 +275,8 @@ const organizers = [
     bio: "Keeps the community active and engaged — organizing discussions, facilitating collaborations, and nurturing the developer ecosystem at DevLinkHub.",
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
-    skills: ["Engagement", "Content Strategy", "Community Growth", "Moderation"]
+    skills: ["Engagement", "Content Strategy", "Community Growth", "Moderation"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Nilesh Verma",
@@ -277,7 +286,8 @@ const organizers = [
     bio: "Oversees planning and project management for the event, making sure every moving part aligns toward a successful and impactful experience.",
     badge: "MANAGEMENT",
     badgeColor: "var(--accent-orange)",
-    skills: ["Project Management", "Strategic Planning", "Resource Allocation", "Risk Management"]
+    skills: ["Project Management", "Strategic Planning", "Resource Allocation", "Risk Management"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Akshat Agrawal",
@@ -286,7 +296,8 @@ const organizers = [
     bio: "Leads the technical vision of DevLinkHub — architecting platforms, guiding technical decisions, and mentoring developers within the community.",
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
-    skills: ["Full Stack Dev", "System Architecture", "API Design", "Mentorship", "Cloud"]
+    skills: ["Full Stack Dev", "System Architecture", "API Design", "Mentorship", "Cloud"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Ranjan Kumar Singh",
@@ -296,7 +307,8 @@ const organizers = [
     bio: "Co-leads the technical engineering efforts, contributing to platform development and helping elevate the quality of technical projects across the team.",
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
-    skills: ["Frontend Dev", "React", "TypeScript", "UI Engineering", "Performance"]
+    skills: ["Frontend Dev", "React", "TypeScript", "UI Engineering", "Performance"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   }
 ];
 
@@ -1764,6 +1776,42 @@ export default function Home() {
 
                 {/* Divider */}
                 <div className="org-modal-divider" style={{ background: `linear-gradient(90deg, ${selectedOrg.badgeColor}, transparent)` }} />
+
+                {/* Social Links */}
+                {selectedOrg.socials && (
+                  <div className="org-modal-socials" style={{ marginBottom: "1.25rem", display: "flex", gap: "1rem" }}>
+                    {selectedOrg.socials.linkedin && selectedOrg.socials.linkedin !== "#" && (
+                      <a href={selectedOrg.socials.linkedin} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                      </a>
+                    )}
+                    {selectedOrg.socials.twitter && selectedOrg.socials.twitter !== "#" && (
+                      <a href={selectedOrg.socials.twitter} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                      </a>
+                    )}
+                    {selectedOrg.socials.instagram && selectedOrg.socials.instagram !== "#" && (
+                      <a href={selectedOrg.socials.instagram} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                      </a>
+                    )}
+                    {selectedOrg.socials.github && selectedOrg.socials.github !== "#" && (
+                      <a href={selectedOrg.socials.github} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                )}
 
                 {/* About */}
                 <div className="org-modal-section-label">About</div>

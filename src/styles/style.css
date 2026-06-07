@@ -2131,6 +2131,16 @@ footer.frosted-footer-bar::before {
   transform: translateY(-1px);
 }
 
+/* Social icons */
+.org-social-icon {
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.org-social-icon:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .org-spotlight-modal { border-radius: 20px; }
