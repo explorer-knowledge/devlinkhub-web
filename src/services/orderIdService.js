@@ -5,9 +5,6 @@ const {addPhonetoCache} = require('./phoneLoadService');
 let orderMap = new Map();
 
 async function loadOrderId(){
-    // const orders = await prisma.hackathonParticipant.findMany({
-    //     select: {razorpayOrderId: true}
-    // });
     const leaderRow = await prisma.hackathonParticipant.findMany({
       where:  { isLeader: true },
       select: { razorpayOrderId: true,teamId: true, teamName: true,name:true,email: true,phone:true,status: true,amountPaid:true,createdAt: true },
