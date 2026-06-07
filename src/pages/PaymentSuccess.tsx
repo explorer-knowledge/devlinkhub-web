@@ -60,15 +60,19 @@ async function generateTicket(result: Result, qrDataUrl: string, displayId: stri
   const logoImg = document.getElementById("auraxis-logo-img") as HTMLImageElement | null;
   if (logoImg) {
     const aspect = logoImg.naturalWidth / (logoImg.naturalHeight || 1);
-    const logoHeight = 24;
-    const logoWidth = aspect ? logoHeight * aspect : 120;
+    const logoHeight = 31;
+    const logoWidth = aspect ? logoHeight * aspect : 156;
     ctx.drawImage(logoImg, 60, 40, logoWidth, logoHeight);
   }
 
-  // Left Column (Text)
-  ctx.fillStyle = "#00f2fe"; 
-  ctx.font = "bold 16px Arial";
-  ctx.fillText("DEVLINKHUB AURAXIS 2026", 60, 95);
+  // DL logo parallel to the main logo near the dashed line
+  const dlLogoImg = document.getElementById("dl-logo-img") as HTMLImageElement | null;
+  if (dlLogoImg) {
+    const aspect = dlLogoImg.naturalWidth / (dlLogoImg.naturalHeight || 1);
+    const dlHeight = 62;
+    const dlWidth = aspect ? dlHeight * aspect : 62;
+    ctx.drawImage(dlLogoImg, 790 - dlWidth, 24, dlWidth, dlHeight);
+  }
 
   // Gradient text for AURAXIS PASS
   const titleGradient = ctx.createLinearGradient(60, 0, 500, 0);
@@ -242,7 +246,7 @@ export default function PaymentSuccess() {
             onMouseLeave={handleMouseLeave}
           >
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "28px", textAlign: "center" }}>
-              <img src="/static/logos/DevLink_Text_Logo-white.png" alt="DevLink Logo" style={{ height: "36px", width: "auto", objectFit: "contain", marginBottom: "12px" }} />
+              <img src="/static/logos/DevLink_Text_Logo-white.png" alt="DevLink Logo" style={{ height: "47px", width: "auto", objectFit: "contain", marginBottom: "12px" }} />
               <div style={{
                 fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                 fontSize: "14px",
@@ -257,8 +261,9 @@ export default function PaymentSuccess() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "36px" }}>
               <h1 className="auraxis-pass-title" style={{ margin: 0 }}>AURAXIS PASS</h1>
-              {/* Hidden logo for canvas download generation */}
+              {/* Hidden logos for canvas download generation */}
               <img id="auraxis-logo-img" src="/static/logos/DevLink_Text_Logo-white.png" alt="DevLink Logo" style={{ display: "none" }} />
+              <img id="dl-logo-img" src="/static/logos/DL.png" alt="DL Logo" style={{ display: "none" }} />
             </div>
 
             <div className="auraxis-pass-details">
