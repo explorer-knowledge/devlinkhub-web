@@ -85,12 +85,12 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
       }
     ],
     html: `
-      <!DOCTYPE html>
-        <html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
         <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>DevLinkHub IGNITE 2026 Registration Confirmation</title>
+        <title>DevLinkHub AURAXIS 2026 Registration Confirmation</title>
 
         <style>
         *{
@@ -305,7 +305,7 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
             <div class="hero">
                 <div class="logo">DEVLINKHUB PRESENTS</div>
 
-                <h1>IGNITE <span>2026</span></h1>
+                <h1>AURAXIS <span>2K26</span></h1>
 
                 <p>
                     Registration Confirmed
@@ -318,7 +318,7 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
 
             <div class="content">
 
-                <h2>🎉 Welcome to DevLinkHub IGNITE 2026</h2>
+                <h2>🎉 Welcome to DevLinkHub AURAXIS 2K26</h2>
 
                 <p>
                     Hey <span class="highlight">${leaderName}</span>,
@@ -328,7 +328,7 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
                     Congratulations! Your team
                     <span class="highlight">"${teamName}"</span>
                     has been successfully registered for
-                    <span class="highlight">DevLinkHub IGNITE 2K26</span>.
+                    <span class="highlight">DevLinkHub AURAXIS 2K26</span>.
                 </p>
 
                 <p>
@@ -337,9 +337,8 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
                 </p>
 
                 <!-- TEAM DETAILS -->
-                <div class="info-card">
-
-                    <div class="row">
+        <div class="info-card">
+            <div class="row">
                         <span class="label">Team Name</span>
                         <span class="value">${teamName}</span>
                     </div>
@@ -356,7 +355,7 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
 
                     <div class="row">
                         <span class="label">Event</span>
-                        <span class="value">DevLinkHub IGNITE 2026</span>
+                        <span class="value">DevLinkHub AURAXIS 2K26</span>
                     </div>
 
                 </div>
@@ -403,7 +402,7 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
 
                 <div class="notice">
 
-                    <h3>🚀 What Happens Next?</h3>
+                    <h3>What Happens Next?</h3>
 
                     <ul>
                         <li>Venue details will be shared soon.</li>
@@ -438,7 +437,7 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
             <div class="footer">
 
                 <p>
-                    Thank you for registering for DevLinkHub IGNITE 2026.
+                    Thank you for registering for DevLinkHub AURAXIS 2026.
                 </p>
 
                 <p class="cta">
@@ -454,7 +453,7 @@ async function sendLeaderConfirmation({ toEmail, leaderName, teamName, teamId, a
         </div>
 
         </body>
-      </html>
+    </html>
     `,
   });
 }

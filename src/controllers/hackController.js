@@ -1,5 +1,4 @@
 'use strict';
-const crypto = require('crypto');
 const redis = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
 const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
@@ -320,7 +319,7 @@ async function getRegistrationStatus(req, res) {
 // Response (invalid): { valid: false, message: string }
 
 const PROMO_CODES = {
-  'DEVLINKHUB100': 10000,
+  'AURAXIS100': 10000,
   //'EARLY20':   20,
 };
 
