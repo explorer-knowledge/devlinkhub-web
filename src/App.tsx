@@ -9,7 +9,6 @@ import "./styles/mobile.css";
 // Lazy load all non-home pages — they only download when user navigates there
 // Saves ~300KB from initial bundle (Register alone is ~77KB)
 const Register = lazy(() => import("./pages/Register"));
-const Checkout = lazy(() => import("./pages/Checkout"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const PaymentFailed = lazy(() => import("./pages/PaymentFailed"));
 
@@ -104,7 +103,6 @@ function App() {
           <Route path="/register" element={<Register />} />
 
           {/* Payment flow — protected: only accessible via proper flow */}
-          <Route path="/checkout" element={<PaymentGuard checkKey="devlinkhub_checkout_payload"><Checkout /></PaymentGuard>} />
           <Route path="/payment-success" element={<PaymentGuard checkKey="devlinkhub_payment_result"><PaymentSuccess /></PaymentGuard>} />
           <Route path="/payment-failed" element={<PaymentGuard checkKey="devlinkhub_payment_result"><PaymentFailed /></PaymentGuard>} />
         </Routes>

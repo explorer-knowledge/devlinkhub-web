@@ -106,12 +106,19 @@ export const API = {
 
     });
 
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error || "Failed to initiate payment");
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      const text = await response.text().catch(() => "");
+      console.error("Response parsing failed. Raw response:", text);
+      throw new Error("Failed to parse backend response. It might be an ngrok page or server error.");
     }
 
-    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to initiate payment");
+    }
+
     return { success: true, orderId: data.orderId, amount: data.amount, keyId: data.keyId };
   },
 

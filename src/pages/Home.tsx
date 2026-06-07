@@ -161,7 +161,7 @@ const renderPlanIcon = (iconId: string) => {
 
 /* --- Schedule Data --- */
 const day1Schedule = [
-  { time: "09:00 AM", title: "Opening Session", desc: "Welcome briefing, Ignite launch keynotes, and community onboarding." },
+  { time: "09:00 AM", title: "Opening Session", desc: "Welcome briefing, Auraxis launch keynotes, and community onboarding." },
   { time: "10:30 AM", title: "Speaker Talks", desc: "Gain insights from experienced speakers, mentors, and developers." },
   { time: "11:30 AM", title: "Technology Insights", desc: "Deep dive into modern developer tools, workflows, and production frameworks." },
   { time: "12:30 PM", title: "AI & Development Discussions", desc: "Interactive discussions covering AI tools, vector embeddings, and API integrations." },
@@ -184,9 +184,9 @@ const day2Schedule = [
 /* --- Pricing Plans --- */
 const pricingPlans = [
   {
-    key: "ignite_pass",
+    key: "auraxis_pass",
     badge: "Official Entry Pass",
-    title: "IGNITE Pass",
+    title: "AURAXIS Pass",
     icon: "zap",
     price: "₹349",
     features: [
@@ -219,7 +219,7 @@ const pricingPlans = [
 
 /* --- FAQ Data --- */
 const faqs = [
-  { q: "Is the workshop free?", a: "Yes, full access to the BuildX workshop is included with the IGNITE registration pass." },
+  { q: "Is the workshop free?", a: "Yes, full access to the BuildX workshop is included with the AURAXIS registration pass." },
   { q: "Can I participate alone?", a: "Yes. Solo participation is allowed, and we support solo builders looking to form cohorts." },
   { q: "Can I create a team later?", a: "No. Teams must be finalized during registration. Once a team is registered, members cannot be added, removed, or replaced." },
   { q: "What is the team size?", a: "Teams can consist of 1 to 4 members. The pass covers the entire team." },
@@ -237,17 +237,24 @@ const organizers = [
     bio: "Visionary behind DevLinkHub — building a developer community that empowers students and creators across India through collaboration, learning, and innovation.",
     badge: "FOUNDER",
     badgeColor: "var(--accent-cyan)",
-    skills: ["Community Building", "Leadership", "Event Management", "Startup Ecosystem"]
+    skills: ["Community Building", "Leadership", "Event Management", "Startup Ecosystem"],
+    socials: { 
+      linkedin: "https://www.linkedin.com/in/pawan-kushwaha-ai", 
+      twitter: "#", 
+      github: "https://github.com/Pawankus6261",
+      instagram: "https://www.instagram.com/_age_of_souls_" 
+    }
   },
   {
     name: "Prince Kumar",
     role: "Operations Head",
     init: "PR",
     image: "/static/operation-head.jpeg",
-    bio: "Drives the operational backbone of DevLinkHub IGNITE, ensuring everything runs smoothly — from logistics and coordination to participant experience.",
+    bio: "Drives the operational backbone of DevLinkHub AURAXIS, ensuring everything runs smoothly — from logistics and coordination to participant experience.",
     badge: "OPERATIONS",
     badgeColor: "var(--accent-green)",
-    skills: ["Logistics", "Team Coordination", "Project Planning", "Execution"]
+    skills: ["Logistics", "Team Coordination", "Project Planning", "Execution"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Ayush Kumar",
@@ -257,7 +264,8 @@ const organizers = [
     bio: "Bridges the gap between the community and the event — managing outreach, partnerships, and ensuring every participant feels welcomed and valued.",
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
-    skills: ["Outreach", "Partnership Building", "Communication", "Brand Relations"]
+    skills: ["Outreach", "Partnership Building", "Communication", "Brand Relations"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Kartik Raj",
@@ -267,7 +275,8 @@ const organizers = [
     bio: "Keeps the community active and engaged — organizing discussions, facilitating collaborations, and nurturing the developer ecosystem at DevLinkHub.",
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
-    skills: ["Engagement", "Content Strategy", "Community Growth", "Moderation"]
+    skills: ["Engagement", "Content Strategy", "Community Growth", "Moderation"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Nilesh Verma",
@@ -277,16 +286,19 @@ const organizers = [
     bio: "Oversees planning and project management for the event, making sure every moving part aligns toward a successful and impactful experience.",
     badge: "MANAGEMENT",
     badgeColor: "var(--accent-orange)",
-    skills: ["Project Management", "Strategic Planning", "Resource Allocation", "Risk Management"]
+    skills: ["Project Management", "Strategic Planning", "Resource Allocation", "Risk Management"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Akshat Agrawal",
     role: "Technical Lead",
     init: "AA",
+    image: "/static/tech-lead.jpg",
     bio: "Leads the technical vision of DevLinkHub — architecting platforms, guiding technical decisions, and mentoring developers within the community.",
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
-    skills: ["Full Stack Dev", "System Architecture", "API Design", "Mentorship", "Cloud"]
+    skills: ["Full Stack Dev", "System Architecture", "API Design", "Mentorship", "Cloud"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   },
   {
     name: "Ranjan Kumar Singh",
@@ -296,7 +308,8 @@ const organizers = [
     bio: "Co-leads the technical engineering efforts, contributing to platform development and helping elevate the quality of technical projects across the team.",
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
-    skills: ["Frontend Dev", "React", "TypeScript", "UI Engineering", "Performance"]
+    skills: ["Frontend Dev", "React", "TypeScript", "UI Engineering", "Performance"],
+    socials: { linkedin: "#", twitter: "#", github: "#" }
   }
 ];
 
@@ -509,13 +522,13 @@ export default function Home() {
       { type: "wait", delay: 300 },
       { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Connecting developers...\n" },
       { type: "wait", delay: 300 },
-      { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Launching IGNITE 2026...\n" },
+      { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Launching AURAXIS 2026...\n" },
       { type: "wait", delay: 350 },
       { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Loading opportunities...\n" },
       { type: "wait", delay: 300 },
       { type: "print", text: "<span style='color:var(--accent-green)'>✔</span> Ready.\n\n" },
       { type: "wait", delay: 500 },
-      { type: "print", text: "+ devlinkhub-ignite@2026.1.0\nadded 142 packages, and audited 143 packages in 1.8s\n\n" },
+      { type: "print", text: "+ devlinkhub-auraxis@2026.1.0\nadded 142 packages, and audited 143 packages in 1.8s\n\n" },
       { type: "wait", delay: 1000 },
       { type: "type", text: "npm run dev" },
       { type: "wait", delay: 400 },
@@ -597,11 +610,11 @@ export default function Home() {
     }
 
     const steps = [
-      { type: "type", text: "./ignite2026.sh --info" },
+      { type: "type", text: "./auraxis2026.sh --info" },
       { type: "wait", delay: 500 },
-      { type: "print", text: "\n[STAGING] Loading DevLinkHub Ignite registry...\n" },
+      { type: "print", text: "\n[STAGING] Loading DevLinkHub Auraxis registry...\n" },
       { type: "wait", delay: 400 },
-      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Event: DevLinkHub Ignite 2026\n" },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Event: DevLinkHub Auraxis 2026\n" },
       { type: "wait", delay: 200 },
       { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Venue: Bhopal, Madhya Pradesh (TBA)\n" },
       { type: "wait", delay: 200 },
@@ -698,14 +711,14 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <span className="hero-eyebrow">&gt; ignite.launch_event() ✓</span>
+            <span className="hero-eyebrow">&gt; auraxis.launch_event() ✓</span>
             <h1 className="hero-headline">
               <span>BUILD.</span>
               <span>CONNECT.</span>
               <span>GROW.</span>
             </h1>
             <p className="hero-subtitle">
-              <strong>DEVLINKHUB IGNITE 2026</strong> is the first flagship developer launch event of DevLinkHub.
+              <strong>DEVLINKHUB AURAXIS 2026</strong> is the first flagship developer launch event of DevLinkHub.
               Join a thriving developer community in Bhopal for two days of hands-on learning, networking, and intense innovation.
             </p>
             <div className="hero-btns" style={{ marginTop: "1rem" }}>
@@ -809,7 +822,7 @@ export default function Home() {
                         <span className="pulsing-dot" style={{ background: "#27c93f", boxShadow: "none" }}></span>
                       </div>
                       <span className="mono" style={{ fontSize: "13px", fontWeight: 500, color: "var(--accent-cyan)" }}>
-                        /devlinkhub/ignite/info
+                        /devlinkhub/auraxis/info
                       </span>
                     </div>
 
@@ -914,7 +927,7 @@ export default function Home() {
           animate={{ x: "-50%" }}
           transition={{ duration: 35, ease: "linear", repeat: Infinity }}
         >
-          <div className="strip-item">&gt; ignite_2026.init()</div>
+          <div className="strip-item">&gt; auraxis_2026.init()</div>
           <div className="strip-separator">——</div>
           <div className="strip-item">&gt; Bhopal, MP hosting central india's builders</div>
           <div className="strip-separator">——</div>
@@ -922,14 +935,14 @@ export default function Home() {
           <div className="strip-separator">——</div>
           <div className="strip-item">&gt; Auraxis Hackathon Day 2</div>
           <div className="strip-separator">——</div>
-          <div className="strip-item">&gt; ignite_pass.price: ₹349</div>
+          <div className="strip-item">&gt; auraxis_pass.price: ₹349</div>
           <div className="strip-separator">——</div>
           <div className="strip-item">&gt; team_nodes: 1–4 members</div>
           <div className="strip-separator">——</div>
-          <div className="strip-item">&gt; git checkout -b ignite-2026 ✓</div>
+          <div className="strip-item">&gt; git checkout -b auraxis-2026 ✓</div>
           <div className="strip-separator">——</div>
           {/* Loop duplicates */}
-          <div className="strip-item">&gt; ignite_2026.init()</div>
+          <div className="strip-item">&gt; auraxis_2026.init()</div>
           <div className="strip-separator">——</div>
           <div className="strip-item">&gt; Bhopal, MP hosting central india's builders</div>
           <div className="strip-separator">——</div>
@@ -937,16 +950,16 @@ export default function Home() {
           <div className="strip-separator">——</div>
           <div className="strip-item">&gt; Auraxis Hackathon Day 2</div>
           <div className="strip-separator">——</div>
-          <div className="strip-item">&gt; ignite_pass.price: ₹349</div>
+          <div className="strip-item">&gt; auraxis_pass.price: ₹349</div>
           <div className="strip-separator">——</div>
           <div className="strip-item">&gt; team_nodes: 1–4 members</div>
           <div className="strip-separator">——</div>
-          <div className="strip-item">&gt; git checkout -b ignite-2026 ✓</div>
+          <div className="strip-item">&gt; git checkout -b auraxis-2026 ✓</div>
         </motion.div>
       </div>
 
-      {/* SECTION 2.5: ABOUT & WHY JOIN IGNITE 2026 */}
-      <section className="about-ignite-section" id="about" style={{ padding: "8rem 2rem", position: "relative", zIndex: 10 }}>
+      {/* SECTION 2.5: ABOUT & WHY JOIN AURAXIS 2026 */}
+      <section className="about-auraxis-section" id="about" style={{ padding: "8rem 2rem", position: "relative", zIndex: 10 }}>
         <div className="section-wrapper">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -954,7 +967,7 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="section-head-mono">&gt; ignite.initialize_overview()</span>
+            <span className="section-head-mono">&gt; auraxis.initialize_overview()</span>
             <h2 className="section-title-display">The Beginning of Something Bigger</h2>
           </motion.div>
 
@@ -966,13 +979,13 @@ export default function Home() {
               transition={{ duration: 0.6 }}
             >
               <h3 style={{ fontFamily: "var(--font-display)", fontSize: "2rem", marginBottom: "1.5rem", color: "var(--accent-cyan)" }}>
-                What is IGNITE 2026?
+                What is AURAXIS 2026?
               </h3>
               <p style={{ fontSize: "1.1rem", lineHeight: "1.8", color: "rgba(255,255,255,0.8)", marginBottom: "1.5rem" }}>
-                <strong>IGNITE 2026</strong> is the official flagship launch event of <strong>DevLinkHub</strong>.
+                <strong>AURAXIS 2026</strong> is the official flagship launch event of <strong>DevLinkHub</strong>.
               </p>
               <p style={{ fontSize: "1.05rem", lineHeight: "1.8", color: "var(--white-secondary)" }}>
-                For two exciting days, participants will learn, network, collaborate, and compete through carefully designed experiences focused on growth and innovation. Whether you're taking your first step into tech or already building projects, IGNITE 2026 is your opportunity to learn from industry experts, connect with ambitious builders, and experience the energy of a thriving developer community.
+                For two exciting days, participants will learn, network, collaborate, and compete through carefully designed experiences focused on growth and innovation. Whether you're taking your first step into tech or already building projects, AURAXIS 2026 is your opportunity to learn from industry experts, connect with ambitious builders, and experience the energy of a thriving developer community.
               </p>
             </motion.div>
 
@@ -1003,11 +1016,11 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Why Join IGNITE 2026 */}
+          {/* Why Join AURAXIS 2026 */}
           <div style={{ marginTop: "6rem" }}>
-            <span className="section-head-mono" style={{ color: "var(--accent-green)" }}>&gt; ignite.perks_and_value()</span>
+            <span className="section-head-mono" style={{ color: "var(--accent-green)" }}>&gt; auraxis.perks_and_value()</span>
             <h3 style={{ fontFamily: "var(--font-display)", fontSize: "2.5rem", fontWeight: "900", marginBottom: "3rem" }}>
-              Why Join IGNITE 2026?
+              Why Join AURAXIS 2026?
             </h3>
 
             <div className="perks-auto-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
@@ -1148,7 +1161,7 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="section-head-mono">&gt; ignite.tracks_mapping()</span>
+            <span className="section-head-mono">&gt; auraxis.tracks_mapping()</span>
             <h2 className="section-title-display">Hackathon Tracks</h2>
           </motion.div>
 
@@ -1181,7 +1194,7 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="section-head-mono">&gt; ignite.target_audience()</span>
+            <span className="section-head-mono">&gt; auraxis.target_audience()</span>
             <h2 className="section-title-display">Who Can Participate?</h2>
           </motion.div>
 
@@ -1234,7 +1247,7 @@ export default function Home() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className="section-head-mono">&gt; event.get_schedule()</span>
-            <h2 className="section-title-display">Ignite Event Journey</h2>
+            <h2 className="section-title-display">Auraxis Event Journey</h2>
           </motion.div>
 
           <div className="schedule-tabs-container">
@@ -1357,7 +1370,7 @@ export default function Home() {
                     className={plan.featured ? "btn-primary" : "btn-secondary"}
                     style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "none" }}
                   >
-                    {plan.key === "ignite_pass" ? "Register now ➔" : "Unlock Promo Benefits ➔"}
+                    {plan.key === "auraxis_pass" ? "Register now ➔" : "Unlock Promo Benefits ➔"}
                   </button>
                 </TiltGlassCard>
               </motion.div>
@@ -1752,7 +1765,7 @@ export default function Home() {
               {/* ── DETAILS SECTION ── */}
               <div className="org-modal-details">
                 {/* Event label */}
-                <div className="org-modal-event-label">DevLinkHub IGNITE 2026</div>
+                <div className="org-modal-event-label">DevLinkHub AURAXIS 2026</div>
 
                 {/* Name */}
                 <h3 className="org-modal-name">{selectedOrg.name}</h3>
@@ -1764,6 +1777,42 @@ export default function Home() {
 
                 {/* Divider */}
                 <div className="org-modal-divider" style={{ background: `linear-gradient(90deg, ${selectedOrg.badgeColor}, transparent)` }} />
+
+                {/* Social Links */}
+                {selectedOrg.socials && (
+                  <div className="org-modal-socials" style={{ marginBottom: "1.25rem", display: "flex", gap: "1rem" }}>
+                    {selectedOrg.socials.linkedin && selectedOrg.socials.linkedin !== "#" && (
+                      <a href={selectedOrg.socials.linkedin} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                        </svg>
+                      </a>
+                    )}
+                    {selectedOrg.socials.twitter && selectedOrg.socials.twitter !== "#" && (
+                      <a href={selectedOrg.socials.twitter} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                      </a>
+                    )}
+                    {selectedOrg.socials.instagram && selectedOrg.socials.instagram !== "#" && (
+                      <a href={selectedOrg.socials.instagram} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                      </a>
+                    )}
+                    {selectedOrg.socials.github && selectedOrg.socials.github !== "#" && (
+                      <a href={selectedOrg.socials.github} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                )}
 
                 {/* About */}
                 <div className="org-modal-section-label">About</div>
