@@ -25,7 +25,7 @@ interface Result {
 }
 
 /* ── Digital ticket canvas (Hidden, for Download only) ── */
-function generateTicket(result: Result, qrDataUrl: string, displayId: string) {
+async function generateTicket(result: Result, qrDataUrl: string, displayId: string) {
   const canvas = document.createElement("canvas");
   canvas.width = 1200; canvas.height = 600;
   const ctx = canvas.getContext("2d")!;
@@ -110,6 +110,8 @@ function generateTicket(result: Result, qrDataUrl: string, displayId: string) {
       memberIndex++;
     }
   });
+
+  const rx = 950; // X coordinate for QR code and smaller IDs
 
   if (qrDataUrl) {
     await new Promise<void>((resolve) => {

@@ -65,7 +65,7 @@ export default function PaymentFailed() {
   }, []);
 
   const handleRetry = () => {
-    navigate("/checkout");
+    navigate("/register");
   };
 
   if (!result) return null;
