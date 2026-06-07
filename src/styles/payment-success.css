@@ -232,6 +232,19 @@ body {
   letter-spacing: -0.5px;
 }
 
+.team-name-scrollable {
+  display: inline-block;
+  max-width: 8ch;
+  overflow-x: auto;
+  white-space: nowrap;
+  vertical-align: bottom;
+  scrollbar-width: none; /* Hide for Firefox */
+}
+
+.team-name-scrollable::-webkit-scrollbar {
+  display: none; /* Hide for Chrome/Safari/Blink */
+}
+
 /* BIGGER QR CODE WITH SCAN FRAME */
 .auraxis-qr-container {
   display: flex;
@@ -615,10 +628,6 @@ body {
     max-width: 440px;
   }
 
-  .auraxis-details-grid {
-    grid-template-columns: 1fr;
-  }
-
   .auraxis-actions-grid {
     flex-direction: column;
   }
@@ -628,50 +637,72 @@ body {
   }
 }
 
-@media (max-width: 480px) {
-  .ignite-layout {
-    padding: 24px 12px;
+@media (max-width: 768px) {
+  .auraxis-details-grid {
+    flex-direction: column;
   }
-  .ignite-pass-card {
-    padding: 28px 20px;
+
+  .auraxis-detail-card:not(:last-child)::after {
+    display: none;
   }
-  .ignite-pass-title {
-    font-size: 30px !important;
+
+  .auraxis-detail-card:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
-  .ignite-pass-details {
+
+  .auraxis-pass-card {
+    padding: 30px 24px;
+  }
+
+  .auraxis-pass-details {
     flex-direction: column !important;
     align-items: center !important;
-    gap: 28px !important;
+    gap: 24px !important;
     margin-bottom: 24px !important;
   }
-  .ignite-pass-col {
+
+  .auraxis-pass-col {
     align-items: center !important;
     text-align: center !important;
   }
-  .ignite-pass-item {
+  
+  .auraxis-pass-item {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .ignite-success-title {
-    font-size: 32px !important;
+}
+
+@media (max-width: 480px) {
+  .auraxis-layout {
+    padding: 24px 12px;
+  }
+  .auraxis-pass-card {
+    padding: 24px 16px;
+    width: 100%;
+  }
+  .auraxis-pass-title {
+    font-size: 28px !important;
+  }
+  .auraxis-heading {
+    font-size: 30px !important;
     line-height: 1.2 !important;
   }
-  .ignite-success-subtitle {
-    font-size: 16px !important;
+  .auraxis-subheading {
+    font-size: 15px !important;
   }
-  .ignite-social-grid {
+  .auraxis-social-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
   }
-  .ignite-social-card {
+  .auraxis-social-card {
     padding: 16px 10px !important;
   }
-  .ignite-social-card span {
+  .auraxis-social-card span {
     font-size: 11px !important;
   }
   .detail-value {
     white-space: normal !important;
-    word-break: break-all !important;
+    word-break: break-word !important;
   }
 }

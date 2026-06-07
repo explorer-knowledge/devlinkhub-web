@@ -5,6 +5,18 @@ export default function Footer() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isClosed, setIsClosed] = useState(() => {
+    const val = (window as any).__registrationSeats;
+    return val !== undefined && val <= 0;
+  });
+
+  useEffect(() => {
+    const handleUpdate = (e: any) => {
+      setIsClosed(e.detail <= 0);
+    };
+    window.addEventListener("registration-seats-update", handleUpdate);
+    return () => window.removeEventListener("registration-seats-update", handleUpdate);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -192,18 +204,24 @@ export default function Footer() {
         {/* Right Column: Premium Registration Card */}
         <div className="footer-col">
           <div className="footer-reg-card">
-            <div className="status-badge-premium">
-              <span className="status-dot-green" />
-              <span>Registrations Open</span>
+            <div className={`status-badge-premium ${isClosed ? "closed" : ""}`}>
+              <span className={`status-dot-green ${isClosed ? "red-dot" : ""}`} />
+              <span>{isClosed ? "Registration Closed" : "Registrations Open"}</span>
             </div>
             <h4 className="footer-reg-title">Ready to Build Something Amazing?</h4>
             <p className="footer-reg-desc">
               Join students, developers and innovators for an unforgettable hackathon experience.
             </p>
             <div className="footer-reg-actions">
-              <Link to="/register" className="footer-btn-primary" onClick={handleScrollToTop}>
-                Register Now
-              </Link>
+              {isClosed ? (
+                <span className="footer-btn-primary disabled" style={{ pointerEvents: "none", opacity: 0.6, cursor: "not-allowed", background: "rgba(255, 71, 87, 0.1)", border: "1px solid rgba(255, 71, 87, 0.2)", color: "#ff4757", textAlign: "center" }}>
+                  Closed ✖
+                </span>
+              ) : (
+                <Link to="/register" className="footer-btn-primary" onClick={handleScrollToTop}>
+                  Register Now
+                </Link>
+              )}
               <a href="#schedule" className="footer-btn-secondary" onClick={(e) => handleLinkClick(e, "#schedule")}>
                 View Schedule
               </a>

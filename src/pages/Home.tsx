@@ -399,6 +399,19 @@ export default function Home() {
   const [isTerminalSwapped, setIsTerminalSwapped] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<typeof organizers[0] | null>(null);
 
+  const [isClosed, setIsClosed] = useState(() => {
+    const val = (window as any).__registrationSeats;
+    return val !== undefined && val <= 0;
+  });
+
+  useEffect(() => {
+    const handleUpdate = (e: any) => {
+      setIsClosed(e.detail <= 0);
+    };
+    window.addEventListener("registration-seats-update", handleUpdate);
+    return () => window.removeEventListener("registration-seats-update", handleUpdate);
+  }, []);
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize, { passive: true });
@@ -618,7 +631,12 @@ export default function Home() {
       { type: "wait", delay: 200 },
       { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Venue: Bhopal, Madhya Pradesh (TBA)\n" },
       { type: "wait", delay: 200 },
-      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Status: REGISTRATION ACTIVE\n" },
+      {
+        type: "print",
+        text: isClosed
+          ? "<span style='color:var(--accent-cyan)'>[OK]</span> Status: <span style='color:#ff4757;font-weight:bold;'>REGISTRATION CLOSED</span>\n"
+          : "<span style='color:var(--accent-cyan)'>[OK]</span> Status: REGISTRATION ACTIVE\n"
+      },
       { type: "wait", delay: 200 },
       { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Modules: BuildX Workshop + Auraxis Hackathon\n" },
       { type: "wait", delay: 200 },
@@ -677,7 +695,7 @@ export default function Home() {
       alive = false;
       clearTimeout(timeoutId);
     };
-  }, [isTerminalSwapped]);
+  }, [isTerminalSwapped, isClosed]);
   // ── FIX: removed isMobile from deps — sequence doesn't change on resize ──
 
   /* --- 4. Global Escape key listener --- */
@@ -733,14 +751,12 @@ export default function Home() {
                 Explore Tracks &rarr;
               </a>
               <a
-                href="/register"
+                href="https://linktr.ee/DevLinkhub"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-secondary"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/register");
-                }}
               >
-                Register Now
+                Join DevLinkHub
               </a>
             </div>
             <div className="hero-date-grid">
@@ -842,16 +858,25 @@ export default function Home() {
                       {!hackathonCliDone && <span className="blinking-caret"></span>}
                     </div>
 
-                    {/* Terminal Footer */}
-                    <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: "var(--accent-green)", marginTop: "16px" }}>
-                      <span>// status: active</span>
-                      <span
-                        onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
-                        className="cyber-register-btn"
-                        style={{ padding: "8px 16px", fontSize: "14px", marginTop: 0, textDecoration: "none", color: "inherit", cursor: "pointer" }}
-                      >
-                        Register Spot <span style={{ fontSize: "18px", fontWeight: "bold", marginLeft: "6px" }}>⏎</span>
-                      </span>
+                     {/* Terminal Footer */}
+                    <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: isClosed ? "#ff4757" : "var(--accent-green)", marginTop: "16px" }}>
+                      <span>// status: {isClosed ? "closed" : "active"}</span>
+                      {isClosed ? (
+                        <span
+                          className="cyber-register-btn disabled"
+                          style={{ padding: "8px 16px", fontSize: "14px", marginTop: 0, textDecoration: "none", color: "#ff4757", cursor: "not-allowed", border: "1px solid rgba(255, 71, 87, 0.2)", opacity: 0.6 }}
+                        >
+                          Closed ✖
+                        </span>
+                      ) : (
+                        <span
+                          onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
+                          className="cyber-register-btn"
+                          style={{ padding: "8px 16px", fontSize: "14px", marginTop: 0, textDecoration: "none", color: "inherit", cursor: "pointer" }}
+                        >
+                          Register Spot <span style={{ fontSize: "18px", fontWeight: "bold", marginLeft: "6px" }}>⏎</span>
+                        </span>
+                      )}
                     </div>
                   </motion.div>
                 ) : (
@@ -1343,8 +1368,8 @@ export default function Home() {
               >
                 <TiltGlassCard
                   className={`pricing-card ${plan.featured ? "featured" : ""}`}
-                  onClick={() => navigate("/register")}
-                  style={{ cursor: "pointer" }}
+                  onClick={() => !isClosed && navigate("/register")}
+                  style={{ cursor: isClosed ? "default" : "pointer" }}
                 >
                   <span className="pricing-card-badge">{plan.badge}</span>
                   <h3 className="pricing-plan-title" style={{ marginTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
@@ -1362,16 +1387,25 @@ export default function Home() {
                     ))}
                   </ul>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate("/register");
-                    }}
-                    className={plan.featured ? "btn-primary" : "btn-secondary"}
-                    style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "none" }}
-                  >
-                    {plan.key === "auraxis_pass" ? "Register now ➔" : "Unlock Promo Benefits ➔"}
-                  </button>
+                  {isClosed ? (
+                    <button
+                      className="btn-secondary disabled"
+                      style={{ width: "100%", justifyContent: "center", pointerEvents: "none", opacity: 0.6, cursor: "not-allowed", background: "rgba(255, 71, 87, 0.1)", border: "1px solid rgba(255, 71, 87, 0.2)", color: "#ff4757" }}
+                    >
+                      Closed ✖
+                    </button>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate("/register");
+                      }}
+                      className={plan.featured ? "btn-primary" : "btn-secondary"}
+                      style={{ width: "100%", justifyContent: "center", cursor: "pointer", border: "none" }}
+                    >
+                      {plan.key === "auraxis_pass" ? "Register now ➔" : "Unlock Promo Benefits ➔"}
+                    </button>
+                  )}
                 </TiltGlassCard>
               </motion.div>
             ))}

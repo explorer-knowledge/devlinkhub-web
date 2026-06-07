@@ -265,7 +265,7 @@ export default function PaymentSuccess() {
               <div className="auraxis-pass-col">
                 <div className="auraxis-pass-item">
                   <span className="auraxis-label">Team</span>
-                  <span className="auraxis-value">{result.teamName || "FSF"}</span>
+                  <span className="auraxis-value team-name-scrollable">{result.teamName || "FSF"}</span>
                 </div>
                 <div className="auraxis-pass-item" style={{ marginTop: '24px' }}>
                   <span className="auraxis-label">Members</span>
@@ -340,13 +340,22 @@ export default function PaymentSuccess() {
                 <span className="detail-value">June 20 - 21, 2026</span>
               </div>
             </div>
-            <div className="auraxis-detail-card">
+            <a 
+              href="https://maps.app.goo.gl/XKyiEvVoLczP3wGA9?g_st=atm" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="auraxis-detail-card"
+              style={{ textDecoration: "none", cursor: "pointer" }}
+            >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
               <div className="detail-content">
                 <span className="detail-label">Venue</span>
-                <span className="detail-value">TBA</span>
+                <span className="detail-value" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  RNTU , MP
+                  <span style={{ fontSize: "11px", color: "#d946ef" }}>➔</span>
+                </span>
               </div>
-            </div>
+            </a>
             <div className="auraxis-detail-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               <div className="detail-content">

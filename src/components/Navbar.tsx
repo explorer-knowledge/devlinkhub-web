@@ -19,6 +19,19 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [isClosed, setIsClosed] = useState(() => {
+    const val = (window as any).__registrationSeats;
+    return val !== undefined && val <= 0;
+  });
+
+  useEffect(() => {
+    const handleUpdate = (e: any) => {
+      setIsClosed(e.detail <= 0);
+    };
+    window.addEventListener("registration-seats-update", handleUpdate);
+    return () => window.removeEventListener("registration-seats-update", handleUpdate);
+  }, []);
+
   // Scroll visibility & scrollspy active link highlighter
   useEffect(() => {
     if (location.pathname !== "/") {
@@ -129,13 +142,19 @@ export default function Navbar() {
         </ul>
 
         <div className="nav-right-actions">
-          <div className="badge-devs-online">
-            <span className="pulsing-dot"></span>
-            <span>Registrations Open</span>
+          <div className={`badge-devs-online ${isClosed ? "closed" : ""}`}>
+            <span className={`pulsing-dot ${isClosed ? "red-dot" : ""}`}></span>
+            <span>{isClosed ? "Registration Closed" : "Registrations Open"}</span>
           </div>
-          <Link to="/register" className="btn-primary" style={{ padding: "10px 24px" }}>
-            Register Now &rarr;
-          </Link>
+          {isClosed ? (
+            <span className="btn-primary disabled" style={{ padding: "10px 24px", pointerEvents: "none", opacity: 0.6, cursor: "not-allowed", background: "rgba(255, 71, 87, 0.1)", border: "1px solid rgba(255, 71, 87, 0.2)", color: "#ff4757" }}>
+              Closed ✖
+            </span>
+          ) : (
+            <Link to="/register" className="btn-primary" style={{ padding: "10px 24px" }}>
+              Register Now &rarr;
+            </Link>
+          )}
         </div>
 
         <button
@@ -220,13 +239,19 @@ export default function Navbar() {
 
                 {/* CTA Stack - Only Register Now */}
                 <div className="drawer-cta-stack">
-                  <Link
-                    to="/register"
-                    className="drawer-btn-primary"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Register Now &rarr;
-                  </Link>
+                  {isClosed ? (
+                    <span className="drawer-btn-primary disabled" style={{ pointerEvents: "none", opacity: 0.6, textAlign: "center", background: "rgba(255, 71, 87, 0.1)", border: "1px solid rgba(255, 71, 87, 0.2)", color: "#ff4757" }}>
+                      Closed ✖
+                    </span>
+                  ) : (
+                    <Link
+                      to="/register"
+                      className="drawer-btn-primary"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Register Now &rarr;
+                    </Link>
+                  )}
                 </div>
               </div>
             </motion.div>

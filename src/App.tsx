@@ -1,5 +1,6 @@
 import { useEffect, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BACKEND_URL } from "./services/api";
 import Lenis from "lenis";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -72,6 +73,25 @@ function MainLayout({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  // ── GLOBAL: Live count SSE dispatcher ──
+  useEffect(() => {
+    const source = new EventSource(`${BACKEND_URL}/live-count`);
+    source.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        const remaining = data.maxSeats - data.count;
+        (window as any).__registrationSeats = remaining;
+        window.dispatchEvent(new CustomEvent("registration-seats-update", { detail: remaining }));
+      } catch (err) {
+        console.error('SSE count parse error in App:', err);
+      }
+    };
+    source.onerror = () => {
+      console.warn("SSE disconnected in App. Reconnecting...");
+    };
+    return () => source.close();
+  }, []);
+
   // ── GLOBAL: Pause all CSS animations + RAF loops when tab is hidden ──
   // body.page-hidden triggers animation-play-state:paused on ALL elements (style.css)
   // This stops all 8 infinite CSS animations from consuming GPU on background tabs.
