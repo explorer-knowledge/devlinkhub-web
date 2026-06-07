@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 import "../styles/payment-success.css";
@@ -24,12 +24,18 @@ interface Result {
   email: string;
 }
 
+<<<<<<< HEAD
 /* ── Premium Digital Ticket Canvas (Hidden, for Download only) ── */
 async function generateTicket(result: Result, qrDataUrl: string, displayId: string): Promise<HTMLCanvasElement> {
+=======
+/* ── Digital ticket canvas (Hidden, for Download only) ── */
+function generateTicket(result: Result, qrDataUrl: string, displayId: string) {
+>>>>>>> origin/ranjan-frontend
   const canvas = document.createElement("canvas");
   canvas.width = 1200; canvas.height = 600;
   const ctx = canvas.getContext("2d")!;
   
+<<<<<<< HEAD
   // 1. Background
   ctx.fillStyle = "#080B12";
   ctx.fillRect(0, 0, 1200, 600);
@@ -127,6 +133,89 @@ async function generateTicket(result: Result, qrDataUrl: string, displayId: stri
   drawValue("✓ CONFIRMED", rx, 310, "#00E676", "18px");
 
   // QR Code
+=======
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, 1200, 800);
+  bg.addColorStop(0, "#010512"); bg.addColorStop(1, "#030A18");
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, 1200, 800);
+  
+  // Neon Cyberpunk accents
+  const accentGlow = ctx.createLinearGradient(0, 0, 1200, 0);
+  accentGlow.addColorStop(0, "#00f2fe");
+  accentGlow.addColorStop(0.5, "#6366f1");
+  accentGlow.addColorStop(1, "#d946ef");
+  ctx.fillStyle = accentGlow;
+  ctx.fillRect(0, 0, 1200, 8);
+
+  ctx.fillStyle = "#00f2fe"; ctx.font = "bold 90px Arial";
+  ctx.fillText("IGNITE PASS", 60, 180);
+  ctx.fillStyle = "rgba(255,255,255,0.5)"; ctx.font = "18px monospace";
+  ctx.fillText("REGISTRATION ID: " + displayId, 60, 260);
+
+  // Draw DevLink logo beside IGNITE PASS
+  const logoImg = document.getElementById("ignite-logo-img") as HTMLImageElement | null;
+  if (logoImg) {
+    ctx.font = "bold 90px Arial";
+    const titleWidth = ctx.measureText("IGNITE PASS").width;
+    ctx.drawImage(logoImg, 60 + titleWidth + 40, 95, 100, 100);
+  }
+
+  // Draw Details
+  // Column 1: Team & Leader Details
+  ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.font = "uppercase bold 16px Arial";
+  ctx.fillText("TEAM NAME", 60, 360);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 36px Arial";
+  ctx.fillText(result.teamName || "FSF", 60, 410);
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.font = "uppercase bold 16px Arial";
+  ctx.fillText("TEAM LEADER", 60, 480);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 32px Arial";
+  ctx.fillText(result.leaderName, 60, 530);
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.font = "uppercase bold 16px Arial";
+  ctx.fillText("COLLEGE", 60, 600);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 28px Arial";
+  ctx.fillText(result.collegeName || "N/A", 60, 650);
+
+  // Column 2 vertical separator line
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(430, 340);
+  ctx.lineTo(430, 680);
+  ctx.stroke();
+
+  // Column 2: Members List
+  const totalMembers = (result.members?.filter(m => m.name.trim()).length || 0) + 1;
+  ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.font = "uppercase bold 16px Arial";
+  ctx.fillText(`TOTAL MEMBERS: ${totalMembers}`, 480, 360);
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.font = "uppercase bold 16px Arial";
+  ctx.fillText("TEAM MEMBERS", 480, 420);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "22px Arial";
+  let memberY = 470;
+  ctx.fillText(`1. ${result.leaderName} (Leader)`, 480, memberY);
+  
+  let memberIndex = 2;
+  result.members?.forEach(m => {
+    if (m.name.trim()) {
+      memberY += 45;
+      ctx.fillText(`${memberIndex}. ${m.name}`, 480, memberY);
+      memberIndex++;
+    }
+  });
+
+>>>>>>> origin/ranjan-frontend
   if (qrDataUrl) {
     await new Promise<void>((resolve) => {
       const qrImg = new Image();
@@ -159,6 +248,12 @@ export default function PaymentSuccess() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [displayId, setDisplayId] = useState<string>("");
   const [copied, setCopied] = useState(false);
+
+  // Hologram 3D Tilt
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useTransform(y, [-100, 100], [10, -10]);
+  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
 
   useEffect(() => {
     const raw = localStorage.getItem("devlinkhub_payment_result");
@@ -201,6 +296,17 @@ export default function PaymentSuccess() {
 
   const totalMembers = (result.members?.filter(m => m.name.trim()).length || 0) + 1;
 
+
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    x.set(event.clientX - rect.left - rect.width / 2);
+    y.set(event.clientY - rect.top - rect.height / 2);
+  };
+  const handleMouseLeave = () => {
+    x.set(0); y.set(0);
+  };
+
   return (
     <div className="ignite-layout">
       {/* Background Ambience */}
@@ -214,14 +320,41 @@ export default function PaymentSuccess() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          style={{ perspective: 1200 }}
         >
-          <div className="ignite-pass-card">
-            <div className="ignite-pass-header">
-              <span className="ignite-vip-badge">VIP ACCESS</span>
-              <span className="ignite-year-badge">2026</span>
+          {/* Animated liquid smoke container behind the pass */}
+          <div className="smoke-orb-container">
+            <div className="smoke-orb orb-blue-1"></div>
+            <div className="smoke-orb orb-pink-1"></div>
+            <div className="smoke-orb orb-blue-2"></div>
+            <div className="smoke-orb orb-pink-2"></div>
+          </div>
+
+          <motion.div 
+            className="ignite-pass-card"
+            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "28px", textAlign: "center" }}>
+              <img src="/static/logos/DevLink_Text_Logo-white.png" alt="DevLink Logo" style={{ height: "36px", width: "auto", objectFit: "contain", marginBottom: "12px" }} />
+              <div style={{ 
+                fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)", 
+                fontSize: "14px", 
+                letterSpacing: "4px", 
+                color: "#00f2fe", 
+                textTransform: "uppercase", 
+                fontWeight: 600,
+                opacity: 0.8
+              }}>
+                BUILD • CONNECT • GROW
+              </div>
             </div>
-            
-            <h1 className="ignite-pass-title">IGNITE<br/>PASS</h1>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "36px" }}>
+              <h1 className="ignite-pass-title" style={{ margin: 0 }}>IGNITE PASS</h1>
+              {/* Hidden logo for canvas download generation */}
+              <img id="ignite-logo-img" src="/static/logos/DevLink_icon_Logo.png" alt="DevLink Logo" style={{ display: "none" }} />
+            </div>
             
             <div className="ignite-pass-details">
               <div className="ignite-pass-col">
@@ -264,7 +397,7 @@ export default function PaymentSuccess() {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* RIGHT SIDE: Success Experience */}
