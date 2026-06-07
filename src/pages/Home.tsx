@@ -293,6 +293,7 @@ const organizers = [
     name: "Akshat Agrawal",
     role: "Technical Lead",
     init: "AA",
+    image: "/static/tech-lead.jpg",
     bio: "Leads the technical vision of DevLinkHub — architecting platforms, guiding technical decisions, and mentoring developers within the community.",
     badge: "TECH",
     badgeColor: "var(--accent-pink)",

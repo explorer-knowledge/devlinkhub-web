@@ -3,7 +3,7 @@
  * In a real application, these functions would perform fetch/axios calls to your backend.
  */
 
-export const BACKEND_URL = `https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon`;
+export const BACKEND_URL = `https://api.devlinkhub.in/api/hackathon`;
 
 export interface RegisterPayload {
   teamName: string;
@@ -111,6 +111,7 @@ export const API = {
       data = await response.json();
     } catch (e) {
       const text = await response.text().catch(() => "");
+      console.error("Response parsing failed. Raw response:", text);
       throw new Error("Failed to parse backend response. It might be an ngrok page or server error.");
     }
 
