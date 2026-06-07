@@ -6,23 +6,63 @@
   <!-- Homepage — highest priority -->
   <url>
     <loc>https://event.devlinkhub.in/</loc>
-    <lastmod>2026-06-05</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://event.devlinkhub.in/"/>
+    
+    <!-- Main Event Logo -->
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/logos/DevLink_Vertical_Logo-white.png</image:loc>
       <image:title>DevLinkHub IGNITE 2026 — Community Hackathon</image:title>
-      <image:caption>DevLinkHub IGNITE 2026 — Community Hackathon &amp; Developer Workshop, Central India, 20–21 September 2026</image:caption>
+      <image:caption>DevLinkHub IGNITE 2026 — Community Hackathon &amp; Developer Workshop, Central India, 20–21 June 2026</image:caption>
+    </image:image>
+
+    <!-- Organizers & Leads -->
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/founder-image.svg</image:loc>
+      <image:title>Pawan Kushwaha - Founder &amp; Community Head</image:title>
+      <image:caption>Visionary behind DevLinkHub</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/operation-head.jpeg</image:loc>
+      <image:title>Prince Kumar - Operations Head</image:title>
+      <image:caption>Drives the operational backbone of DevLinkHub IGNITE</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/community-realations-head.png</image:loc>
+      <image:title>Ayush Kumar - Community Relations Head</image:title>
+      <image:caption>Bridges the gap between the community and the event</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/community-manager.jpg</image:loc>
+      <image:title>Kartik Raj - Community Manager</image:title>
+      <image:caption>Keeps the community active and engaged</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/management-lead.jpeg</image:loc>
+      <image:title>Nilesh Verma - Management Lead</image:title>
+      <image:caption>Oversees planning and project management</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/co-tech-lead.jpg</image:loc>
+      <image:title>Ranjan Kumar Singh - Technical Co-Lead</image:title>
+      <image:caption>Co-leads the technical engineering efforts</image:caption>
     </image:image>
   </url>
 
   <!-- Registration page -->
   <url>
     <loc>https://event.devlinkhub.in/register</loc>
-    <lastmod>2026-06-05</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://event.devlinkhub.in/register"/>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/logos/DevLink_Vertical_Logo-white.png</image:loc>
+      <image:title>Register for DevLinkHub IGNITE 2026</image:title>
+      <image:caption>Join the Central India Community Hackathon</image:caption>
+    </image:image>
   </url>
 
 </urlset>
