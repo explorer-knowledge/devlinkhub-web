@@ -223,7 +223,7 @@ const faqs = [
   { q: "Can I participate alone?", a: "Yes. Solo participation is allowed, and we support solo builders looking to form cohorts." },
   { q: "Can I create a team later?", a: "No. Teams must be finalized during registration. Once a team is registered, members cannot be added, removed, or replaced." },
   { q: "What is the team size?", a: "Teams can consist of 1 to 4 members. The pass covers the entire team." },
-  { q: "When will the venue be announced?", a: "The venue details will be shared soon through official DevLinkHub channels and via email." },
+  { q: "Where is the event venue?", a: "The event will be held at RNTU University, Bhopal, Madhya Pradesh. You can view the location on Google Maps here: https://maps.app.goo.gl/XKyiEvVoLczP3wGA9." },
   { q: "When will prizes be announced?", a: "Prize pool details and challenge themes will be revealed during the kickoff on Day 2." }
 ];
 
@@ -254,7 +254,12 @@ const organizers = [
     badge: "OPERATIONS",
     badgeColor: "var(--accent-green)",
     skills: ["Logistics", "Team Coordination", "Project Planning", "Execution"],
-    socials: { linkedin: "#", twitter: "#", github: "#" }
+    socials: { 
+      linkedin: "https://www.linkedin.com/in/princekumar-aiml/", 
+      twitter: "#", 
+      github: "#",
+      instagram: "https://www.instagram.com/prince_kushwaha9349" 
+    }
   },
   {
     name: "Ayush Kumar",
@@ -265,7 +270,12 @@ const organizers = [
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
     skills: ["Outreach", "Partnership Building", "Communication", "Brand Relations"],
-    socials: { linkedin: "#", twitter: "#", github: "#" }
+    socials: { 
+      linkedin: "https://www.linkedin.com/in/ayush-kumar13?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app", 
+      twitter: "#", 
+      github: "https://github.com/aayush1323",
+      instagram: "https://www.instagram.com/aayush__1613?igsh=cHAyeDI2MjA1MDcz" 
+    }
   },
   {
     name: "Kartik Raj",
@@ -276,10 +286,15 @@ const organizers = [
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
     skills: ["Engagement", "Content Strategy", "Community Growth", "Moderation"],
-    socials: { linkedin: "#", twitter: "#", github: "#" }
+    socials: { 
+      linkedin: "https://www.linkedin.com/in/kartik-raj-619a58307?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app", 
+      twitter: "#", 
+      github: "#",
+      instagram: "https://www.instagram.com/the__kartik_?igsh=MXJodmViNWMzNjR0ZQ==" 
+    }
   },
   {
-    name: "Nilesh Verma",
+    name: "Nilesh Patel",
     role: "Management Lead",
     init: "NI",
     image: "/static/management-lead.jpeg",
@@ -287,7 +302,12 @@ const organizers = [
     badge: "MANAGEMENT",
     badgeColor: "var(--accent-orange)",
     skills: ["Project Management", "Strategic Planning", "Resource Allocation", "Risk Management"],
-    socials: { linkedin: "#", twitter: "#", github: "#" }
+    socials: { 
+      linkedin: "#", 
+      twitter: "#", 
+      github: "https://github.com/Nilesh6251",
+      instagram: "https://www.instagram.com/_nileshpatel07?igsh=MXBjY2diN3JhNnJhNQ==" 
+    }
   },
   {
     name: "Akshat Agrawal",
@@ -298,7 +318,13 @@ const organizers = [
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
     skills: ["Full Stack Dev", "System Architecture", "API Design", "Mentorship", "Cloud"],
-    socials: { linkedin: "#", twitter: "#", github: "#" }
+    socials: { 
+      linkedin: "https://www.linkedin.com/in/akshat-agrawal-520171398/", 
+      twitter: "#", 
+      github: "https://github.com/explorer-knowledge",
+      instagram: "https://www.instagram.com/akshatt_101/",
+      telegram: "https://t.me/TheOnly_no"
+    }
   },
   {
     name: "Ranjan Kumar Singh",
@@ -309,7 +335,13 @@ const organizers = [
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
     skills: ["Frontend Dev", "React", "TypeScript", "UI Engineering", "Performance"],
-    socials: { linkedin: "#", twitter: "#", github: "#" }
+    socials: { 
+      linkedin: "https://www.linkedin.com/in/ranjan-kumar-singh-aa1822336/", 
+      twitter: "#", 
+      github: "https://github.com/kumarranjankr06-spec",
+      instagram: "https://www.instagram.com/ranjankumarkr0066/",
+      telegram: "https://t.me/ranjan436454"
+    }
   }
 ];
 
@@ -629,7 +661,7 @@ export default function Home() {
       { type: "wait", delay: 400 },
       { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Event: DevLinkHub Auraxis 2026\n" },
       { type: "wait", delay: 200 },
-      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Venue: Bhopal, Madhya Pradesh (TBA)\n" },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Venue: RNTU University , Bhopal, Madhya Pradesh\n" },
       { type: "wait", delay: 200 },
       {
         type: "print",
@@ -750,14 +782,25 @@ export default function Home() {
               >
                 Explore Tracks &rarr;
               </a>
-              <a
-                href="https://linktr.ee/DevLinkhub"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary"
-              >
-                Join DevLinkHub
-              </a>
+              {isClosed ? (
+                <span
+                  className="btn-secondary disabled"
+                  style={{ pointerEvents: "none", opacity: 0.6, cursor: "not-allowed", background: "rgba(255, 71, 87, 0.1)", border: "1px solid rgba(255, 71, 87, 0.2)", color: "#ff4757" }}
+                >
+                  Closed ✖
+                </span>
+              ) : (
+                <a
+                  href="/register"
+                  className="btn-secondary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("/register");
+                  }}
+                >
+                  Register Now
+                </a>
+              )}
             </div>
             <div className="hero-date-grid">
               <div>
@@ -786,11 +829,19 @@ export default function Home() {
                 <span>Open for Students &amp; Developers</span>
               </div>
               <div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                <span>Venue To Be Announced Soon</span>
+                <a
+                  href="https://maps.app.goo.gl/XKyiEvVoLczP3wGA9?g_st=atm"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "inherit", textDecoration: "none", cursor: "pointer" }}
+                  className="hero-venue-link"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span style={{ borderBottom: "1px dashed rgba(255, 255, 255, 0.4)" }}>RNTU University , Bhopal, Madhya Pradesh</span>
+                </a>
               </div>
             </div>
           </motion.div>
@@ -869,13 +920,16 @@ export default function Home() {
                           Closed ✖
                         </span>
                       ) : (
-                        <span
-                          onClick={(e) => { e.stopPropagation(); navigate("/register"); }}
+                        <a
+                          href="https://linktr.ee/DevLinkhub"
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="cyber-register-btn"
                           style={{ padding: "8px 16px", fontSize: "14px", marginTop: 0, textDecoration: "none", color: "inherit", cursor: "pointer" }}
                         >
-                          Register Spot <span style={{ fontSize: "18px", fontWeight: "bold", marginLeft: "6px" }}>⏎</span>
-                        </span>
+                          Join DevLinkHub <span style={{ fontSize: "18px", fontWeight: "bold", marginLeft: "6px" }}>⏎</span>
+                        </a>
                       )}
                     </div>
                   </motion.div>
@@ -1641,14 +1695,22 @@ export default function Home() {
                   <span style={{ color: "var(--accent-green)" }}>GROW.</span>
                 </div>
                 <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center", width: "100%" }}>
-                  <a
-                    href="https://discord.gg/cXFCaPsePs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn-primary"
-                  >
-                    Join DevLinkHub Discord
-                  </a>
+                  {isClosed ? (
+                    <span
+                      className="btn-primary disabled"
+                      style={{ pointerEvents: "none", opacity: 0.6, cursor: "not-allowed", background: "rgba(255, 71, 87, 0.1)", border: "1px solid rgba(255, 71, 87, 0.2)", color: "#ff4757" }}
+                    >
+                      Closed ✖
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => navigate("/register")}
+                      className="btn-primary"
+                      style={{ border: "none", cursor: "pointer" }}
+                    >
+                      Register Now
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -1845,37 +1907,20 @@ export default function Home() {
                         </svg>
                       </a>
                     )}
+                    {selectedOrg.socials.telegram && selectedOrg.socials.telegram !== "#" && (
+                      <a href={selectedOrg.socials.telegram} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="22" y1="2" x2="11" y2="13"></line>
+                          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                      </a>
+                    )}
                   </div>
                 )}
 
                 {/* About */}
                 <div className="org-modal-section-label">About</div>
                 <p className="org-modal-bio">{selectedOrg.bio}</p>
-
-                {/* Expertise chips */}
-                {selectedOrg.skills && selectedOrg.skills.length > 0 && (
-                  <>
-                    <div className="org-modal-section-label" style={{ marginTop: "1.25rem" }}>Expertise</div>
-                    <div className="org-modal-chips">
-                      {selectedOrg.skills.map((skill, si) => (
-                        <motion.span
-                          key={skill}
-                          className="org-modal-chip"
-                          style={{
-                            borderColor: `${selectedOrg.badgeColor}40`,
-                            color: selectedOrg.badgeColor,
-                            boxShadow: `0 0 10px ${selectedOrg.badgeColor}20`
-                          }}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.12 + si * 0.06, type: "spring", stiffness: 360, damping: 22 }}
-                        >
-                          {skill}
-                        </motion.span>
-                      ))}
-                    </div>
-                  </>
-                )}
               </div>
             </motion.div>
             </div>
