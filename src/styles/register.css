@@ -1,5 +1,5 @@
 /* ============================================================
-   DevLinkHub Ignite 2026 — Premium Registration Page CSS
+   DevLinkHub Auraxis 2026 — Premium Registration Page CSS
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
@@ -879,14 +879,14 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 300;
-  background: rgba(8,5,22,0.95);
-  border: 1px solid rgba(0,242,254,0.25);
+  background: rgba(220, 38, 38, 0.95); /* Bright red background for errors */
+  border: 1px solid rgba(255, 100, 100, 0.5);
   border-radius: 50px;
   padding: 12px 24px;
   font-size: 13px;
   color: #fff;
-  font-weight: 500;
-  box-shadow: 0 0 30px rgba(0,242,254,0.15);
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
   white-space: nowrap;
   backdrop-filter: blur(20px);
 }
@@ -1127,6 +1127,21 @@ body {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+  }
+
+  /* Toast Notification */
+  .rg-toast {
+    top: 16px;
+    bottom: auto;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    transform: none;
+    border-radius: 16px;
+    padding: 16px;
+    white-space: normal;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(255,80,80,0.2);
   }
 }
 
