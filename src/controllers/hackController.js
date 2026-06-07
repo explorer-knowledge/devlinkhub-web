@@ -80,7 +80,7 @@ async function initiatePayment(req, res) {
       })),
     };
 
-    await redis.setex(redisKey, 600, JSON.stringify(payload));
+    await redis.setex(redisKey, 3600, JSON.stringify(payload));
 
     console.log(`[Hackathon] Pending registration stored for order ${order.id} | team: ${teamName}`);
 
