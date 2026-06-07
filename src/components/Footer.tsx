@@ -43,7 +43,7 @@ export default function Footer() {
       <div className="footer-border-gradient" />
       <div className="footer-glow-violet" />
       <div className="footer-glow-cyan" />
-      <div className="footer-watermark">IGNITE 2K26</div>
+      <div className="footer-watermark">AURAXIS 2K26</div>
 
       {/* Floating high-tech particles */}
       <div className="footer-particle" style={{ left: "12%", animation: "floatParticleUp 10s infinite linear", animationDelay: "0s" }} />
@@ -63,7 +63,7 @@ export default function Footer() {
           </Link>
           <div className="footer-tagline-mono">Build • Connect • Grow</div>
           <p className="footer-brand-desc">
-            IGNITE 2K26 is a developer-focused hackathon bringing together students, builders, designers and innovators for collaboration, learning and creation.
+            AURAXIS 2K26 is a developer-focused hackathon bringing together students, builders, designers and innovators for collaboration, learning and creation.
           </p>
           <div className="footer-social-row">
             {/* Instagram */}
@@ -218,7 +218,7 @@ export default function Footer() {
           © 2026 DevLinkHub. All Rights Reserved.
         </div>
         <div className="footer-bottom-center">
-          IGNITE 2K26
+          AURAXIS 2K26
         </div>
         <div className="footer-bottom-right">
           BUILD • CONNECT • GROW

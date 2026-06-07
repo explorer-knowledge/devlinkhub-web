@@ -676,7 +676,7 @@ export default function Register() {
           key: res.keyId,
           amount: res.amount,
           currency: "INR",
-          name: "DevLinkHub Ignite 2026",
+          name: "DevLinkHub Auraxis 2026",
           description: "Hackathon Registration",
           order_id: res.orderId,
           timeout: 300,
@@ -736,8 +736,9 @@ export default function Register() {
         });
         rzp.open();
       }
-    } catch (e) {
-      triggerToast("Error initiating payment. Please try again.");
+    } catch (e: any) {
+      const errorMsg = e instanceof Error ? e.message : (e?.message || "Error initiating payment. Please try again.");
+      triggerToast(errorMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -753,14 +754,14 @@ export default function Register() {
     const g = ctx.createLinearGradient(0, 0, 800, 400);
     g.addColorStop(0, "#04020d"); g.addColorStop(1, "#0a0618");
     ctx.fillStyle = g; ctx.fillRect(0, 0, 800, 400);
-    ctx.fillStyle = "#00f2fe"; ctx.font = "bold 28px sans-serif"; ctx.fillText("DEVLINKHUB IGNITE 2026", 40, 60);
+    ctx.fillStyle = "#00f2fe"; ctx.font = "bold 28px sans-serif"; ctx.fillText("DEVLINKHUB AURAXIS 2026", 40, 60);
     ctx.fillStyle = "#fff"; ctx.font = "18px sans-serif";
     ctx.fillText(`Team: ${teamName}`, 40, 110);
     ctx.fillText(`Leader: ${leader.name}`, 40, 140);
     ctx.fillText(`ID: ${registrationId}`, 40, 170);
     ctx.fillStyle = "#8b5cf6"; ctx.font = "bold 16px sans-serif"; ctx.fillText("CONFIRMED ✓", 40, 210);
     const url = c.toDataURL("image/png");
-    const a = document.createElement("a"); a.href = url; a.download = `IGNITE-${teamName}.png`; a.click();
+    const a = document.createElement("a"); a.href = url; a.download = `AURAXIS-${teamName}.png`; a.click();
   };
 
   const formatTime = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
@@ -780,7 +781,7 @@ export default function Register() {
         </button>
         <div className="rg-nav-center">
           <span className="rg-nav-tag" style={{ display: "inline-flex", alignItems: "center" }}>
-            {renderZapIcon(14, { marginRight: "6px" })} IGNITE 2026
+            {renderZapIcon(14, { marginRight: "6px" })} AURAXIS 2026
           </span>
         </div>
         <div className="rg-nav-right">
@@ -809,9 +810,9 @@ export default function Register() {
               <aside className="rg-left">
                 <div className="rg-left-card">
                   <div className="rg-left-badge" style={{ display: "inline-flex", alignItems: "center" }}>
-                    {renderZapIcon(12, { marginRight: "4px" })} ignite.details
+                    {renderZapIcon(12, { marginRight: "4px" })} auraxis.details
                   </div>
-                  <h2 className="rg-left-title">DEVLINKHUB<br /><span>IGNITE 2026</span></h2>
+                  <h2 className="rg-left-title">DEVLINKHUB<br /><span>AURAXIS 2026</span></h2>
                   <p className="rg-left-tagline">Build. Connect. Grow.</p>
 
                   {/* Seat counter */}
@@ -888,9 +889,9 @@ export default function Register() {
 
                 {/* Header */}
                 <div className="rg-center-header">
-                  <div className="rg-ch-tag">&gt; ignite.enrollment()</div>
+                  <div className="rg-ch-tag">&gt; auraxis.enrollment()</div>
                   <h1 className="rg-ch-title">Team Registration</h1>
-                  <p className="rg-ch-sub">Secure your spot at DevLinkHub Ignite 2026</p>
+                  <p className="rg-ch-sub">Secure your spot at DevLinkHub Auraxis 2026</p>
                 </div>
 
                 {/* Progress bar */}
@@ -1305,7 +1306,7 @@ export default function Register() {
                   <div className="rg-pc-top">
                     <div>
                       <div className="rg-pc-badge">BEST VALUE</div>
-                      <div className="rg-pc-name">IGNITE PASS</div>
+                      <div className="rg-pc-name">AURAXIS PASS</div>
                       <div className="rg-pc-sub">Workshop + Hackathon Access</div>
                     </div>
                     <div className="rg-pc-price">
@@ -1387,7 +1388,7 @@ export default function Register() {
                     <span className="rg-co-logo" style={{ display: "inline-flex", alignItems: "center" }}>{renderZapIcon(16)}</span>
                     <div>
                       <div className="rg-co-name">DEVLINKHUB</div>
-                      <div className="rg-co-event">IGNITE 2026</div>
+                      <div className="rg-co-event">AURAXIS 2026</div>
                     </div>
                   </div>
                   <div className="rg-co-right" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -1482,7 +1483,7 @@ export default function Register() {
                   </svg>
                   Registration Confirmed!
                 </h2>
-                <p className="rg-success-sub">Welcome to DEVLINKHUB IGNITE 2026</p>
+                <p className="rg-success-sub">Welcome to DEVLINKHUB AURAXIS 2026</p>
 
                 <div className="rg-success-details">
                   <div className="rg-sd-row"><span>Registration ID</span><strong className="rg-sd-id">{registrationId}</strong></div>
@@ -1561,7 +1562,7 @@ export default function Register() {
                 <span className="rg-fm-sep">——</span>
                 <span>&gt; team_slots: limited</span>
                 <span className="rg-fm-sep">——</span>
-                <span>&gt; ignite_2026.date: 20-21 June</span>
+                <span>&gt; auraxis_2026.date: 20-21 June</span>
                 <span className="rg-fm-sep">——</span>
                 <span>&gt; secure_connection: established ✓</span>
                 <span className="rg-fm-sep">——</span>
