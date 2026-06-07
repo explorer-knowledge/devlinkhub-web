@@ -1,4 +1,5 @@
 const prisma = require('../db/prismaClient');
+const redis = require('../db/redisClient');
 const {addEmailtoCache} = require('./emailLoadService');
 const {addPhonetoCache} = require('./phoneLoadService');
 
@@ -27,6 +28,16 @@ function getOrderData(orderId){
 
 function getOrderCount(){
     return orderMap.size;
+}
+
+async function loadRedisTeamCounter(){
+  await redis.set('team_counter',getOrderCount());
+  return console.log("Success load Team Counter");
+}
+
+async function loadRedisPromoCounter(){
+  await redis.set('promo_counter', getPromoCodeUseCount());
+  return console.log("Success load Promo Counter");
 }
 
 function addOrderIdtoCache(payload,number=0){
@@ -62,4 +73,4 @@ function getPromoCodeUseCount() {
   return count;
 }
 
-module.exports  = {loadOrderId,orderIdExists,getOrderData,addOrderIdtoCache,getOrderCount,getPromoCodeUseCount};
+module.exports  = {loadOrderId,orderIdExists,getOrderData,loadRedisTeamCounter,loadRedisPromoCounter,addOrderIdtoCache,getOrderCount};
