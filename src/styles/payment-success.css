@@ -562,3 +562,51 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 480px) {
+  .ignite-layout {
+    padding: 24px 12px;
+  }
+  .ignite-pass-card {
+    padding: 28px 20px;
+  }
+  .ignite-pass-title {
+    font-size: 30px !important;
+  }
+  .ignite-pass-details {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 28px !important;
+    margin-bottom: 24px !important;
+  }
+  .ignite-pass-col {
+    align-items: center !important;
+    text-align: center !important;
+  }
+  .ignite-pass-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .ignite-success-title {
+    font-size: 32px !important;
+    line-height: 1.2 !important;
+  }
+  .ignite-success-subtitle {
+    font-size: 16px !important;
+  }
+  .ignite-social-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .ignite-social-card {
+    padding: 16px 10px !important;
+  }
+  .ignite-social-card span {
+    font-size: 11px !important;
+  }
+  .detail-value {
+    white-space: normal !important;
+    word-break: break-all !important;
+  }
+}

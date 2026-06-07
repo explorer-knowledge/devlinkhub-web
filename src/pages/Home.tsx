@@ -1191,7 +1191,7 @@ export default function Home() {
               { role: "Developers", icon: "developers", desc: "Software engineers, backend, frontend, and fullstack builders." },
               { role: "Designers", icon: "designers", desc: "UI/UX designers creating intuitive and premium interfaces." },
               { role: "AI Enthusiasts", icon: "ai", desc: "Builders leveraging models, embeddings, and cognitive pipelines." },
-              { role: "Beginners & Pros", icon: "beginners", desc: "Both first-time hackathon attendees and seasoned developers." }
+              { role: "Beginners & Pros", icon: "beginners", desc: "Both first-time hackathon attendees and developers." }
             ].map((item, idx) => (
               <motion.div 
                 key={item.role}
