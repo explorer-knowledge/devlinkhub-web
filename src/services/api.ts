@@ -30,6 +30,7 @@ export interface OrderResponse {
   paymentSessionId?: string;
   amount: number;
   keyId?: string;
+  environment?: 'production' | 'sandbox';
 }
 
 
@@ -127,7 +128,7 @@ export const API = {
 
     console.log("✅ BACKEND SUCCESS RESPONSE:", data);
 
-    return { success: true, orderId: data.orderId, paymentSessionId: data.paymentSessionId, amount: data.amount, keyId: data.keyId };
+    return { success: true, orderId: data.orderId, paymentSessionId: data.paymentSessionId, amount: data.amount, keyId: data.keyId, environment: data.environment };
   },
 
 

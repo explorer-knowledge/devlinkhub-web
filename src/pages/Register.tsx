@@ -666,7 +666,7 @@ export default function Register() {
     try {
       const res = await API.createOrder(payload);
       if (res.success) {
-        const cashfree = await load({ mode: 'sandbox' });
+        const cashfree = await load({ mode: res.environment || 'sandbox' });
         const checkoutOptions = {
           paymentSessionId: res.paymentSessionId || '',
           redirectTarget: "_modal" as const,
