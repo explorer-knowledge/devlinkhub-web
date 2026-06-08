@@ -39,8 +39,8 @@ async function sendWithRetry(fn, retries = 3, delayMs = 2000) {
                     data: data.payload.participants.map(participant => ({
                         teamId:            data.payload.teamId,
                         teamName:          data.payload.teamName,
-                        razorpayOrderId:   data.payload.razorpayOrderId,
-                        razorpayPaymentId: data.payload.razorpayPaymentId,
+                        cashfreeOrderId:   data.payload.cashfreeOrderId,
+                        cashfreePaymentId: data.payload.cashfreePaymentId,
                         amountPaid:        data.payload.amountPaid,
                         status:            data.payload.status,
                         isLeader:          participant.isLeader,
@@ -54,13 +54,13 @@ async function sendWithRetry(fn, retries = 3, delayMs = 2000) {
 
                 await tx.webhookEvent.create({
                     data: {
-                        razorpayEventId: data.webhook_event.razorpayEventId,
-                        event:           data.webhook_event.event,
+                        cashfreePaymentId: data.webhook_event.cashfreePaymentId,
+                        event:             data.webhook_event.event,
                     },
                 });
             });
 
-            console.log(`[redisToDb] Successfully saved order ${data.payload.razorpayOrderId}`);
+            console.log(`[redisToDb] Successfully saved order ${data.payload.cashfreeOrderId}`);
 
             // 2. Send confirmation email to leader — outside transaction so DB commit is safe
             const leader = data.payload.participants.find(p => p.isLeader);

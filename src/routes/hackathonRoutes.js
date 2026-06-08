@@ -21,8 +21,8 @@ const router = Router();
 
 // ─── IMPORTANT: Webhook must use express.raw() NOT express.json() ─────────────
 //
-// Razorpay sends the raw body. We must compute HMAC-SHA256(rawBody, webhookSecret)
-// and compare it to the x-razorpay-signature header.
+// Cashfree sends the raw body. We must compute HMAC-SHA256(timestamp+rawBody, secretKey)
+// and compare it to the x-webhook-signature header.
 // express.json() would parse the body first and destroy the raw bytes needed for signing.
 //
 // This route is registered BEFORE the global express.json() middleware in index.js
@@ -38,7 +38,7 @@ router.post(
 // ─── Standard JSON routes ─────────────────────────────────────────────────────
 
 // POST /api/hackathon/initiate
-// Step 1 — validate all details + create Razorpay order + save PendingRegistration
+// Step 1 — validate all details + create Cashfree order + save PendingRegistration
 router.post('/initiate', initiateLimiter, initiatePayment);
 
 // GET  /api/hackathon/status/:orderId

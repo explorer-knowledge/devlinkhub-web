@@ -4,11 +4,11 @@ let eventSet = new Set();
 
 async function loadEventId(){
     const events = await prisma.webhookEvent.findMany({
-        select: {razorpayEventId: true}
+        select: { cashfreePaymentId: true }
     });
 
-    for(const event of events){
-        eventSet.add(event.razorpayEventId.trim());
+    for (const event of events) {
+        eventSet.add(event.cashfreePaymentId.trim());
     }
 }
 

@@ -32,7 +32,7 @@ app.use(globalLimiter); // ─── Global rate limit: 120 req/min per IP ─�
 // request. Any direct hit to the raw .onrender.com URL (bypassing Cloudflare)
 // will be missing this header and gets a 403.
 //
-// ⚠️  EXEMPT /api/hackathon/webhook — Razorpay calls Render directly, not through
+// ⚠️  EXEMPT /api/hackathon/webhook — Cashfree calls Render directly, not through
 //     Cloudflare, so it will never carry the CF secret header.
 //
 // Set CF_SECRET in both:
@@ -41,7 +41,7 @@ app.use(globalLimiter); // ─── Global rate limit: 120 req/min per IP ─�
 app.use((req, res, next) => {
   if (process.env.NODE_ENV !== 'production') return next();
   if (req.path === '/api/hackathon/webhook') return next();
-  if (req.path === '/health') return next(); // Razorpay bypasses CF
+  if (req.path === '/health') return next(); // Cashfree/other bypasses CF
   if (req.headers['x-origin'] !== process.env.CF_SECRET) {
     return res.status(403).json({ error: 'Forbidden' });
   }
@@ -53,8 +53,8 @@ app.use((req, res, next) => {
 // ⚠️  ORDER MATTERS — THIS IS CRITICAL FOR THE WEBHOOK:
 //
 // The webhook route (/api/hackathon/webhook) MUST receive the raw Buffer body
-// so that HMAC-SHA256(rawBody, webhookSecret) can be computed and verified against
-// the x-razorpay-signature header.
+// so that HMAC-SHA256(timestamp+rawBody, secretKey) can be computed and verified
+// against the x-webhook-signature header.
 //
 // express.json() applied globally WILL consume the body first, even if a route-level
 // express.raw() is also registered — the global middleware wins because it runs first.
@@ -113,8 +113,8 @@ async function start() {
     console.log(`\n⚡ DevLink Hackathon Backend running on http://localhost:${PORT}`);
     console.log(`\n   Routes:`);
     console.log(`   GET  /health`);
-    console.log(`   POST /api/hackathon/initiate        → validate + create Razorpay order + save pending`);
-    console.log(`   POST /api/hackathon/webhook         → Razorpay event → verify sig → save to DB`);
+    console.log(`   POST /api/hackathon/initiate        → validate + create Cashfree order + save pending`);
+    console.log(`   POST /api/hackathon/webhook         → Cashfree event → verify sig → save to DB`);
     console.log(`   GET  /api/hackathon/status/:orderId → poll registration status`);
   });
   require('./services/redisToDb');

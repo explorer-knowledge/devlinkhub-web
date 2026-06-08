@@ -8,12 +8,12 @@ let orderMap = new Map();
 async function loadOrderId() {
   const leaderRow = await prisma.hackathonParticipant.findMany({
     where: { isLeader: true },
-    select: { razorpayOrderId: true, teamId: true, teamName: true, name: true, email: true, phone: true, status: true, amountPaid: true, createdAt: true },
+    select: { cashfreeOrderId: true, teamId: true, teamName: true, name: true, email: true, phone: true, status: true, amountPaid: true, createdAt: true },
   });
   orderMap.clear();
 
   for (const leader of leaderRow) {
-    orderMap.set(leader.razorpayOrderId.trim(), leader);
+    orderMap.set(leader.cashfreeOrderId.trim(), leader);
   }
 }
 
@@ -49,7 +49,7 @@ function addOrderIdtoCache(payload, number = 0) {
   });
   const leaderRow = payload.participants.find(p => p.isLeader);
   const memCache = {
-    razorpayOrderId: payload.razorpayOrderId,
+    cashfreeOrderId: payload.cashfreeOrderId,
     teamId: payload.teamId,
     teamName: payload.teamName,
     name: leaderRow.name,
@@ -58,8 +58,8 @@ function addOrderIdtoCache(payload, number = 0) {
     status: payload.status,
     amountPaid: payload.amountPaid,
     createdAt: payload.createdAt
-  }
-  const normalized = memCache.razorpayOrderId.trim();
+  };
+  const normalized = memCache.cashfreeOrderId.trim();
   orderMap.set(normalized, memCache);
 
   return [true, memCache, payload][number] ?? true;

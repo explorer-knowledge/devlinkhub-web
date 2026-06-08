@@ -56,7 +56,7 @@ const statusLimiter = makeRedisLimiter({
 });
 
 // POST /api/hackathon/webhook
-// Called only by Razorpay servers; real security is HMAC verification
+// Called only by Cashfree servers; real security is HMAC verification
 const webhookLimiter = makeRedisLimiter({
   windowMs: 30 * 1000,
   max: 30,
