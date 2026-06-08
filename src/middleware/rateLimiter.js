@@ -41,7 +41,7 @@ function makeRedisLimiter({ windowMs, max, keyPrefix, message }) {
 // A real user registers once — 5 attempts per 15 min is generous for retries
 const initiateLimiter = makeRedisLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 7,
+  max: 700,
   keyPrefix: 'rl:initiate:',
   message: 'Too many registration attempts. Please wait 15 minutes and try again.',
 });
@@ -50,7 +50,7 @@ const initiateLimiter = makeRedisLimiter({
 // Frontend polls every ~3s for ~90s after payment = ~30 requests; 40 gives headroom
 const statusLimiter = makeRedisLimiter({
   windowMs: 5 * 60 * 1000,
-  max: 40,
+  max: 4000,
   keyPrefix: 'rl:status:',
   message: 'Too many status checks. Please slow down.',
 });
@@ -59,7 +59,7 @@ const statusLimiter = makeRedisLimiter({
 // Called only by Cashfree servers; real security is HMAC verification
 const webhookLimiter = makeRedisLimiter({
   windowMs: 30 * 1000,
-  max: 30,
+  max: 3000,
   keyPrefix: 'rl:webhook:',
   message: 'Too many webhook requests.',
 });
@@ -68,7 +68,7 @@ const webhookLimiter = makeRedisLimiter({
 // Public-facing counter — polled by the UI; keep generous but bounded
 const liveCountLimiter = makeRedisLimiter({
   windowMs: 2 * 60 * 1000,
-  max: 60,
+  max: 6000,
   keyPrefix: 'rl:livecount:',
   message: 'Too many requests.',
 });
@@ -77,7 +77,7 @@ const liveCountLimiter = makeRedisLimiter({
 // Frontend polls this to validate promo codes; strict limit to prevent brute-forcing
 const promoLimiter = makeRedisLimiter({
   windowMs: 5 * 60 * 1000,
-  max: 5,
+  max: 500,
   keyPrefix: 'rl:promo:',
   message: 'Too many promo code attempts. Please wait a minute and try again.',
 });
@@ -85,7 +85,7 @@ const promoLimiter = makeRedisLimiter({
 // Applied globally in index.js — hard ceiling for every route
 const globalLimiter = makeRedisLimiter({
   windowMs: 5 * 60 * 1000,
-  max: 140,
+  max: 14000,
   keyPrefix: 'rl:global:',
   message: 'Too many requests. Please slow down.',
 });
