@@ -1,5 +1,10 @@
-# DevLinkHub IGNITE 2026 — robots.txt
+# DevLinkHub AURAXIS 2026 — robots.txt
 # https://event.devlinkhub.in/
+#
+# Keywords: DevLinkHub, DevLinkHub AURAXIS 2026, AURAXIS 2026 Hackathon, Central India Hackathon, 
+# Bhopal Hackathon, Madhya Pradesh Hackathon, Developer Community India, Student Hackathon 2026, 
+# BuildX Workshop, Open Source Community, Tech Event India, Coding Competition Central India, 
+# Pawan Kushwaha DevLinkHub, Programming Contest, Web3 Hackathon, AI Hackathon India
 
 # Allow all crawlers including AI bots
 User-agent: *
