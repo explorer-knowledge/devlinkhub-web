@@ -1,16 +1,18 @@
 'use strict';
 
-// cashfree-pg exposes environment constants via the named export CFEnvironment,
-// NOT as a static property on the Cashfree class (Cashfree.Environment is undefined).
+// cashfree-pg v6: PGCreateOrder and all PG methods are INSTANCE methods.
+// Instantiate with (environment, clientId, secretKey) and export the instance.
 const { Cashfree, CFEnvironment } = require('cashfree-pg');
 
 // ─── Cashfree PG Client Singleton ────────────────────────────────────────────
 
-Cashfree.XClientId     = process.env.CASHFREE_APP_ID;
-Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY;
-Cashfree.XEnvironment  =
+const cashfree = new Cashfree(
   process.env.NODE_ENV === 'production'
     ? CFEnvironment.PRODUCTION
-    : CFEnvironment.SANDBOX;
+    : CFEnvironment.SANDBOX,
+  process.env.CASHFREE_APP_ID,
+  process.env.CASHFREE_SECRET_KEY,
+);
 
-module.exports = Cashfree;
+module.exports = cashfree;
+

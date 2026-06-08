@@ -1,6 +1,6 @@
 'use strict';
 const redis = require('../db/redisClient');
-const Cashfree = require('../config/cashfree');
+const cashfree = require('../config/cashfree');
 const crypto = require('crypto');
 const { validateRegistrationBody } = require('../config/validation');
 const { orderIdExists, getOrderData, addOrderIdtoCache } = require('../services/orderIdService');
@@ -68,7 +68,7 @@ async function initiatePayment(req, res) {
       order_note: teamName,
     };
 
-    const cfResponse = await Cashfree.PGCreateOrder('2023-08-01', orderRequest);
+    const cfResponse = await cashfree.PGCreateOrder(orderRequest);
     const order = cfResponse.data;
 
     // Store pending registration in Redis (TTL: 1 hour)
