@@ -4,71 +4,152 @@
    ============================================================ */
 
 /* ── GLOBAL IMAGE & MEDIA SAFETY (all sizes) ── */
-img, video, canvas, svg, iframe {
+img,
+video,
+canvas,
+svg,
+iframe {
   max-width: 100%;
+}
+
+/* ── NUCLEAR OVERFLOW GUARD — prevents ANY element from creating horizontal scroll ── */
+html,
+body {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
 }
 
 /* ── 1024px: Tablet ── */
 @media (max-width: 1024px) {
-  .hero-inner-grid { grid-template-columns: 1fr; text-align: center; gap: 2.5rem; }
-  .hero-text-block { align-items: center; }
-  .hero-subtitle { margin-left: auto; margin-right: auto; max-width: 100%; }
-  .hero-visual-block { height: auto; min-height: 380px; }
-  .hero-btns { justify-content: center; flex-wrap: wrap; }
-
-  .bento-pillars-grid { grid-template-columns: 1fr; }
-  .pillar-card--large { grid-row: span 1; }
-
-  .stats-asym-strip { grid-template-columns: 1fr 1fr; gap: 2rem; }
-  .stat-glass-box:nth-child(n) { transform: translateY(0); }
-
-  .events-asym-grid { grid-template-columns: 1fr; }
-  .event-glass-card--featured { grid-row: span 1; }
-
-  .resource-tiles-grid { grid-template-columns: 1fr 1fr; }
-  .resource-tile-card.depth-under { transform: scale(1); opacity: 1; }
-
-  .community-bento-grid { grid-template-columns: 1fr 1fr; }
-  .comm-bento-card--full { grid-column: span 2; }
-
-  .footer-inner-cols { 
-    grid-template-columns: 1fr 1fr !important; 
-    gap: 3rem !important; 
+  .hero-inner-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2.5rem;
   }
-  .footer-inner-cols > div:first-child {
+
+  .hero-text-block {
+    align-items: center;
+  }
+
+  .hero-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+  }
+
+  .hero-visual-block {
+    height: auto;
+    min-height: 380px;
+  }
+
+  .hero-btns {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .bento-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pillar-card--large {
+    grid-row: span 1;
+  }
+
+  .stats-asym-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .stat-glass-box:nth-child(n) {
+    transform: translateY(0);
+  }
+
+  .events-asym-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-glass-card--featured {
+    grid-row: span 1;
+  }
+
+  .resource-tiles-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .resource-tile-card.depth-under {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .community-bento-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .comm-bento-card--full {
+    grid-column: span 2;
+  }
+
+  .footer-inner-cols {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 3rem !important;
+  }
+
+  .footer-inner-cols>div:first-child {
     grid-column: span 2 !important;
   }
-  .footer-inner-cols > div:last-child {
+
+  .footer-inner-cols>div:last-child {
     grid-column: span 2 !important;
   }
-  .schedule-timeline { max-width: 100%; }
-  .pricing-grid { grid-template-columns: 1fr 1fr; max-width: 100%; }
-  .tracks-grid { grid-template-columns: 1fr 1fr; }
-  .organizer-grid { grid-template-columns: 1fr 1fr; }
+
+  .schedule-timeline {
+    max-width: 100%;
+  }
+
+  .pricing-grid {
+    grid-template-columns: 1fr 1fr;
+    max-width: 100%;
+  }
+
+  .tracks-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .organizer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 
   /* Disable heavy background elements and animations on tablets */
-  .ambient-blob, .hero-particles-bg, .hero-water-bg {
+  .ambient-blob,
+  .hero-particles-bg,
+  .hero-water-bg {
     display: none !important;
   }
 }
 
 /* ── 768px: Core Mobile Breakpoint ── */
 @media (max-width: 768px) {
+
   /* === GLOBAL SCROLL & PERFORMANCE === */
   /* === GLOBAL SCROLL FIX ===
      KEY: overflow:hidden on BOTH html AND body kills scroll entirely.
      Rule: only set overflow on body, never html. */
   html {
-    overflow: visible !important;   /* html must stay visible so body can scroll */
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
     max-width: 100% !important;
     width: 100% !important;
   }
+
   body {
-    overflow-x: clip !important;    /* clip prevents horizontal scroll without killing vertical */
-    overflow-y: auto !important;    /* body is the scroll container on mobile */
+    overflow-x: clip !important;
+    /* clip prevents horizontal scroll without killing vertical */
+    overflow-y: auto !important;
+    /* body is the scroll container on mobile */
     max-width: 100% !important;
     width: 100% !important;
-    height: auto !important;        /* never lock body to a fixed height */
+    height: auto !important;
+    /* never lock body to a fixed height */
   }
 
   /* Kill GPU-intensive CSS effects — but NOT animation-play-state on * 
@@ -89,30 +170,53 @@ img, video, canvas, svg, iframe {
   }
 
   /* Only pause decorative CSS animations, NOT JS-driven motion */
-  .ambient-blob, .noise-overlay, .dot-pattern,
-  .scroll-chevron, .pulsing-dot,
-  .event-glass-card--featured, .boot-pbar-fill {
+  .ambient-blob,
+  .noise-overlay,
+  .dot-pattern,
+  .scroll-chevron,
+  .pulsing-dot,
+  .event-glass-card--featured,
+  .boot-pbar-fill {
     animation-play-state: paused !important;
   }
 
   /* GPU layer for smooth scrolling of main content */
-  section, .glass-card, .event-glass-card, .track-card {
+  section,
+  .glass-card,
+  .event-glass-card,
+  .track-card {
     transform: translateZ(0);
   }
 
   /* Hide all expensive decorative elements */
-  .blob-cyan, .blob-violet, .blob-pink, .blob-green,
-  .noise-overlay, .dot-pattern,
-  .resources-water-canvas, .hero-water-bg, .hero-particles-bg,
-  .live-strip-wrap, .hero-scroll-indicator,
-  .persistent-terminal {
+  .blob-cyan,
+  .blob-violet,
+  .blob-pink,
+  .blob-green,
+  .noise-overlay,
+  .dot-pattern,
+  .resources-water-canvas,
+  .hero-water-bg,
+  .hero-particles-bg,
+  .live-strip-wrap,
+  .hero-scroll-indicator,
+  .persistent-terminal,
+  .pipeline-section {
     display: none !important;
   }
 
   /* === PREVENT HORIZONTAL OVERFLOW — NAMED CONTAINERS ONLY === */
-  .section-wrapper, .hero-inner-grid, .bento-pillars-grid, .events-asym-grid,
-  .resource-tiles-grid, .community-bento-grid, .pricing-grid, .tracks-grid,
-  .organizer-grid, .stats-asym-strip, .footer-inner-cols {
+  .section-wrapper,
+  .hero-inner-grid,
+  .bento-pillars-grid,
+  .events-asym-grid,
+  .resource-tiles-grid,
+  .community-bento-grid,
+  .pricing-grid,
+  .tracks-grid,
+  .organizer-grid,
+  .stats-asym-strip,
+  .footer-inner-cols {
     max-width: 100% !important;
     overflow-x: clip !important;
   }
@@ -120,10 +224,19 @@ img, video, canvas, svg, iframe {
   /* === SECTIONS: FULL HEIGHT, NO INTERNAL SCROLL === */
   /* Every section shows ALL its content. Page scrolls. Nothing clips. */
   section,
-  .hero-wrapper, .pillars-section, .stats-section, .events-section,
-  .resources-section, .community-section, .boot-cta-section,
-  .schedule-section, .pricing-section, .tracks-section,
-  .faq-section, .organizers-section, .about-auraxis-section,
+  .hero-wrapper,
+  .pillars-section,
+  .stats-section,
+  .events-section,
+  .resources-section,
+  .community-section,
+  .boot-cta-section,
+  .schedule-section,
+  .pricing-section,
+  .tracks-section,
+  .faq-section,
+  .organizers-section,
+  .about-auraxis-section,
   footer.frosted-footer-bar {
     height: auto !important;
     min-height: auto !important;
@@ -134,43 +247,107 @@ img, video, canvas, svg, iframe {
   /* === INLINE GRID OVERRIDES (Home.tsx uses inline gridTemplateColumns) === */
   /* These grids have inline styles that force 2-col on mobile; override them */
   .about-2col-grid {
-    grid-template-columns: 1fr !important;   /* stack the about section */
+    grid-template-columns: 1fr !important;
+    /* stack the about section */
     gap: 2rem !important;
   }
+
   .perks-auto-grid {
-    grid-template-columns: 1fr !important;   /* force single column for perks */
+    grid-template-columns: 1fr !important;
+    /* force single column for perks */
   }
 
   /* Exceptions for full-screen overlays */
-  .mobile-drawer { max-width: 360px !important; }
-  .modal-overlay { max-width: 100% !important; }
-
-  /* === NAVBAR === */
-  nav.frosted-navbar {
-    top: 0 !important;
-    left: 0 !important;
-    transform: none !important;
-    width: 100% !important;
-    height: 64px !important;
-    padding: 0 20px !important;
-    border-radius: 0 !important;
-    background: #050816 !important;
-    border: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: none !important;
+  .mobile-drawer {
+    max-width: 360px !important;
   }
-  .navbar-links { display: none !important; }
-  .nav-right-actions .btn-primary { display: none !important; }
-  .badge-devs-online { display: none !important; }
+
+  .modal-overlay {
+    max-width: 100% !important;
+  }
+
+  /* === NAVBAR — floating glassmorphism pill === */
+  nav.frosted-navbar {
+    top: 10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 24px) !important;
+    max-width: 420px !important;
+    height: auto !important;
+    padding: 10px 16px !important;
+    border-radius: 50px !important;
+    /* Premium glassmorphism — allow on mobile since it's just one fixed element */
+    background: rgba(4, 2, 18, 0.72) !important;
+    backdrop-filter: blur(16px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+    border: 1px solid rgba(0, 242, 254, 0.18) !important;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.45),
+      0 0 0 1px rgba(255, 255, 255, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+  }
+
+  nav.frosted-navbar.scrolled {
+    top: 6px !important;
+    background: rgba(4, 2, 18, 0.88) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border-color: rgba(0, 242, 254, 0.28) !important;
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.55),
+      0 0 20px rgba(0, 242, 254, 0.06) !important;
+  }
+
+  .navbar-links {
+    display: none !important;
+  }
+
+  .nav-right-actions {
+    display: none !important;
+  }
+
+  .badge-devs-online {
+    display: none !important;
+  }
+
+  /* Hide hamburger — mobile shows inline links instead */
   .hamburger-btn {
+    display: none !important;
+  }
+
+  /* Mobile logo — smaller */
+  .navbar-logo {
+    height: 22px !important;
+    width: auto !important;
+  }
+
+  /* Mobile inline nav links — Tracks / Schedule / FAQ */
+  .mobile-nav-links {
     display: flex !important;
-    flex-direction: column !important;
-    gap: 4px !important;
-    padding: 8px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
     align-items: center !important;
-    justify-content: center !important;
+    gap: 4px !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .mobile-nav-links li a {
+    display: inline-block !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    text-decoration: none !important;
+    padding: 5px 8px !important;
+    border-radius: 8px !important;
+    letter-spacing: 0.02em !important;
+    transition: color 0.2s, background 0.2s !important;
+    white-space: nowrap !important;
+  }
+
+  .mobile-nav-links li a.active,
+  .mobile-nav-links li a:active {
+    color: rgba(0, 242, 254, 1) !important;
+    background: rgba(0, 242, 254, 0.08) !important;
   }
 
   /* Mobile Navigation Drawer styles are managed in style.css to support premium glassmorphism. */
@@ -178,20 +355,27 @@ img, video, canvas, svg, iframe {
   /* === HERO SECTION === */
   .hero-wrapper {
     min-height: auto !important;
-    padding: 6rem 1.25rem 3rem !important;
+    padding: 7rem 1.25rem 3rem !important;
+    /* extra top padding for floating navbar */
   }
+
   .hero-inner-grid {
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
     text-align: center !important;
   }
-  .hero-text-block { align-items: center !important; }
+
+  .hero-text-block {
+    align-items: center !important;
+  }
+
   .hero-headline {
     font-size: clamp(2.1rem, 9.5vw, 3rem) !important;
     line-height: 1.06 !important;
     letter-spacing: -0.03em !important;
   }
+
   .hero-subtitle {
     font-size: 0.95rem !important;
     max-width: 100% !important;
@@ -199,6 +383,7 @@ img, video, canvas, svg, iframe {
     margin-right: auto !important;
     margin-bottom: 2rem !important;
   }
+
   .hero-btns {
     display: flex !important;
     flex-direction: column !important;
@@ -206,10 +391,12 @@ img, video, canvas, svg, iframe {
     gap: 12px !important;
     width: 100% !important;
   }
-  .hero-btns > * {
+
+  .hero-btns>* {
     width: 100% !important;
     justify-content: center !important;
   }
+
   .hero-date-grid {
     grid-template-columns: 1fr !important;
     text-align: center !important;
@@ -220,25 +407,58 @@ img, video, canvas, svg, iframe {
     display: grid !important;
     gap: 16px !important;
   }
-  .hero-date-grid > div,
-  .hero-date-grid > a {
+
+  .hero-date-grid>div,
+  .hero-date-grid>a {
     max-width: 100% !important;
     word-break: break-word !important;
     text-align: left !important;
   }
-  .hero-visual-block { height: auto !important; min-height: 380px !important; width: 100% !important; margin-top: 1.5rem !important; }
-  .hero-visual-card { transform: none !important; height: auto !important; min-height: 350px !important; }
+
+  .hero-visual-block {
+    height: auto !important;
+    min-height: 380px !important;
+    width: 100% !important;
+    margin-top: 1.5rem !important;
+  }
+
+  .hero-visual-card {
+    transform: none !important;
+    height: auto !important;
+    min-height: 350px !important;
+  }
+
+  /* === CYBER REGISTER BUTTON — full width on mobile === */
+  .cyber-register-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
 
   /* === SECTIONS: Universal Padding === */
-  .pillars-section, .stats-section, .events-section,
-  .resources-section, .community-section, .boot-cta-section,
-  .schedule-section, .pricing-section, .tracks-section,
-  .faq-section, .organizers-section {
+  .pillars-section,
+  .stats-section,
+  .events-section,
+  .resources-section,
+  .community-section,
+  .boot-cta-section,
+  .schedule-section,
+  .pricing-section,
+  .tracks-section,
+  .faq-section,
+  .organizers-section {
     padding: 3rem 1.25rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
-  .section-wrapper { width: 100% !important; padding: 0 !important; max-width: 100% !important; }
+
+  .section-wrapper {
+    width: 100% !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
   .section-title-display {
     font-size: clamp(1.75rem, 7vw, 2.4rem) !important;
     margin-bottom: 2rem !important;
@@ -253,67 +473,296 @@ img, video, canvas, svg, iframe {
   .footer-inner-cols,
   .pricing-grid,
   .tracks-grid,
-  .organizer-grid,
   .stats-asym-strip {
     display: grid !important;
     grid-template-columns: 1fr !important;
     width: 100% !important;
     gap: 1rem !important;
   }
-  .bento-pillars-grid > *,
-  .events-asym-grid > *,
-  .resource-tiles-grid > *,
-  .community-bento-grid > *,
-  .footer-inner-cols > *,
-  .pricing-grid > *,
-  .tracks-grid > *,
-  .organizer-grid > *,
-  .stats-asym-strip > * {
+
+  .bento-pillars-grid>*,
+  .events-asym-grid>*,
+  .resource-tiles-grid>*,
+  .community-bento-grid>*,
+  .footer-inner-cols>*,
+  .pricing-grid>*,
+  .tracks-grid>*,
+  .stats-asym-strip>* {
     min-width: 0 !important;
   }
-  .comm-bento-card--full { grid-column: span 1 !important; }
-  .pillar-card--large { grid-row: span 1 !important; }
+
+  .comm-bento-card--full {
+    grid-column: span 1 !important;
+  }
+
+  .pillar-card--large {
+    grid-row: span 1 !important;
+  }
+
   .event-glass-card--featured {
     grid-row: span 1 !important;
     animation: none !important;
     border-color: rgba(0, 245, 255, 0.2) !important;
   }
-  .stat-glass-box:nth-child(n) { transform: translateY(0) !important; }
 
-  /* === CARD SIZING & STYLING === */
-  .glass-card, .event-glass-card, .pillar-card, .track-card, .organizer-card,
-  .resource-tile-card, .stat-glass-box, .pricing-card {
+  .stat-glass-box:nth-child(n) {
+    transform: translateY(0) !important;
+  }
+
+  /* === ORGANIZER GRID — single column, full width cards === */
+  .organizer-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Reset all the fixed column-span placements */
+  .organizer-grid>div:nth-child(1),
+  .organizer-grid>div:nth-child(2),
+  .organizer-grid>div:nth-child(3),
+  .organizer-grid>div:nth-child(4),
+  .organizer-grid>div:nth-child(5),
+  .organizer-grid>div:nth-child(6),
+  .organizer-grid>div:nth-child(7) {
+    grid-column: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Card: horizontal row layout */
+  .organizer-card {
+    width: 100% !important;
+    padding: 1rem 1.25rem !important;
+    flex-direction: row !important;
+    text-align: left !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    /* Accent left border instead of full glow */
+    border-left: 3px solid rgba(0, 242, 254, 0.7) !important;
+    border-top: 1px solid rgba(0, 242, 254, 0.15) !important;
+    border-right: 1px solid rgba(0, 242, 254, 0.08) !important;
+    border-bottom: 1px solid rgba(0, 242, 254, 0.08) !important;
+  }
+
+  /* Avatar: fixed size, never shrinks */
+  .organizer-avatar,
+  .organizer-avatar-placeholder {
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    flex-shrink: 0 !important;
+    font-size: 1.2rem !important;
+  }
+
+  /* Info block: fills all remaining space */
+  .organizer-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.2rem !important;
+    overflow: hidden !important;
+  }
+
+  /* Name: single line, truncate only if extremely long */
+  .organizer-name {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+  }
+
+  /* Role: can wrap to 2nd line but shows completely */
+  .organizer-role {
+    font-size: 10px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    color: rgba(0, 242, 254, 0.75) !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  /* View hint: hide text, show only → arrow on the far right */
+  .organizer-view-hint {
+    flex-shrink: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    font-size: 1.1rem !important;
+    color: rgba(0, 242, 254, 0.6) !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .hint-text {
+    display: none !important;
+    /* hide "View Profile" text on mobile */
+  }
+
+  .hint-arrow {
+    display: inline !important;
+    font-size: 1.1rem !important;
+    color: rgba(0, 242, 254, 0.7) !important;
+  }
+
+  /* === FOOTER REG CARD ACTIONS — stack buttons on mobile === */
+  .footer-reg-actions {
+    grid-template-columns: 1fr !important;
+    gap: 0.6rem !important;
+  }
+
+  /* === CARD SIZING & STYLING — ALWAYS FILLED ON MOBILE (no hover on touch) === */
+  .glass-card,
+  .event-glass-card,
+  .pillar-card,
+  .track-card,
+  .organizer-card,
+  .resource-tile-card,
+  .stat-glass-box,
+  .pricing-card {
     width: 100% !important;
     box-sizing: border-box !important;
     border-radius: 14px !important;
-    background: rgba(13, 10, 30, 0.75) !important;
-    border: 1px solid rgba(255,255,255,0.07) !important;
+    /* Always show the "hover" filled state since touch has no hover */
+    background: rgba(13, 10, 30, 0.9) !important;
+    border: 1px solid rgba(0, 242, 254, 0.3) !important;
   }
-  .pillar-card { padding: 1.75rem !important; min-height: auto !important; }
-  .track-card { padding: 1.5rem !important; min-height: auto !important; }
-  .event-glass-card { padding: 1.5rem !important; min-height: auto !important; }
-  .stat-glass-box { padding: 1.75rem 1.25rem !important; }
-  .pricing-card { padding: 2rem 1.5rem !important; }
-  .organizer-card { padding: 1.75rem 1rem !important; }
-  .resource-tile-card { padding: 1.5rem !important; min-height: auto !important; }
-  .comm-card-inner { padding: 1.5rem !important; }
+
+  /* Track cards — show their colored glow permanently */
+  .tracks-grid>div:nth-child(1) .track-card {
+    border-color: rgba(139, 92, 246, 0.4) !important;
+  }
+
+  .tracks-grid>div:nth-child(2) .track-card {
+    border-color: rgba(0, 242, 254, 0.4) !important;
+  }
+
+  .tracks-grid>div:nth-child(3) .track-card {
+    border-color: rgba(0, 255, 135, 0.4) !important;
+  }
+
+  .tracks-grid>div:nth-child(4) .track-card {
+    border-color: rgba(244, 114, 182, 0.4) !important;
+  }
+
+  .tracks-grid>div:nth-child(5) .track-card {
+    border-color: rgba(255, 126, 95, 0.4) !important;
+  }
+
+  .tracks-grid>div:nth-child(6) .track-card {
+    border-color: rgba(0, 242, 254, 0.4) !important;
+  }
+
+  /* Organizer view hint — always visible on mobile */
+  .organizer-view-hint {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  /* Spotlight glow — always on */
+  .spotlight-glow {
+    opacity: 1 !important;
+  }
+
+  /* Pricing featured card */
+  .pricing-card.featured {
+    border-color: rgba(255, 0, 127, 0.5) !important;
+  }
+
+  .pillar-card {
+    padding: 1.75rem !important;
+    min-height: auto !important;
+  }
+
+  .track-card {
+    padding: 1.5rem !important;
+    min-height: auto !important;
+  }
+
+  .event-glass-card {
+    padding: 1.5rem !important;
+    min-height: auto !important;
+  }
+
+  .stat-glass-box {
+    padding: 1.75rem 1.25rem !important;
+  }
+
+  .pricing-card {
+    padding: 2rem 1.5rem !important;
+  }
+
+  .organizer-card {
+    padding: 1.5rem !important;
+  }
+
+  .resource-tile-card {
+    padding: 1.5rem !important;
+    min-height: auto !important;
+  }
+
+  .comm-card-inner {
+    padding: 1.5rem !important;
+  }
+
 
   /* === TYPOGRAPHY SCALE-DOWN === */
-  h1, h2, h3, h4, h5, h6, p, li, span, a {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  li,
+  span,
+  a {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
   }
-  .pillar-title { font-size: 32px !important; }
-  .stat-number-display { font-size: 2.8rem !important; }
-  .event-title-display { font-size: 1.2rem !important; }
-  .pricing-price { font-size: 2.6rem !important; }
-  .track-title { font-size: 1.2rem !important; }
-  .track-desc { font-size: 13px !important; }
+
+  .pillar-title {
+    font-size: 32px !important;
+  }
+
+  .stat-number-display {
+    font-size: 2.8rem !important;
+  }
+
+  .event-title-display {
+    font-size: 1.2rem !important;
+  }
+
+  .pricing-price {
+    font-size: 2.6rem !important;
+  }
+
+  .track-title {
+    font-size: 1.2rem !important;
+  }
+
+  .track-desc {
+    font-size: 13px !important;
+  }
 
   /* === SCHEDULE === */
-  .schedule-timeline { padding-left: 1.5rem !important; max-width: 100% !important; }
-  .timeline-item::before { left: -1.85rem !important; }
-  .schedule-tabs-container { gap: 0.5rem !important; flex-wrap: wrap !important; }
+  .schedule-timeline {
+    padding-left: 1.5rem !important;
+    max-width: 100% !important;
+  }
+
+  .timeline-item::before {
+    left: -1.85rem !important;
+  }
+
+  .schedule-tabs-container {
+    gap: 0.5rem !important;
+    flex-wrap: wrap !important;
+  }
+
   .schedule-tab-btn {
     padding: 9px 14px !important;
     font-size: 13px !important;
@@ -321,20 +770,47 @@ img, video, canvas, svg, iframe {
     text-align: center !important;
     min-height: 44px !important;
   }
-  .timeline-title { font-size: 1.1rem !important; }
 
-  /* === FAQ === */
+  .timeline-title {
+    font-size: 1.1rem !important;
+  }
+
+  /* === FAQ — fix toggle icon overflow === */
   .faq-accordion-header {
     padding: 1.25rem 1rem !important;
     gap: 0.75rem !important;
+    min-width: 0 !important;
   }
-  .faq-accordion-header h3 { font-size: 0.95rem !important; }
-  .faq-accordion-body { padding: 0 1rem 1.25rem !important; font-size: 13px !important; }
-  .faq-list { gap: 0.75rem !important; }
+
+  .faq-accordion-header h3 {
+    font-size: 0.95rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .faq-accordion-icon {
+    flex-shrink: 0 !important;
+  }
+
+  .faq-accordion-body {
+    padding: 0 1rem 1.25rem !important;
+    font-size: 13px !important;
+  }
+
+  .faq-list {
+    gap: 0.75rem !important;
+  }
 
   /* === FOOTER === */
-  footer.frosted-footer-bar { padding: 3rem 1.25rem 2rem !important; }
-  .footer-inner-cols { gap: 2rem !important; }
+  footer.frosted-footer-bar {
+    padding: 3rem 1.25rem 2rem !important;
+  }
+
+  .footer-inner-cols {
+    gap: 2rem !important;
+  }
+
   .footer-bottom-strip {
     justify-content: center !important;
     text-align: center !important;
@@ -343,14 +819,26 @@ img, video, canvas, svg, iframe {
     gap: 0.5rem !important;
   }
 
+  /* === FLOATING BACK TO TOP — keep inside screen === */
+  .floating-back-to-top {
+    bottom: 16px !important;
+    right: 16px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
   /* === BUTTONS — 48px TOUCH TARGETS === */
-  .btn-primary, .btn-secondary, .cyber-register-btn, .schedule-tab-btn {
+  .btn-primary,
+  .btn-secondary,
+  .cyber-register-btn,
+  .schedule-tab-btn {
     min-height: 48px !important;
     font-size: 14px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
   }
+
   .btn-secondary {
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -366,12 +854,16 @@ img, video, canvas, svg, iframe {
     max-width: 100% !important;
     width: 100% !important;
   }
+
   .cta-massive-button {
     font-size: 1rem !important;
     padding: 14px 24px !important;
     width: 100% !important;
   }
-  .staged-cta-block { padding: 0 1.25rem !important; }
+
+  .staged-cta-block {
+    padding: 0 1.25rem !important;
+  }
 
   /* === TOAST NOTIFICATIONS === */
   [class*="toast-container"],
@@ -385,6 +877,7 @@ img, video, canvas, svg, iframe {
     max-width: 100% !important;
     transform: none !important;
   }
+
   [class*="Toastify__toast"],
   [class*="toast"]:not([class*="container"]) {
     width: 100% !important;
@@ -398,26 +891,32 @@ img, video, canvas, svg, iframe {
   .about-devlinkhub-section {
     padding: 4rem 1.25rem !important;
   }
+
   .about-devlink-card {
     padding: 2rem 1.25rem !important;
   }
+
   .about-devlink-grid {
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
     text-align: center !important;
   }
+
   .about-devlink-text {
     font-size: 1.05rem !important;
     line-height: 1.6 !important;
     margin-bottom: 1rem !important;
   }
+
   .about-devlink-subtext {
     font-size: 0.9rem !important;
     line-height: 1.5 !important;
   }
+
   .about-devlink-slogan {
     font-size: 2.2rem !important;
   }
+
   .about-devlink-grid .btn-primary {
     width: 100% !important;
     max-width: 320px;
@@ -427,34 +926,82 @@ img, video, canvas, svg, iframe {
 
 /* ── 480px: Compact Phones ── */
 @media (max-width: 480px) {
-  nav.frosted-navbar { width: calc(100% - 16px) !important; top: 6px !important; }
+  nav.frosted-navbar {
+    top: 8px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 20px) !important;
+  }
 
-  .hero-wrapper { padding: 5.5rem 1rem 2.5rem !important; }
-  .hero-headline { font-size: clamp(1.9rem, 11vw, 2.4rem) !important; }
-  .hero-subtitle { font-size: 0.875rem !important; }
+  .hero-wrapper {
+    padding: 5.5rem 1rem 2.5rem !important;
+  }
 
-  .pillars-section, .stats-section, .events-section,
-  .resources-section, .community-section, .boot-cta-section,
-  .schedule-section, .pricing-section, .tracks-section,
-  .faq-section, .organizers-section {
+  .hero-headline {
+    font-size: clamp(1.9rem, 11vw, 2.4rem) !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.875rem !important;
+  }
+
+  .pillars-section,
+  .stats-section,
+  .events-section,
+  .resources-section,
+  .community-section,
+  .boot-cta-section,
+  .schedule-section,
+  .pricing-section,
+  .tracks-section,
+  .faq-section,
+  .organizers-section {
     padding: 2.5rem 1rem !important;
   }
-  .section-title-display { font-size: clamp(1.5rem, 8.5vw, 1.9rem) !important; margin-bottom: 1.5rem !important; }
 
-  .pillar-title { font-size: 26px !important; }
-  .stat-number-display { font-size: 2.2rem !important; }
-  .event-title-display { font-size: 1.05rem !important; }
-  .pricing-price { font-size: 2.2rem !important; }
-  .track-title { font-size: 1.05rem !important; }
+  .section-title-display {
+    font-size: clamp(1.5rem, 8.5vw, 1.9rem) !important;
+    margin-bottom: 1.5rem !important;
+  }
 
-  .organizer-grid { grid-template-columns: 1fr 1fr !important; }
-  .organizer-card { padding: 1.25rem 0.75rem !important; }
-  .organizer-avatar-placeholder { width: 56px !important; height: 56px !important; font-size: 1.3rem !important; }
+  .pillar-title {
+    font-size: 26px !important;
+  }
 
-  footer.frosted-footer-bar { padding: 2.5rem 1rem 1.5rem !important; }
+  .stat-number-display {
+    font-size: 2.2rem !important;
+  }
+
+  .event-title-display {
+    font-size: 1.05rem !important;
+  }
+
+  .pricing-price {
+    font-size: 2.2rem !important;
+  }
+
+  .track-title {
+    font-size: 1.05rem !important;
+  }
+
+  .organizer-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .organizer-card {
+    flex-direction: row !important;
+    text-align: left !important;
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+
+  footer.frosted-footer-bar {
+    padding: 2.5rem 1rem 1.5rem !important;
+  }
+
   .floating-back-to-top {
-    bottom: 20px !important;
-    right: 20px !important;
+    bottom: 16px !important;
+    right: 16px !important;
     width: 40px !important;
     height: 40px !important;
   }
@@ -462,209 +1009,147 @@ img, video, canvas, svg, iframe {
 
 /* ── 390px: iPhone Pro ── */
 @media (max-width: 390px) {
-  nav.frosted-navbar { padding: 8px 12px !important; }
-  .hero-wrapper { padding: 5rem 0.875rem 2rem !important; }
-  .hero-headline { font-size: clamp(1.8rem, 12vw, 2.2rem) !important; }
-  .pillars-section, .stats-section, .events-section,
-  .resources-section, .community-section, .boot-cta-section,
-  .schedule-section, .pricing-section, .tracks-section,
-  .faq-section, .organizers-section {
+  nav.frosted-navbar {
+    padding: 8px 12px !important;
+  }
+
+  .hero-wrapper {
+    padding: 5rem 0.875rem 2rem !important;
+  }
+
+  .hero-headline {
+    font-size: clamp(1.8rem, 12vw, 2.2rem) !important;
+  }
+
+  .pillars-section,
+  .stats-section,
+  .events-section,
+  .resources-section,
+  .community-section,
+  .boot-cta-section,
+  .schedule-section,
+  .pricing-section,
+  .tracks-section,
+  .faq-section,
+  .organizers-section {
     padding: 2.25rem 0.875rem !important;
   }
-  .section-title-display { font-size: 1.5rem !important; }
-  .track-card { padding: 1.25rem !important; }
-  .event-glass-card { padding: 1.25rem !important; }
-  .btn-primary, .btn-secondary, .cyber-register-btn {
+
+  .section-title-display {
+    font-size: 1.5rem !important;
+  }
+
+  .track-card {
+    padding: 1.25rem !important;
+  }
+
+  .event-glass-card {
+    padding: 1.25rem !important;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .cyber-register-btn {
     font-size: 13px !important;
     padding: 11px 16px !important;
   }
-  .schedule-tab-btn { padding: 8px 12px !important; font-size: 12px !important; }
+
+  .schedule-tab-btn {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
 }
 
 /* ── 320px: Smallest Devices ── */
 @media (max-width: 320px) {
-  nav.frosted-navbar { width: calc(100% - 12px) !important; padding: 7px 10px !important; }
-  .hero-wrapper { padding: 4.5rem 0.75rem 2rem !important; }
-  .hero-headline { font-size: 1.7rem !important; }
-  .pillars-section, .stats-section, .events-section,
-  .resources-section, .community-section, .boot-cta-section,
-  .schedule-section, .pricing-section, .tracks-section,
-  .faq-section, .organizers-section {
+  nav.frosted-navbar {
+    width: calc(100% - 12px) !important;
+    padding: 7px 10px !important;
+  }
+
+  .hero-wrapper {
+    padding: 4.5rem 0.75rem 2rem !important;
+  }
+
+  .hero-headline {
+    font-size: 1.7rem !important;
+  }
+
+  .pillars-section,
+  .stats-section,
+  .events-section,
+  .resources-section,
+  .community-section,
+  .boot-cta-section,
+  .schedule-section,
+  .pricing-section,
+  .tracks-section,
+  .faq-section,
+  .organizers-section {
     padding: 2rem 0.75rem !important;
   }
-  .section-title-display { font-size: 1.35rem !important; }
-  .pricing-price { font-size: 1.9rem !important; }
-  .stat-number-display { font-size: 1.9rem !important; }
-  .organizer-grid { grid-template-columns: 1fr !important; }
+
+  .section-title-display {
+    font-size: 1.35rem !important;
+  }
+
+  .pricing-price {
+    font-size: 1.9rem !important;
+  }
+
+  .stat-number-display {
+    font-size: 1.9rem !important;
+  }
+
+  .organizer-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* ── LANDSCAPE MOBILE ── */
 @media (max-width: 768px) and (orientation: landscape) {
-  .hero-wrapper { min-height: auto !important; padding-top: 4rem !important; }
+  .hero-wrapper {
+    min-height: auto !important;
+    padding-top: 4rem !important;
+  }
+
   .hero-inner-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     text-align: left !important;
     gap: 1.5rem !important;
   }
-  .hero-text-block { align-items: flex-start !important; }
+
+  .hero-text-block {
+    align-items: flex-start !important;
+  }
+
   .hero-btns {
     flex-direction: row !important;
     align-items: center !important;
     flex-wrap: wrap !important;
   }
-  .hero-btns > * { width: auto !important; }
-  .hero-visual-block { height: auto !important; min-height: 380px !important; }
-  .pillars-section, .stats-section, .events-section,
-  .resources-section, .community-section, .boot-cta-section,
-  .schedule-section, .pricing-section, .tracks-section,
-  .faq-section, .organizers-section {
-    padding: 2rem 1.25rem !important;
+
+  .hero-btns>* {
+    width: auto !important;
   }
-}
 
-/* ============================================================
-   SINGLE PAGE SCROLL ENFORCEMENT
-   Applies to ALL screen sizes — removes nested scroll containers
-   The browser window is the ONLY scrollable container.
-   ============================================================ */
+  .hero-visual-block {
+    height: auto !important;
+    min-height: 380px !important;
+  }
 
-/* ── 1. Sections must NEVER create their own scroll area ── */
-.hero-wrapper,
-.pillars-section, .stats-section, .events-section,
-.resources-section, .community-section, .boot-cta-section,
-.schedule-section, .pricing-section, .tracks-section,
-.faq-section, .organizers-section,
-footer.frosted-footer-bar {
-  overflow: visible !important;     /* sections expand naturally — page scrolls */
-  height: auto !important;
-  max-height: none !important;
-}
-
-/* ── 2. Hero: use dvh/svh to avoid mobile browser chrome issues ── */
-.hero-wrapper {
-  min-height: 100svh;   /* svh = small viewport height = excludes browser chrome */
-}
-@supports not (min-height: 100svh) {
-  .hero-wrapper { min-height: 100vh; }  /* fallback for older browsers */
-}
-
-/* ── 3. Sections with accidental overflow:hidden that clip content ── */
-/* These had overflow:hidden which created invisible scroll traps */
-.resources-section,
-.community-section {
-  overflow: visible !important;
-}
-/* canvas/water backgrounds inside these sections are absolute — safe to leave */
-.resources-water-canvas,
-.hero-water-bg,
-.hero-particles-bg {
-  pointer-events: none;
-  /* These are position:absolute/fixed, not scroll containers */
-}
-
-/* ── 4. Cards must not create nested scrolls ── */
-.glass-card, .event-glass-card, .pillar-card, .track-card,
-.organizer-card, .resource-tile-card, .stat-glass-box,
-.pricing-card, .comm-card-inner, .faq-accordion-item {
-  overflow: visible !important;   /* content flows out naturally */
-  height: auto !important;
-  max-height: none !important;
-}
-
-/* Exception: progress bars and decorative clip containers stay clipped */
-.event-progress-bar,
-.tile-loader-bar,
-.rg-seat-track,
-.rg-progress-track,
-.boot-pbar-fill {
-  overflow: hidden !important;  /* these are purely decorative bar fills */
-}
-
-
-
-/* ── 7. Register page — body must not be flex with fixed height ── */
-/* The register page body has display:flex + min-height:100vh — OK as long as no overflow:hidden */
-.rg-main {
-  height: auto !important;        /* never lock the main content area height */
-  min-height: auto !important;
-  overflow: visible !important;
-}
-.rg-grid {
-  height: auto !important;
-  overflow: visible !important;
-}
-/* Sticky sidebars use position:sticky, not overflow — they're fine */
-.rg-left, .rg-right {
-  overflow: visible !important;
-}
-.rg-center {
-  overflow: visible !important;
-  height: auto !important;
-}
-/* Step panels must expand to their content */
-.rg-step-panel {
-  overflow: visible !important;
-  height: auto !important;
-  max-height: none !important;
-}
-
-/* ── 8. Checkout page — co-root / co-split must not trap scroll ── */
-.co-root {
-  overflow-x: clip !important;
-  overflow-y: visible !important;
-}
-.co-split {
-  overflow: visible !important;
-  height: auto !important;
-}
-.co-left, .co-right-sticky {
-  overflow: visible !important;
-}
-/* co-right-sticky uses position:sticky — that's correct, not a scroll trap */
-
-/* ── 9. Canvas backgrounds (fixed position) must not intercept scroll ── */
-.rg-canvas, .co-canvas, .ps-canvas, .pf-canvas {
-  pointer-events: none !important;
-  /* height: 100vh is fine for fixed position elements */
-}
-
-/* ── 10. Mobile drawer — it IS a scroll container (full screen menu) ── */
-/* Allow the drawer itself to scroll if content overflows */
-.mobile-drawer {
-  overflow-y: auto !important;    /* drawer can scroll internally if needed */
-  overflow-x: hidden !important;
-}
-
-/* ── 11. Payment success / failed pages — single flow ── */
-.ps-root, .pf-root {
-  overflow-x: clip !important;
-  overflow-y: visible !important;
-  height: auto !important;
-}
-.ps-container, .pf-container {
-  overflow: visible !important;
-  height: auto !important;
-}
-
-/* ── 12. FAQ accordion body — must expand, not scroll ── */
-.faq-accordion-body {
-  overflow: visible !important;
-  max-height: none !important;
-  height: auto !important;
-}
-
-/* ── 13. Footer inner grid — must not clip ── */
-.footer-inner-cols {
-  overflow: visible !important;
-  height: auto !important;
-}
-
-/* ── 14. Mobile: steps row is the ONE allowed horizontal scroller ── */
-@media (max-width: 768px) {
-  .rg-steps-row {
-    overflow-x: auto !important;     /* intentional: step tabs scroll horizontally */
-    overflow-y: visible !important;  /* but never vertical */
-    -webkit-overflow-scrolling: touch !important;
+  .pillars-section,
+  .stats-section,
+  .events-section,
+  .resources-section,
+  .community-section,
+  .boot-cta-section,
+  .schedule-section,
+  .pricing-section,
+  .tracks-section,
+  .faq-section,
+  .organizers-section {
+    padding: 2rem 1.25rem !important;
   }
 }
