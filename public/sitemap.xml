@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
+                            http://www.google.com/schemas/sitemap-image/1.1 http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd">
 
   <!-- Homepage — highest priority -->
   <url>
     <loc>https://event.devlinkhub.in/</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-06-09T12:00:00+05:30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://event.devlinkhub.in/"/>
@@ -14,54 +17,59 @@
     <!-- Main Event Logo -->
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/logos/DevLink_Vertical_Logo-white.png</image:loc>
-      <image:title>DevLinkHub IGNITE 2026 — Community Hackathon</image:title>
-      <image:caption>DevLinkHub IGNITE 2026 — Community Hackathon &amp; Developer Workshop, Central India, 20–21 June 2026</image:caption>
+      <image:title>DevLinkHub AURAXIS 2026 — Community Hackathon Logo</image:title>
+      <image:caption>DevLinkHub AURAXIS 2026 — Central India's biggest community hackathon &amp; developer workshop, 20–21 September 2026</image:caption>
     </image:image>
 
     <!-- Organizers & Leads -->
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/founder-image.svg</image:loc>
-      <image:title>Pawan Kushwaha - Founder &amp; Community Head</image:title>
-      <image:caption>Visionary behind DevLinkHub</image:caption>
+      <image:title>Pawan Kushwaha - Founder of DevLinkHub &amp; AURAXIS</image:title>
+      <image:caption>Pawan Kushwaha, visionary founder behind DevLinkHub and AURAXIS 2026 Hackathon</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/operation-head.jpeg</image:loc>
-      <image:title>Prince Kumar - Operations Head</image:title>
-      <image:caption>Drives the operational backbone of DevLinkHub IGNITE</image:caption>
+      <image:title>Prince Kumar - Operations Head, AURAXIS 2026</image:title>
+      <image:caption>Prince Kumar drives the operational backbone of DevLinkHub AURAXIS 2026 Hackathon</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/community-realations-head.png</image:loc>
       <image:title>Ayush Kumar - Community Relations Head</image:title>
-      <image:caption>Bridges the gap between the community and the event</image:caption>
+      <image:caption>Ayush Kumar bridges the gap between the developer community and the AURAXIS event</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/community-manager.jpg</image:loc>
       <image:title>Kartik Raj - Community Manager</image:title>
-      <image:caption>Keeps the community active and engaged</image:caption>
+      <image:caption>Kartik Raj keeps the DevLinkHub community active and engaged during the hackathon</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/management-lead.jpeg</image:loc>
       <image:title>Nilesh Verma - Management Lead</image:title>
-      <image:caption>Oversees planning and project management</image:caption>
+      <image:caption>Nilesh Verma oversees planning and project management for the AURAXIS 2026 Developer Workshop</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://event.devlinkhub.in/static/tech-lead.jpg</image:loc>
+      <image:title>Akshat Agrawal - Technical Lead</image:title>
+      <image:caption>Akshat Agrawal leads the technical vision and engineering architecture for DevLinkHub AURAXIS</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/co-tech-lead.jpg</image:loc>
       <image:title>Ranjan Kumar Singh - Technical Co-Lead</image:title>
-      <image:caption>Co-leads the technical engineering efforts</image:caption>
+      <image:caption>Ranjan Kumar Singh co-leads the technical engineering efforts for DevLinkHub AURAXIS</image:caption>
     </image:image>
   </url>
 
   <!-- Registration page -->
   <url>
     <loc>https://event.devlinkhub.in/register</loc>
-    <lastmod>2026-06-07</lastmod>
-    <changefreq>daily</changefreq>
+    <lastmod>2026-06-09T12:00:00+05:30</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://event.devlinkhub.in/register"/>
     <image:image>
       <image:loc>https://event.devlinkhub.in/static/logos/DevLink_Vertical_Logo-white.png</image:loc>
-      <image:title>Register for DevLinkHub IGNITE 2026</image:title>
-      <image:caption>Join the Central India Community Hackathon</image:caption>
+      <image:title>Register for AURAXIS 2026 Hackathon</image:title>
+      <image:caption>Registration portal for DevLinkHub AURAXIS 2026 hackathon and BuildX developer workshop in Central India</image:caption>
     </image:image>
   </url>
 
