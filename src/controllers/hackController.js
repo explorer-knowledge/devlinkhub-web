@@ -3,7 +3,7 @@ const redis = require('../db/redisClient');
 const cashfree = require('../config/cashfree');
 const crypto = require('crypto');
 const { validateRegistrationBody } = require('../config/validation');
-const { orderIdExists, getOrderData, addOrderIdtoCache } = require('../services/orderIdService');
+const { orderIdExists, getOrderData,printOrderMap, addOrderIdtoCache } = require('../services/orderIdService');
 const { eventIdExists, addEventIdtoCache } = require('../services/webhookEventId');
 const { broadcast } = require('./countController');
 
@@ -18,6 +18,7 @@ async function initiatePayment(req, res) {
       return res.status(403).json({ error: "Registration are Closed Now" });
     }
     console.log("/initiate route fired");
+    console.log(` before validation `,req.body);
     const validationError = validateRegistrationBody(req.body);
     if (validationError) {
       console.warn("not able to validate", validationError);
@@ -71,6 +72,8 @@ async function initiatePayment(req, res) {
     const cfResponse = await cashfree.PGCreateOrder(orderRequest);
     const order = cfResponse.data;
 
+    console.log(`order request` , order);
+    const orderId = order.order_id ;
     // Store pending registration in Redis (TTL: 1 hour)
     const redisKey = `pending_registration:${order.order_id}`;
     const payload = {
@@ -85,7 +88,16 @@ async function initiatePayment(req, res) {
       })),
     };
 
-    await redis.setex(redisKey, 3600, JSON.stringify(payload));
+    console.log(payload);
+    try{
+      await redis.setex(redisKey, 3600, JSON.stringify(payload));
+
+      const temp = await redis.get(orderId);
+
+      console.log('redis pndRg',temp);
+    }catch(err){
+      console.log("redis issue",err);
+    }
     console.log(`[Hackathon] Pending registration stored for Cashfree order ${order.order_id} | team: ${teamName}`);
 
     res.status(201).json({
@@ -158,6 +170,8 @@ async function handleWebhook(req, res) {
     console.log(`[Webhook] Ignoring event: ${eventType}`);
     return res.status(200).json({ status: 'ok' });
   }
+
+  console.log(event);
 
   // ─── Extract payment details ───────────────────────────────────────────────
   const orderDetails   = event?.data?.order;
@@ -240,6 +254,7 @@ async function handleWebhook(req, res) {
     event:             eventType,
   };
 
+  console.log(orderId.trim());
   const queue = {
     payload,
     webhook_event: webhookEvent,
@@ -249,6 +264,7 @@ async function handleWebhook(req, res) {
     broadcast();
     await redis.lpush('registration_queue', JSON.stringify(queue));
     await redis.del(redisKey);
+    // console.log(...payload);
     addOrderIdtoCache(payload);
     addEventIdtoCache(paymentId);
     res.status(200).json({ status: 'ok' });
@@ -268,6 +284,9 @@ async function getRegistrationStatus(req, res) {
   try {
     console.log("/status route fired");
     const { orderId } = req.params;
+
+    console.log(orderId);
+    printOrderMap();
 
     if (orderIdExists(orderId)) {
       console.log("hello");

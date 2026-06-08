@@ -13,17 +13,20 @@ async function loadOrderId() {
   orderMap.clear();
 
   for (const leader of leaderRow) {
-    orderMap.set(leader.cashfreeOrderId.trim(), leader);
+    orderMap.set(leader.cashfreeOrderId, leader);
   }
 }
 
+function printOrderMap(){
+  return console.log(orderMap);
+}
 
 function orderIdExists(orderId) {
   return orderMap.has(orderId.trim());
 }
 
 function getOrderData(orderId) {
-  return orderMap.get(orderId.trim()) || null;
+  return orderMap.get(orderId.trim()) ;
 }
 
 function getOrderCount() {
@@ -47,6 +50,7 @@ function addOrderIdtoCache(payload, number = 0) {
     addEmailtoCache(participant.email);
     addPhonetoCache(participant.phone);
   });
+  console.log(...payload);
   const leaderRow = payload.participants.find(p => p.isLeader);
   const memCache = {
     cashfreeOrderId: payload.cashfreeOrderId,
@@ -75,4 +79,4 @@ function getPromoCodeUseCount() {
   return count;
 }
 
-module.exports = { loadOrderId, orderIdExists, getOrderData, loadRedisTeamCounter, loadRedisPromoCounter, addOrderIdtoCache, getOrderCount };
+module.exports = { printOrderMap,loadOrderId, orderIdExists, getOrderData, loadRedisTeamCounter, loadRedisPromoCounter, addOrderIdtoCache, getOrderCount };
