@@ -3,7 +3,7 @@
  * In a real application, these functions would perform fetch/axios calls to your backend.
  */
 
-export const BACKEND_URL = `https://api.devlinkhub.in/api/hackathon`;
+export const BACKEND_URL = `https://juliette-hokey-pacifically.ngrok-free.dev/api/hackathon`;
 
 export interface RegisterPayload {
   teamName: string;
@@ -27,6 +27,7 @@ export interface PromoResponse {
 export interface OrderResponse {
   success: boolean;
   orderId: string;
+  paymentSessionId?: string;
   amount: number;
   keyId?: string;
 }
@@ -89,21 +90,25 @@ export const API = {
       }))
     ];
 
+    const requestBody = {
+      teamName: payload.teamName,
+      participants,
+      promoCode: payload.appliedPromo ?? undefined,
+      amount: payload.finalAmount * 100,
+      finalAmount: payload.finalAmount * 100,
+      discountAmount: payload.discountAmount
+    };
+
+    console.log("🚀 SENDING TO BACKEND /initiate:");
+    console.log(JSON.stringify(requestBody, null, 2));
+
     const response = await fetch(`${BACKEND_URL}/initiate`, {
       method: "POST",
-      headers: { 
-	    "Content-Type": "application/json",
-	    "ngrok-skip-browser-warning": "true" 
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true"
       },
-      body: JSON.stringify({ 
-        teamName: payload.teamName, 
-        participants,
-        promoCode: payload.appliedPromo ?? undefined,
-        amount: payload.finalAmount * 100,
-        finalAmount: payload.finalAmount * 100,
-        discountAmount: payload.discountAmount
-      })
-
+      body: JSON.stringify(requestBody)
     });
 
     let data;
@@ -116,14 +121,17 @@ export const API = {
     }
 
     if (!response.ok) {
+      console.error("❌ BACKEND RETURNED ERROR:", data);
       throw new Error(data.error || "Failed to initiate payment");
     }
 
-    return { success: true, orderId: data.orderId, amount: data.amount, keyId: data.keyId };
+    console.log("✅ BACKEND SUCCESS RESPONSE:", data);
+
+    return { success: true, orderId: data.orderId, paymentSessionId: data.paymentSessionId, amount: data.amount, keyId: data.keyId };
   },
 
 
-  
+
 
   async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string; regId?: string }> {
     const MAX_POLLS = 20;
@@ -133,7 +141,7 @@ export const API = {
       await new Promise(res => setTimeout(res, POLL_INTERVAL));
       try {
         const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`, {
-          headers: { 
+          headers: {
             "ngrok-skip-browser-warning": "true"
           },
         });

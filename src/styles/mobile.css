@@ -60,13 +60,13 @@ img, video, canvas, svg, iframe {
      Rule: only set overflow on body, never html. */
   html {
     overflow: visible !important;   /* html must stay visible so body can scroll */
-    max-width: 100vw !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body {
     overflow-x: clip !important;    /* clip prevents horizontal scroll without killing vertical */
     overflow-y: auto !important;    /* body is the scroll container on mobile */
-    max-width: 100vw !important;
+    max-width: 100% !important;
     width: 100% !important;
     height: auto !important;        /* never lock body to a fixed height */
   }
@@ -143,7 +143,7 @@ img, video, canvas, svg, iframe {
 
   /* Exceptions for full-screen overlays */
   .mobile-drawer { max-width: 360px !important; }
-  .modal-overlay { max-width: 100vw !important; }
+  .modal-overlay { max-width: 100% !important; }
 
   /* === NAVBAR === */
   nav.frosted-navbar {
@@ -220,6 +220,12 @@ img, video, canvas, svg, iframe {
     display: grid !important;
     gap: 16px !important;
   }
+  .hero-date-grid > div,
+  .hero-date-grid > a {
+    max-width: 100% !important;
+    word-break: break-word !important;
+    text-align: left !important;
+  }
   .hero-visual-block { height: auto !important; min-height: 380px !important; width: 100% !important; margin-top: 1.5rem !important; }
   .hero-visual-card { transform: none !important; height: auto !important; min-height: 350px !important; }
 
@@ -253,6 +259,17 @@ img, video, canvas, svg, iframe {
     grid-template-columns: 1fr !important;
     width: 100% !important;
     gap: 1rem !important;
+  }
+  .bento-pillars-grid > *,
+  .events-asym-grid > *,
+  .resource-tiles-grid > *,
+  .community-bento-grid > *,
+  .footer-inner-cols > *,
+  .pricing-grid > *,
+  .tracks-grid > *,
+  .organizer-grid > *,
+  .stats-asym-strip > * {
+    min-width: 0 !important;
   }
   .comm-bento-card--full { grid-column: span 1 !important; }
   .pillar-card--large { grid-row: span 1 !important; }
@@ -365,7 +382,7 @@ img, video, canvas, svg, iframe {
     left: 1rem !important;
     right: 1rem !important;
     width: calc(100% - 2rem) !important;
-    max-width: 100vw !important;
+    max-width: 100% !important;
     transform: none !important;
   }
   [class*="Toastify__toast"],

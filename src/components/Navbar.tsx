@@ -178,7 +178,7 @@ export default function Navbar() {
                 position: "fixed",
                 top: 0,
                 left: 0,
-                width: "100vw",
+                width: "100%",
                 height: "100vh",
                 background: "rgba(3, 5, 16, 0.4)",
                 backdropFilter: "blur(4px)",
