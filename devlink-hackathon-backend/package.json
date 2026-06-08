@@ -7,7 +7,9 @@
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev --name init"
+    "prisma:migrate": "prisma migrate dev --name init",
+    "redis:flush": "node scripts/flushRedis.js",
+    "email:test": "node scripts/testEmail.js"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"

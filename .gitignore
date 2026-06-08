@@ -5,7 +5,7 @@ node_modules/
 .pnp.*
 
 Backend-test/
-
+test-devlink-hub/
 # testing
 /coverage
 

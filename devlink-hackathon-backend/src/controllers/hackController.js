@@ -1,35 +1,26 @@
 'use strict';
-
-const crypto = require('crypto');
-const prisma = require('../db/prismaClient');
 const redis = require('../db/redisClient');
 const razorpay = require('../config/razorpay');
 const { validateWebhookSignature } = require('razorpay/dist/utils/razorpay-utils');
 const { validateRegistrationBody } = require('../config/validation');
-const { orderIdExists, getOrderData,getOrderCount,getPromoCodeUseCount, addOrderIdtoCache } = require('../services/orderIdService');
+const { orderIdExists, getOrderData, addOrderIdtoCache } = require('../services/orderIdService');
 const { eventIdExists, addEventIdtoCache } = require('../services/webhookEventId');
 const { broadcast } = require('./countController');
 
-// ─── POST /api/hackathon/initiate ─────────────────────────────────────────────
-//
-// Step 1 — Frontend sends ALL team + participant details.
-//   1. Validate input (via validation.js — checks disposable emails, duplicates, etc.)
-//   2. Check for duplicate leader email in confirmed registrations
-//   3. Create Razorpay order
-//   4. Persist a PendingRegistration row (keyed by orderId) so the webhook
-//      handler can find it later — even if the browser tab is closed.
-//
+// ─── POST /api/hackathon/initiate ───────────
 // Body: { teamName, participants: [{ name, email, phone, college, isLeader }] }
 // Response: { orderId, amount, currency, keyId }
 
 async function initiatePayment(req, res) {
+  const count = Number(await redis.get('team_counter'));
   try {
-    if (getOrderCount() > 61){
-      return res.status(601).json({error: "Registration Over"});
+    if (count >= parseInt(process.env.MAX_SEATS)) {
+      return res.status(403).json({ error: "Registration are Closed Now" });
     }
     console.log("/initiate route fired");
     const validationError = validateRegistrationBody(req.body);
     if (validationError) {
+      console.warn("not able to validate", validationError);
       return res.status(400).json({ error: validationError });
     }
 
@@ -44,11 +35,11 @@ async function initiatePayment(req, res) {
     const safeLocal = leaderEmail.split('@')[0].replace(/[^a-z0-9]/gi, '').slice(0, 10);
     const receipt = `devlinkhub_hack_${Date.now()}_${safeLocal}`;
 
-    if(req.body.promoCode){
-      const result = resolvePromoCode(req.body.promoCode,amountPaise);
+    if (req.body.promoCode) {
+      const result = await resolvePromoCode(req.body.promoCode, amountPaise);
       if (result.valid) {
-      amountPaise = result.finalAmountPaise;
-      console.log(`[Hackathon] Promo "${req.body.promoCode.trim().toUpperCase()}" applied — ₹${(result.discountPaise / 100).toFixed(2)} off → ₹${(amountPaise / 100).toFixed(2)}`);
+        amountPaise = result.finalAmountPaise;
+        console.log(`[Hackathon] Promo "${req.body.promoCode.trim().toUpperCase()}" applied — ₹${(result.discountPaise / 100).toFixed(2)} off → ₹${(amountPaise / 100).toFixed(2)}`);
       } else {
         console.warn(`[Hackathon] Unknown promo code submitted: "${req.body.promoCode}" — ignoring.`);
       }
@@ -71,6 +62,7 @@ async function initiatePayment(req, res) {
     const redisKey = `pending_registration:${order.id}`;
     const payload = {
       teamName: teamName.trim(),
+      amount: amountPaise,
       participants: participants.map(p => ({
         name: p.name.trim(),
         email: p.email.trim().toLowerCase(),
@@ -80,7 +72,7 @@ async function initiatePayment(req, res) {
       })),
     };
 
-    await redis.setex(redisKey, 600, JSON.stringify(payload));
+    await redis.setex(redisKey, 3600, JSON.stringify(payload));
 
     console.log(`[Hackathon] Pending registration stored for order ${order.id} | team: ${teamName}`);
 
@@ -98,22 +90,11 @@ async function initiatePayment(req, res) {
 }
 
 // ─── POST /api/hackathon/webhook ──────────────────────────────────────────────
-//
-// Razorpay calls this URL when a payment event occurs.
-//
 // IMPORTANT: This handler receives the RAW request body (Buffer), not parsed
 // JSON. The route MUST be mounted with express.raw() before express.json().
-//
 // Signature verification:
 //   HMAC-SHA256( rawBody, RAZORPAY_WEBHOOK_SECRET ) == x-razorpay-signature
-//
-// On "payment.captured":
-//   1. Idempotency check (WebhookEvent table)
-//   2. Look up PendingRegistration by order ID
-//   3. Write all HackathonParticipant rows in a transaction (shared teamId UUID)
-//   4. Delete pending registration row
-//   5. Log WebhookEvent
-//   6. Fire invite emails to non-leader participants (non-blocking)
+
 
 async function handleWebhook(req, res) {
   console.log("/webhook route fired");
@@ -124,28 +105,28 @@ async function handleWebhook(req, res) {
 
   if (!eventId) {
     console.warn('[Webhook] Missing x-razorpay-event-id header Critical issue');
-    return;
+    return res.status(401).json({ error: 'Missing event id' });
   }
 
   // Idempotency — skip if we've already handled this exact event
   try {
     if (eventIdExists(eventId)) {
       console.log(`[Webhook] Duplicate event ${eventId} — skipping.`);
-      return;
+      return res.status(200).json({ status: "ok", note: "duplicate" });
     }
   } catch (err) {
     console.error('[Webhook] Idempotency check failed:', err);
-    return;
+    return res.status(200).json({ status: 'ok' });
   }
 
   if (!webhookSignature) {
     console.warn('[Webhook] Missing x-razorpay-signature header');
-    return res.status(400).json({ error: 'Missing signature header.' });
+    return res.status(401).json({ error: 'Missing signature header.' });
   }
 
   if (!validateWebhookSignature(rawBody.toString(), webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET)) {
     console.warn('[Webhook] Signature verification failed!');
-    return res.status(400).send('Invalid signature');
+    return res.status(401).json({ error: 'Invalid signature' });
   }
 
 
@@ -156,18 +137,13 @@ async function handleWebhook(req, res) {
     return res.status(400).json({ error: 'Malformed JSON body.' });
   }
 
-  const eventType = event.event;   // e.g. "payment.captured"
+  const eventType = event.event;   // "payment.captured"
   console.log(`[Webhook]  Verified event: ${eventType} | id: ${eventId}`);
 
 
-  // Respond 200 immediately — Razorpay requires a fast response
-  //    (it retries on 5xx, so replying before async work is important)
-  res.status(200).json({ status: 'ok' });
-
-  // Process only "payment.captured" events
   if (eventType !== 'payment.captured') {
     console.log(`[Webhook] Ignoring event: ${eventType}`);
-    return;
+    return res.status(200).json({ status: 'ok' });
   }
 
 
@@ -176,83 +152,105 @@ async function handleWebhook(req, res) {
   const payment = event?.payload?.payment?.entity;
   if (!payment) {
     console.error('[Webhook] No payment entity in payload:', JSON.stringify(event));
-    return;
+    return res.status(200).json({ status: 'ok', note: 'missing_payment' });
   }
 
   const orderId = payment.order_id;
   const paymentId = payment.id;
   const amount = payment.amount; // paise
 
-  const expectedAmountPaise = parseInt(24900, 10);
-  if (amount < expectedAmountPaise) {
-    console.error(`[Webhook] Underpayment! Expected ${expectedAmountPaise}, got ${amount}`);
-    return;
-  }
+
 
   if (typeof orderId !== 'string' || typeof paymentId !== 'string' || !paymentId || !orderId) {
     console.error('[Webhook] Invalid or missing orderId/paymentId');
-    return;
+    return res.status(200).json({ status: 'ok', note: "Invalid or missing orderId" });
+  }
+
+  if (orderIdExists(orderId)) {
+    return res.status(200).json({ status: 'ok', note: 'orderId exists' });
   }
 
   console.log(`[Webhook] Payment captured — orderId: ${orderId} | paymentId: ${paymentId} | amount: ₹${(amount / 100).toFixed(2)}`);
 
-  // Find the pending registration
+  //Fetch the pending registration from Redis
   const redisKey = `pending_registration:${orderId}`;
   let pending;
   try {
     pending = await redis.get(redisKey);
   } catch (err) {
     console.error('[Webhook] Failed to fetch pending registration:', err);
-    return;
+    return res.status(500).json({ error: 'Internal error fetching registration.' });
   }
 
   if (!pending) {
     console.error(`[Webhook] No pending registration found for orderId: ${orderId}`);
-    return;
+    return res.status(200).json({ status: 'ok', note: 'no_pending_registration' });
   }
 
 
-  const payload = JSON.parse(pending);
-  const teamId = crypto.randomUUID(); // shared UUID for every row in this team
+  let payload;
+  try {
+    payload = JSON.parse(pending);
+  } catch (parseErr) {
+    console.error('[Webhook] Failed to parse pending registration JSON:', parseErr);
+    return res.status(200).json({ error: 'Corrupt pending registration data.' });
+  }
+
+
+  if (payload.amount !== amount) {
+    console.error(`[Webhook] Amount mismatch! Stored: ${payload.amount}, Paid: ${amount}`);
+    return res.status(200).json({ status: 'ok', note: 'amount_mismatch' });
+  }
+
+
+  let teamNumber;
+  try {
+    teamNumber = await redis.incr('team_counter');
+  } catch (err) {
+    return res.status(500).json({ error: 'redis error' });
+  }
+  const teamId = `DLH-${String(teamNumber).padStart(2, '0')}`;
 
   payload.teamId = teamId.trim();
   payload.razorpayOrderId = orderId.trim();
   payload.razorpayPaymentId = paymentId.trim();
   payload.amountPaid = amount;
-  payload.status = "registered";
+  payload.status = 'registered';
   payload.createdAt = new Date();
-
 
   const webhookEvent = {
     razorpayEventId: eventId,
-    event: eventType
-  }
+    event: eventType,
+  };
 
   const queue = {
-    payload: payload,
-    webhook_event: webhookEvent
+    payload,
+    webhook_event: webhookEvent,
   };
-  //Persist in a transaction: create all participant rows, delete pending, log event
+
+
   try {
-    addOrderIdtoCache(payload);
-    addEventIdtoCache(eventId);
+
     broadcast();
     await redis.lpush('registration_queue', JSON.stringify(queue));
-    
-    await redis.del(`pending_registration:${orderId}`);
+    await redis.del(redisKey);
+    addOrderIdtoCache(payload);
+    addEventIdtoCache(eventId);
+    res.status(200).json({ status: 'ok' }); //for razorpay
 
-    // await redis.lpush('webhook_event', JSON.stringify(webhookEvent));
-    
 
     console.log(`[Webhook] Team "${payload.teamName}" (id: ${teamId}) registered successfully via webhook!`);
 
   } catch (err) {
+    console.error(`[Webhook_Critical] Save failed to redis`, err);
+    return res.status(500).json({ error: 'redis push failed retry' });
+
     // P2002 = unique constraint violation → team already registered from a duplicate webhook
-    if (err.code === 'P2002') {
-      console.log(`[Webhook] Team for order ${orderId} already registered — duplicate webhook ignored.`);
-    } else {
-      console.error('[Webhook] Failed to register team:', err);
-    }
+    // if (err.code === 'P2002') {
+    //   console.log(`[Webhook] Team for order ${orderId} already registered — duplicate webhook ignored.`);
+    // } else {
+    //   console.error('[Webhook] Failed to register team:', err);
+    // }
   }
 }
 
@@ -293,17 +291,13 @@ async function getRegistrationStatus(req, res) {
 }
 
 
-// ─── POST /api/hackathon/promo ─────────────────────────────────────────────────
-//
-// Frontend calls this to validate a promo code BEFORE initiating payment.
-// Returns the discounted amount (in paise) if the code is valid.
-//
+// ─── POST /api/hackathon/promo ─────────────────
 // Body: { promoCode: string }
 // Response (valid):   { valid: true,  discount: number, finalAmountPaise: number, message: string }
 // Response (invalid): { valid: false, message: string }
 
 const PROMO_CODES = {
-  'DEVLINKHUB100': 10000,
+  'AURAXIS100': 10000,
   //'EARLY20':   20,
 };
 
@@ -318,17 +312,17 @@ async function applyPromoCode(req, res) {
     const code = promoCode.trim().toUpperCase();
 
     const baseAmountPaise = parseInt(process.env.REGISTRATION_FEE_PAISE, 10);
-    const result = resolvePromoCode(code, baseAmountPaise);
+    const result = await resolvePromoCode(code, baseAmountPaise);
 
     if (!result.valid) {
-      return res.status(200).json({ valid: false, message: result.message ||'Invalid promo code.' });
+      return res.status(200).json({ valid: false, message: result.message || 'Invalid promo code.' });
     }
 
     return res.status(200).json({
-      valid:            true,
-      discount:         result.discountPaise,
+      valid: true,
+      discount: result.discountPaise,
       finalAmountPaise: result.finalAmountPaise,
-      message:          `Promo applied! ${(result.discountPaise / 100).toFixed(2)} Rs off — you pay ₹${(result.finalAmountPaise / 100).toFixed(2)}.`,
+      message: `Promo applied! ${(result.discountPaise / 100).toFixed(2)} Rs off — you pay ₹${(result.finalAmountPaise / 100).toFixed(2)}.`,
     });
 
 
@@ -339,20 +333,23 @@ async function applyPromoCode(req, res) {
 }
 
 
-function resolvePromoCode(code, baseAmountPaise) {
-  const normalized     = code.trim().toUpperCase();
+async function resolvePromoCode(code, baseAmountPaise) {
+  const normalized = code.trim().toUpperCase();
   const discountPaise = PROMO_CODES[normalized];
   if (discountPaise === undefined) {
     return { valid: false };
   }
 
-  const currentUses = getPromoCodeUseCount();
+  const currentUses = await redis.incr('promo_counter');
   const maxUses = parseInt(process.env.MAX_PROMO_USES, 10);
   if (currentUses >= maxUses) {
     return { valid: false, message: 'Promo code usage limit has been reached.' };
   }
 
-  const finalAmountPaise    = parseInt(baseAmountPaise - discountPaise, 10);
+  if (discountPaise > baseAmountPaise) {
+    return { valid: false, message: 'Promo Code not Applicable right now.' };
+  }
+  const finalAmountPaise = parseInt(baseAmountPaise - discountPaise, 10);
   return { valid: true, discountPaise, finalAmountPaise };
 }
 

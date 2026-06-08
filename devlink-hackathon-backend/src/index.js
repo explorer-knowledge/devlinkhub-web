@@ -9,7 +9,7 @@ const { globalLimiter } = require('./middleware/rateLimiter');
 const app = express();
 app.set('trust proxy', 1)
 const { loadEmails } = require('./services/emailLoadService');
-const { loadOrderId } = require('./services/orderIdService');
+const { loadOrderId,loadRedisTeamCounter,loadRedisPromoCounter } = require('./services/orderIdService');
 const { loadPhone } = require('./services/phoneLoadService');
 const { loadEventId } = require('./services/webhookEventId');
 const { loadFromCache, downloadLatest } = require('./services/disposableService');
@@ -20,9 +20,6 @@ const PORT = process.env.PORT || 10003;
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL,
-    'http://localhost:5173',
-    'https://temporary.404lab.xyz',
-    'https://event.devlinkhub.in',
   ],
   credentials: true,
 }));
@@ -99,6 +96,8 @@ app.use((err, _req, res, _next) => {
 async function start() {
   await loadEmails();
   await loadOrderId();
+  await loadRedisTeamCounter();
+  await loadRedisPromoCounter();
   await loadEventId();
   await loadPhone();
   const cacheloaded = await loadFromCache();
