@@ -50,7 +50,7 @@ function addOrderIdtoCache(payload, number = 0) {
     addEmailtoCache(participant.email);
     addPhonetoCache(participant.phone);
   });
-  console.log(...payload);
+  console.log(payload);
   const leaderRow = payload.participants.find(p => p.isLeader);
   const memCache = {
     cashfreeOrderId: payload.cashfreeOrderId,

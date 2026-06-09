@@ -9,7 +9,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "redis:flush": "node scripts/flushRedis.js",
-    "email:test": "node scripts/testEmail.js"
+    "email:test": "node scripts/testEmail.js",
+    "get:data": "node scripts/printData.js"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
