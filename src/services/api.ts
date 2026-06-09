@@ -27,8 +27,10 @@ export interface PromoResponse {
 export interface OrderResponse {
   success: boolean;
   orderId: string;
+  paymentSessionId?: string;
   amount: number;
   keyId?: string;
+  environment?: 'production' | 'sandbox';
 }
 
 
@@ -89,21 +91,25 @@ export const API = {
       }))
     ];
 
+    const requestBody = {
+      teamName: payload.teamName,
+      participants,
+      promoCode: payload.appliedPromo ?? undefined,
+      amount: payload.finalAmount * 100,
+      finalAmount: payload.finalAmount * 100,
+      discountAmount: payload.discountAmount
+    };
+
+    console.log("🚀 SENDING TO BACKEND /initiate:");
+    console.log(JSON.stringify(requestBody, null, 2));
+
     const response = await fetch(`${BACKEND_URL}/initiate`, {
       method: "POST",
-      headers: { 
-	    "Content-Type": "application/json",
-	    "ngrok-skip-browser-warning": "true" 
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true"
       },
-      body: JSON.stringify({ 
-        teamName: payload.teamName, 
-        participants,
-        promoCode: payload.appliedPromo ?? undefined,
-        amount: payload.finalAmount * 100,
-        finalAmount: payload.finalAmount * 100,
-        discountAmount: payload.discountAmount
-      })
-
+      body: JSON.stringify(requestBody)
     });
 
     let data;
@@ -116,14 +122,17 @@ export const API = {
     }
 
     if (!response.ok) {
+      console.error("❌ BACKEND RETURNED ERROR:", data);
       throw new Error(data.error || "Failed to initiate payment");
     }
 
-    return { success: true, orderId: data.orderId, amount: data.amount, keyId: data.keyId };
+    console.log("✅ BACKEND SUCCESS RESPONSE:", data);
+
+    return { success: true, orderId: data.orderId, paymentSessionId: data.paymentSessionId, amount: data.amount, keyId: data.keyId, environment: data.environment };
   },
 
 
-  
+
 
   async verifyPayment(payload: VerifyPaymentPayload): Promise<{ success: boolean; message: string; regId?: string }> {
     const MAX_POLLS = 20;
@@ -133,7 +142,7 @@ export const API = {
       await new Promise(res => setTimeout(res, POLL_INTERVAL));
       try {
         const response = await fetch(`${BACKEND_URL}/status/${payload.orderId}`, {
-          headers: { 
+          headers: {
             "ngrok-skip-browser-warning": "true"
           },
         });

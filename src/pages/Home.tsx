@@ -159,6 +159,165 @@ const renderPlanIcon = (iconId: string) => {
   }
 };
 
+const renderPipelineStepIcon = (iconId: string, color: string, isActive: boolean) => {
+  const filter = isActive ? `drop-shadow(0 0 10px ${color})` : "none";
+  const strokeWidth = isActive ? "2" : "1.5";
+  const opacity = isActive ? 1 : 0.65;
+
+  switch (iconId) {
+    case "ideate":
+      return (
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter,
+            opacity,
+            transition: "all 0.3s ease",
+            transform: isActive ? "scale(1.1)" : "scale(1)"
+          }}
+        >
+          {/* Bulb base */}
+          <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5" />
+          <line x1="9" y1="18" x2="15" y2="18" />
+          <line x1="10" y1="22" x2="14" y2="22" />
+          {/* Filament inside */}
+          <path d="M12 9v2M10 10.5h4" opacity="0.6" strokeWidth="1" />
+          {/* Rays of light */}
+          {isActive && (
+            <>
+              <line x1="12" y1="2" x2="12" y2="4" strokeWidth="2" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" strokeWidth="2" />
+              <line x1="2" y1="12" x2="4" y2="12" strokeWidth="2" />
+              <line x1="20" y1="12" x2="22" y2="12" strokeWidth="2" />
+              <line x1="18.36" y1="4.22" x2="16.93" y2="5.64" strokeWidth="2" />
+            </>
+          )}
+        </svg>
+      );
+    case "design":
+      return (
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter,
+            opacity,
+            transition: "all 0.3s ease",
+            transform: isActive ? "scale(1.1)" : "scale(1)"
+          }}
+        >
+          {/* Paint board palette */}
+          <path d="M12 22C17.52 22 22 17.52 22 12S17.52 2 12 2 2 6.48 2 12a10 10 0 0 0 10 10zm0-16a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-4 4.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm8 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+          <path d="M6 12c0-3 2-5.5 5-6" opacity="0.5" />
+          <circle cx="12" cy="14" r="1.5" fill={isActive ? color : "none"} />
+        </svg>
+      );
+    case "code":
+      return (
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter,
+            opacity,
+            transition: "all 0.3s ease",
+            transform: isActive ? "scale(1.1) rotate(-5deg)" : "scale(1)"
+          }}
+        >
+          {/* Brackets and lightning */}
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+          {/* Lightning bolt inside code */}
+          <polygon points="12 2 9 12 13 12 11 22" fill={isActive ? `${color}22` : "none"} strokeWidth="1.5" />
+        </svg>
+      );
+    case "pitch":
+      return (
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter,
+            opacity,
+            transition: "all 0.3s ease",
+            transform: isActive ? "scale(1.1) translate(2px, -2px)" : "scale(1)"
+          }}
+        >
+          {/* Rocket */}
+          <path d="M4.5 16.5c-1.5 1.25-2.5 3.5-2.5 3.5s2.25-1 3.5-2.5M14 2c.004.008.008.016.012.024A10.15 10.15 0 0 1 15 6v3h3a10.15 10.15 0 0 1 3.976.988c.008.004.016.008.024.012L22 2l-8 8z" />
+          <path d="M9 15l-3 3v3h3l3-3H9z" />
+          {isActive && (
+            <>
+              <line x1="3" y1="21" x2="1" y2="23" strokeWidth="2" />
+              <line x1="2" y1="18" x2="0" y2="19" strokeWidth="1" />
+              <line x1="6" y1="22" x2="5" y2="24" strokeWidth="1" />
+            </>
+          )}
+        </svg>
+      );
+    case "scale":
+      return (
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            filter,
+            opacity,
+            transition: "all 0.3s ease",
+            transform: isActive ? "scale(1.1) rotate(15deg)" : "scale(1)"
+          }}
+        >
+          {/* Globe */}
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          <path d="M2 12h20" />
+          {/* Node points if active */}
+          {isActive && (
+            <>
+              <circle cx="12" cy="2" r="1.5" fill={color} />
+              <circle cx="12" cy="22" r="1.5" fill={color} />
+              <circle cx="2" cy="12" r="1.5" fill={color} />
+              <circle cx="22" cy="12" r="1.5" fill={color} />
+            </>
+          )}
+        </svg>
+      );
+    default:
+      return null;
+  }
+};
+
 /* --- Schedule Data --- */
 const day1Schedule = [
   { time: "09:00 AM", title: "Opening Session", desc: "Welcome briefing, Auraxis launch keynotes, and community onboarding." },
@@ -238,11 +397,11 @@ const organizers = [
     badge: "FOUNDER",
     badgeColor: "var(--accent-cyan)",
     skills: ["Community Building", "Leadership", "Event Management", "Startup Ecosystem"],
-    socials: { 
-      linkedin: "https://www.linkedin.com/in/pawan-kushwaha-ai", 
-      twitter: "#", 
+    socials: {
+      linkedin: "https://www.linkedin.com/in/pawan-kushwaha-ai",
+      twitter: "#",
       github: "https://github.com/Pawankus6261",
-      instagram: "https://www.instagram.com/_age_of_souls_" 
+      instagram: "https://www.instagram.com/_age_of_souls_"
     }
   },
   {
@@ -254,11 +413,11 @@ const organizers = [
     badge: "OPERATIONS",
     badgeColor: "var(--accent-green)",
     skills: ["Logistics", "Team Coordination", "Project Planning", "Execution"],
-    socials: { 
-      linkedin: "https://www.linkedin.com/in/princekumar-aiml/", 
-      twitter: "#", 
+    socials: {
+      linkedin: "https://www.linkedin.com/in/princekumar-aiml/",
+      twitter: "#",
       github: "#",
-      instagram: "https://www.instagram.com/prince_kushwaha9349" 
+      instagram: "https://www.instagram.com/prince_kushwaha9349"
     }
   },
   {
@@ -270,11 +429,11 @@ const organizers = [
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
     skills: ["Outreach", "Partnership Building", "Communication", "Brand Relations"],
-    socials: { 
-      linkedin: "https://www.linkedin.com/in/ayush-kumar13?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app", 
-      twitter: "#", 
+    socials: {
+      linkedin: "https://www.linkedin.com/in/ayush-kumar13?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      twitter: "#",
       github: "https://github.com/aayush1323",
-      instagram: "https://www.instagram.com/aayush__1613?igsh=cHAyeDI2MjA1MDcz" 
+      instagram: "https://www.instagram.com/aayush__1613?igsh=cHAyeDI2MjA1MDcz"
     }
   },
   {
@@ -286,11 +445,11 @@ const organizers = [
     badge: "COMMUNITY",
     badgeColor: "var(--accent-violet)",
     skills: ["Engagement", "Content Strategy", "Community Growth", "Moderation"],
-    socials: { 
-      linkedin: "https://www.linkedin.com/in/kartik-raj-619a58307?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app", 
-      twitter: "#", 
+    socials: {
+      linkedin: "https://www.linkedin.com/in/kartik-raj-619a58307?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      twitter: "#",
       github: "#",
-      instagram: "https://www.instagram.com/the__kartik_?igsh=MXJodmViNWMzNjR0ZQ==" 
+      instagram: "https://www.instagram.com/the__kartik_?igsh=MXJodmViNWMzNjR0ZQ=="
     }
   },
   {
@@ -302,11 +461,11 @@ const organizers = [
     badge: "MANAGEMENT",
     badgeColor: "var(--accent-orange)",
     skills: ["Project Management", "Strategic Planning", "Resource Allocation", "Risk Management"],
-    socials: { 
-      linkedin: "#", 
-      twitter: "#", 
+    socials: {
+      linkedin: "#",
+      twitter: "#",
       github: "https://github.com/Nilesh6251",
-      instagram: "https://www.instagram.com/_nileshpatel07?igsh=MXBjY2diN3JhNnJhNQ==" 
+      instagram: "https://www.instagram.com/_nileshpatel07?igsh=MXBjY2diN3JhNnJhNQ=="
     }
   },
   {
@@ -318,9 +477,9 @@ const organizers = [
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
     skills: ["Full Stack Dev", "System Architecture", "API Design", "Mentorship", "Cloud"],
-    socials: { 
-      linkedin: "https://www.linkedin.com/in/akshat-agrawal-520171398/", 
-      twitter: "#", 
+    socials: {
+      linkedin: "https://www.linkedin.com/in/akshat-agrawal-520171398/",
+      twitter: "#",
       github: "https://github.com/explorer-knowledge",
       instagram: "https://www.instagram.com/akshatt_101/",
       telegram: "https://t.me/TheOnly_no"
@@ -335,9 +494,9 @@ const organizers = [
     badge: "TECH",
     badgeColor: "var(--accent-pink)",
     skills: ["Frontend Dev", "React", "TypeScript", "UI Engineering", "Performance"],
-    socials: { 
-      linkedin: "https://www.linkedin.com/in/ranjan-kumar-singh-aa1822336/", 
-      twitter: "#", 
+    socials: {
+      linkedin: "https://www.linkedin.com/in/ranjan-kumar-singh-aa1822336/",
+      twitter: "#",
       github: "https://github.com/kumarranjankr06-spec",
       instagram: "https://www.instagram.com/ranjankumarkr0066/",
       telegram: "https://t.me/ranjan436454"
@@ -430,6 +589,7 @@ export default function Home() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [isTerminalSwapped, setIsTerminalSwapped] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<typeof organizers[0] | null>(null);
+  const [hoveredPipelineStep, setHoveredPipelineStep] = useState<number>(0);
 
   const [isClosed, setIsClosed] = useState(() => {
     const val = (window as any).__registrationSeats;
@@ -909,7 +1069,7 @@ export default function Home() {
                       {!hackathonCliDone && <span className="blinking-caret"></span>}
                     </div>
 
-                     {/* Terminal Footer */}
+                    {/* Terminal Footer */}
                     <div style={{ borderTop: "1px solid var(--glass-border)", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--font-mono)", fontSize: "9px", color: isClosed ? "#ff4757" : "var(--accent-green)", marginTop: "16px" }}>
                       <span>// status: {isClosed ? "closed" : "active"}</span>
                       {isClosed ? (
@@ -1038,7 +1198,7 @@ export default function Home() {
       </div>
 
       {/* SECTION 2.5: ABOUT & WHY JOIN AURAXIS 2026 */}
-      <section className="about-auraxis-section" id="about" style={{ padding: "8rem 2rem", position: "relative", zIndex: 10 }}>
+      <section className="about-auraxis-section" id="about">
         <div className="section-wrapper">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1102,53 +1262,27 @@ export default function Home() {
               Why Join AURAXIS 2026?
             </h3>
 
-            <div className="perks-auto-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
+            <div className="perks-auto-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1.5rem" }}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <TiltGlassCard style={{ padding: "1.5rem 1.75rem", minHeight: "180px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ color: "var(--accent-cyan)", marginBottom: "1rem" }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 242, 254, 0.3))" }}>
+                    <div style={{ color: "var(--accent-cyan)", marginBottom: "0.75rem" }}>
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 242, 254, 0.3))" }}>
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                         <circle cx="9" cy="7" r="4" />
                         <path d="M19 8l2 2 4-4" />
                       </svg>
                     </div>
-                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
+                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.15rem", color: "#fff", marginBottom: "0.5rem" }}>
                       Learn From Industry Professionals
                     </h4>
-                    <p style={{ fontSize: "0.95rem", color: "var(--white-secondary)", lineHeight: "1.6" }}>
+                    <p style={{ fontSize: "0.88rem", color: "var(--white-secondary)", lineHeight: "1.5" }}>
                       Gain insights from experienced speakers and mentors who are actively building in the industry.
-                    </p>
-                  </div>
-                </TiltGlassCard>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                  <div>
-                    <div style={{ color: "var(--accent-violet)", marginBottom: "1rem" }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(139, 92, 246, 0.3))" }}>
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                      </svg>
-                    </div>
-                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
-                      Meet Like-Minded Builders
-                    </h4>
-                    <p style={{ fontSize: "0.95rem", color: "var(--white-secondary)", lineHeight: "1.6" }}>
-                      Connect with students, developers, designers, and innovators who share your passion for tech.
                     </p>
                   </div>
                 </TiltGlassCard>
@@ -1160,17 +1294,17 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <TiltGlassCard style={{ padding: "1.5rem 1.75rem", minHeight: "180px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ color: "var(--accent-pink)", marginBottom: "1rem" }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(255, 0, 127, 0.3))" }}>
+                    <div style={{ color: "var(--accent-pink)", marginBottom: "0.75rem" }}>
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(255, 0, 127, 0.3))" }}>
                         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                       </svg>
                     </div>
-                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
+                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.15rem", color: "#fff", marginBottom: "0.5rem" }}>
                       Build Meaningful Connections
                     </h4>
-                    <p style={{ fontSize: "0.95rem", color: "var(--white-secondary)", lineHeight: "1.6" }}>
+                    <p style={{ fontSize: "0.88rem", color: "var(--white-secondary)", lineHeight: "1.5" }}>
                       Expand your developer network, find potential co-founders, and discover future collaborators.
                     </p>
                   </div>
@@ -1183,19 +1317,19 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
               >
-                <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <TiltGlassCard style={{ padding: "1.5rem 1.75rem", minHeight: "180px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ color: "var(--accent-green)", marginBottom: "1rem" }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 255, 135, 0.3))" }}>
+                    <div style={{ color: "var(--accent-green)", marginBottom: "0.75rem" }}>
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 255, 135, 0.3))" }}>
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
                         <line x1="8" y1="21" x2="16" y2="21" />
                         <line x1="12" y1="17" x2="12" y2="21" />
                       </svg>
                     </div>
-                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
+                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.15rem", color: "#fff", marginBottom: "0.5rem" }}>
                       Real Hackathon Environment
                     </h4>
-                    <p style={{ fontSize: "0.95rem", color: "var(--white-secondary)", lineHeight: "1.6" }}>
+                    <p style={{ fontSize: "0.88rem", color: "var(--white-secondary)", lineHeight: "1.5" }}>
                       Work on exciting real-world challenges, pitch to judges, and showcase your building skills.
                     </p>
                   </div>
@@ -1209,18 +1343,18 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.5 }}
                 style={{ gridColumn: "span 1" }}
               >
-                <TiltGlassCard style={{ padding: "2.5rem", minHeight: "220px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <TiltGlassCard style={{ padding: "1.5rem 1.75rem", minHeight: "180px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
-                    <div style={{ color: "var(--accent-cyan)", marginBottom: "1rem" }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 242, 254, 0.3))" }}>
+                    <div style={{ color: "var(--accent-cyan)", marginBottom: "0.75rem" }}>
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 0 8px rgba(0, 242, 254, 0.3))" }}>
                         <path d="M4.5 16.5c-1.5 1.25-2.5 3.5-2.5 3.5s2.25-1 3.5-2.5M14 2c.004.008.008.016.012.024A10.15 10.15 0 0 1 15 6v3h3a10.15 10.15 0 0 1 3.976.988c.008.004.016.008.024.012L22 2l-8 8z" />
                         <path d="M9 15l-3 3v3h3l3-3H9z" />
                       </svg>
                     </div>
-                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "#fff", marginBottom: "0.75rem" }}>
+                    <h4 style={{ fontFamily: "var(--font-display)", fontSize: "1.15rem", color: "#fff", marginBottom: "0.5rem" }}>
                       Become Part of DevLinkHub
                     </h4>
-                    <p style={{ fontSize: "0.95rem", color: "var(--white-secondary)", lineHeight: "1.6" }}>
+                    <p style={{ fontSize: "0.88rem", color: "var(--white-secondary)", lineHeight: "1.5" }}>
                       Join a growing developer community focused on learning together and building together.
                     </p>
                   </div>
@@ -1285,7 +1419,7 @@ export default function Home() {
               { role: "AI Enthusiasts", icon: "ai", desc: "Builders leveraging models, embeddings, and cognitive pipelines." },
               { role: "Beginners & Pros", icon: "beginners", desc: "Both first-time hackathon attendees and developers." }
             ].map((item, idx) => (
-              <motion.div 
+              <motion.div
                 key={item.role}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -1313,6 +1447,177 @@ export default function Home() {
           >
             <span>&gt; Everyone with a passion for learning and building is welcome.</span>
           </motion.div>
+        </div>
+      </section>
+
+      {/* SECTION 3.7: PIPELINE VISUAL GRAPHIC */}
+      <section className="pipeline-section" style={{ padding: "5rem 2rem 5rem 2rem", position: "relative", zIndex: 10, background: "rgba(10, 10, 15, 0.2)" }}>
+        <div className="section-wrapper">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="section-head-mono" style={{ color: "var(--accent-cyan)" }}>&gt; auraxis.innovation_pipeline()</span>
+            <h2 className="section-title-display" style={{ marginBottom: "3rem" }}>From Concept to Reality</h2>
+          </motion.div>
+
+          {/* Interactive Pipeline Graphic */}
+          <div className="pipeline-container" style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
+
+            {/* The Horizontal Steps */}
+            <div className="pipeline-flow" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", position: "relative", flexWrap: "wrap", gap: "2rem" }}>
+
+              {/* Connecting Background Line with running dash animation (SVG) */}
+              <div className="pipeline-connector-line" style={{ position: "absolute", top: "50px", left: "5%", right: "5%", height: "4px", background: "rgba(255,255,255,0.05)", zIndex: 1, borderRadius: "2px", pointerEvents: "none" }}>
+                <svg width="100%" height="100%" style={{ overflow: "visible" }}>
+                  <line
+                    x1="0%" y1="50%" x2="100%" y2="50%"
+                    stroke="var(--accent-cyan)"
+                    strokeWidth="2"
+                    strokeDasharray="10 15"
+                    style={{ animation: "running-dash 8s linear infinite", opacity: 0.4 }}
+                  />
+                </svg>
+              </div>
+
+              {[
+                { number: "01", name: "IDEATE", accent: "var(--accent-cyan)", desc: "Brainstorm high-impact solutions.", icon: "ideate" },
+                { number: "02", name: "DESIGN", accent: "var(--accent-violet)", desc: "Map architecture and mockups.", icon: "design" },
+                { number: "03", name: "CODE", accent: "var(--accent-pink)", desc: "Hack & integrate with API layers.", icon: "code" },
+                { number: "04", name: "PITCH", accent: "var(--accent-green)", desc: "Demonstrate working software.", icon: "pitch" },
+                { number: "05", name: "SCALE", accent: "var(--accent-orange)", desc: "Launch to devlinkhub network.", icon: "scale" }
+              ].map((step, idx) => {
+                const isActive = hoveredPipelineStep === idx;
+                return (
+                  <motion.div
+                    key={step.name}
+                    className={`pipeline-node-wrapper ${isActive ? "active" : ""}`}
+                    onMouseEnter={() => setHoveredPipelineStep(idx)}
+                    onClick={() => setHoveredPipelineStep(idx)}
+                    style={{
+                      flex: "1 1 150px",
+                      zIndex: 2,
+                      textAlign: "center",
+                      cursor: "pointer"
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {/* Ring Container */}
+                    <div
+                      className="pipeline-ring"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        borderRadius: "50%",
+                        background: isActive ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 0.01)",
+                        border: isActive ? `2px solid ${step.accent}` : "1px solid rgba(255, 255, 255, 0.1)",
+                        boxShadow: isActive ? `0 0 25px ${step.accent}44, inset 0 0 12px ${step.accent}22` : "none",
+                        margin: "0 auto 1rem auto",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                        position: "relative"
+                      }}
+                    >
+                      {renderPipelineStepIcon(step.icon, step.accent, isActive)}
+
+                      {/* Step Badge */}
+                      <div style={{
+                        position: "absolute",
+                        top: "-5px",
+                        right: "-5px",
+                        background: step.accent,
+                        color: "#0a0a0f",
+                        fontSize: "10px",
+                        fontWeight: "900",
+                        padding: "2px 6px",
+                        borderRadius: "10px",
+                        fontFamily: "var(--font-mono)"
+                      }}>
+                        {step.number}
+                      </div>
+                    </div>
+
+                    <h4 style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: "1.1rem",
+                      letterSpacing: "1px",
+                      color: isActive ? "#fff" : "rgba(255,255,255,0.6)",
+                      transition: "color 0.3s ease",
+                      marginBottom: "0.25rem"
+                    }}>
+                      {step.name}
+                    </h4>
+                    <p style={{ fontSize: "0.8rem", color: "var(--white-secondary)", maxWidth: "160px", margin: "0 auto", opacity: isActive ? 1 : 0.7 }}>
+                      {step.desc}
+                    </p>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Simulated Live Console Output based on Hovered Step */}
+            <div className="glass-card" style={{ padding: "1.5rem", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.06)", background: "rgba(10, 10, 15, 0.6)", backdropFilter: "blur(12px)" }}>
+              {/* Console Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255, 255, 255, 0.06)", paddingBottom: "8px", marginBottom: "12px", fontFamily: "var(--font-mono)", fontSize: "11px", color: "rgba(255, 255, 255, 0.4)" }}>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#ff5f56" }}></span>
+                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#ffbd2e" }}></span>
+                  <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#27c93f" }}></span>
+                  <span style={{ marginLeft: "6px" }}>pipeline_console.log</span>
+                </div>
+                <div>Status: ACTIVE</div>
+              </div>
+
+              {/* Console Output (Monospace terminal font) */}
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: "13px", lineHeight: "1.6", color: "#f8f8f2", minHeight: "90px" }}>
+                {hoveredPipelineStep === 0 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div style={{ color: "rgba(255,255,255,0.4)" }}>admin@devlinkhub:~ $ ./run_ideation.sh --auraxis-2026</div>
+                    <div><span style={{ color: "var(--accent-cyan)" }}>[INIT]</span> Scanning hacker brainwaves for high-impact proposals...</div>
+                    <div><span style={{ color: "var(--accent-cyan)" }}>[OK]</span> Found 42 target solutions matching current tracks.</div>
+                    <div><span style={{ color: "var(--accent-green)" }}>[SUCCESS]</span> Selected Concept: "Multi-agent cognitive collaboration network."</div>
+                  </motion.div>
+                )}
+                {hoveredPipelineStep === 1 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div style={{ color: "rgba(255,255,255,0.4)" }}>admin@devlinkhub:~ $ design-system --generate --theme=glassmorphism</div>
+                    <div><span style={{ color: "var(--accent-violet)" }}>[ASSETS]</span> Compiling layout tokens, glow radius: 20px, blur: 12px.</div>
+                    <div><span style={{ color: "var(--accent-violet)" }}>[LAYOUT]</span> Flexbox bento grid generated. Responsive behavior set to: TRUE.</div>
+                    <div><span style={{ color: "var(--accent-green)" }}>[SUCCESS]</span> High-fidelity mockups compiled and pushed to design repository.</div>
+                  </motion.div>
+                )}
+                {hoveredPipelineStep === 2 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div style={{ color: "rgba(255,255,255,0.4)" }}>admin@devlinkhub:~ $ npm run dev --build-auraxis --env=production</div>
+                    <div><span style={{ color: "var(--accent-pink)" }}>[VITE]</span> Bundling source files and optimizing chunk load sizes...</div>
+                    <div><span style={{ color: "var(--accent-pink)" }}>[COMPILING]</span> Transpiling React hooks + TypeScript modules to ESM.</div>
+                    <div><span style={{ color: "var(--accent-green)" }}>[SUCCESS]</span> Build succeeded. Live environment local server hosting at: http://localhost:5173/</div>
+                  </motion.div>
+                )}
+                {hoveredPipelineStep === 3 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div style={{ color: "rgba(255,255,255,0.4)" }}>admin@devlinkhub:~ $ pitch-deck --present --audience=judges</div>
+                    <div><span style={{ color: "var(--accent-green)" }}>[SLIDES]</span> Demonstrating system architecture & frontend micro-interactions.</div>
+                    <div><span style={{ color: "var(--accent-green)" }}>[DEMO]</span> Initiating live deployment and user flow checkout sequence... SUCCESS.</div>
+                    <div><span style={{ color: "var(--accent-green)" }}>[SUCCESS]</span> Evaluation completed. Panel rating: 9.8 / 10. Excellent.</div>
+                  </motion.div>
+                )}
+                {hoveredPipelineStep === 4 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div style={{ color: "rgba(255,255,255,0.4)" }}>admin@devlinkhub:~ $ deploy --prod --target=devlinkhub-network</div>
+                    <div><span style={{ color: "rgba(255, 159, 67, 1)" }}>[DOCKER]</span> Building production containers and pushing to AWS registry...</div>
+                    <div><span style={{ color: "rgba(255, 159, 67, 1)" }}>[CDN]</span> Propagating global edge nodes. Cache status: WARM.</div>
+                    <div><span style={{ color: "var(--accent-green)" }}>[STATUS]</span> Auraxis registration is active. Event telemetry reporting: 100% stable.</div>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -1756,12 +2061,12 @@ export default function Home() {
                   ) : (
                     <div className="organizer-avatar-placeholder">{org.init}</div>
                   )}
-                  <div>
+                  <div className="organizer-info">
                     <h4 className="organizer-name">{org.name}</h4>
                     <span className="organizer-role">{org.role}</span>
                   </div>
                   {/* View detail hint */}
-                  <div className="organizer-view-hint">View Profile →</div>
+                  <div className="organizer-view-hint"><span className="hint-text">View Profile</span><span className="hint-arrow">→</span></div>
                 </TiltGlassCard>
               </motion.div>
             ))}
@@ -1786,143 +2091,143 @@ export default function Home() {
 
             {/* Centering wrapper — separate from animation so transform doesn't clash */}
             <div className="org-modal-center-wrap">
-            <motion.div
-              key="org-modal"
-              className="org-spotlight-modal"
-              initial={{ opacity: 0, scale: 0.88 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ type: "spring", stiffness: 320, damping: 30 }}
-              role="dialog"
-              aria-modal="true"
-              aria-label={`${selectedOrg.name} profile`}
-            >
-              {/* Close button */}
-              <button
-                className="org-modal-close"
-                onClick={() => setSelectedOrg(null)}
-                aria-label="Close profile"
+              <motion.div
+                key="org-modal"
+                className="org-spotlight-modal"
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 320, damping: 30 }}
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${selectedOrg.name} profile`}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-
-              {/* ── PORTRAIT SECTION ── */}
-              <div className="org-modal-portrait-zone">
-                {/* Ambient glow behind image */}
-                <div
-                  className="org-modal-portrait-glow"
-                  style={{ background: `radial-gradient(circle, ${selectedOrg.badgeColor}30 0%, transparent 70%)` }}
-                />
-                {/* ── Portrait frame: rings + image share the same origin ── */}
-                <div className="org-modal-portrait-frame">
-                  {/* Dual glow rings — absolutely centered on the frame */}
-                  <div className="org-modal-ring org-modal-ring-outer" style={{ borderColor: `${selectedOrg.badgeColor}40` }} />
-                  <div className="org-modal-ring org-modal-ring-inner" style={{ borderColor: `${selectedOrg.badgeColor}80` }} />
-
-                  {/* Portrait image */}
-                  {selectedOrg.image ? (
-                    <img
-                      src={selectedOrg.image}
-                      alt={selectedOrg.name}
-                      className="org-modal-portrait"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <div
-                      className="org-modal-portrait-placeholder"
-                      style={{ background: `linear-gradient(135deg, ${selectedOrg.badgeColor}, var(--accent-violet))` }}
-                    >
-                      {selectedOrg.init}
-                    </div>
-                  )}
-                </div>
-
-                {/* Floating badge overlapping image bottom */}
-                <motion.span
-                  className="org-modal-floating-badge"
-                  style={{
-                    background: `${selectedOrg.badgeColor}18`,
-                    borderColor: `${selectedOrg.badgeColor}70`,
-                    color: selectedOrg.badgeColor,
-                    boxShadow: `0 0 16px ${selectedOrg.badgeColor}35`
-                  }}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.18, type: "spring", stiffness: 400, damping: 20 }}
+                {/* Close button */}
+                <button
+                  className="org-modal-close"
+                  onClick={() => setSelectedOrg(null)}
+                  aria-label="Close profile"
                 >
-                  {selectedOrg.badge}
-                </motion.span>
-              </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
 
-              {/* ── DETAILS SECTION ── */}
-              <div className="org-modal-details">
-                {/* Event label */}
-                <div className="org-modal-event-label">DevLinkHub AURAXIS 2026</div>
+                {/* ── PORTRAIT SECTION ── */}
+                <div className="org-modal-portrait-zone">
+                  {/* Ambient glow behind image */}
+                  <div
+                    className="org-modal-portrait-glow"
+                    style={{ background: `radial-gradient(circle, ${selectedOrg.badgeColor}30 0%, transparent 70%)` }}
+                  />
+                  {/* ── Portrait frame: rings + image share the same origin ── */}
+                  <div className="org-modal-portrait-frame">
+                    {/* Dual glow rings — absolutely centered on the frame */}
+                    <div className="org-modal-ring org-modal-ring-outer" style={{ borderColor: `${selectedOrg.badgeColor}40` }} />
+                    <div className="org-modal-ring org-modal-ring-inner" style={{ borderColor: `${selectedOrg.badgeColor}80` }} />
 
-                {/* Name */}
-                <h3 className="org-modal-name">{selectedOrg.name}</h3>
-
-                {/* Role */}
-                <div className="org-modal-role" style={{ color: selectedOrg.badgeColor }}>
-                  {selectedOrg.role}
-                </div>
-
-                {/* Divider */}
-                <div className="org-modal-divider" style={{ background: `linear-gradient(90deg, ${selectedOrg.badgeColor}, transparent)` }} />
-
-                {/* Social Links */}
-                {selectedOrg.socials && (
-                  <div className="org-modal-socials" style={{ marginBottom: "1.25rem", display: "flex", gap: "1rem" }}>
-                    {selectedOrg.socials.linkedin && selectedOrg.socials.linkedin !== "#" && (
-                      <a href={selectedOrg.socials.linkedin} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                        </svg>
-                      </a>
-                    )}
-                    {selectedOrg.socials.twitter && selectedOrg.socials.twitter !== "#" && (
-                      <a href={selectedOrg.socials.twitter} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                        </svg>
-                      </a>
-                    )}
-                    {selectedOrg.socials.instagram && selectedOrg.socials.instagram !== "#" && (
-                      <a href={selectedOrg.socials.instagram} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
-                      </a>
-                    )}
-                    {selectedOrg.socials.github && selectedOrg.socials.github !== "#" && (
-                      <a href={selectedOrg.socials.github} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-                        </svg>
-                      </a>
-                    )}
-                    {selectedOrg.socials.telegram && selectedOrg.socials.telegram !== "#" && (
-                      <a href={selectedOrg.socials.telegram} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <line x1="22" y1="2" x2="11" y2="13"></line>
-                          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                        </svg>
-                      </a>
+                    {/* Portrait image */}
+                    {selectedOrg.image ? (
+                      <img
+                        src={selectedOrg.image}
+                        alt={selectedOrg.name}
+                        className="org-modal-portrait"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div
+                        className="org-modal-portrait-placeholder"
+                        style={{ background: `linear-gradient(135deg, ${selectedOrg.badgeColor}, var(--accent-violet))` }}
+                      >
+                        {selectedOrg.init}
+                      </div>
                     )}
                   </div>
-                )}
 
-                {/* About */}
-                <div className="org-modal-section-label">About</div>
-                <p className="org-modal-bio">{selectedOrg.bio}</p>
-              </div>
-            </motion.div>
+                  {/* Floating badge overlapping image bottom */}
+                  <motion.span
+                    className="org-modal-floating-badge"
+                    style={{
+                      background: `${selectedOrg.badgeColor}18`,
+                      borderColor: `${selectedOrg.badgeColor}70`,
+                      color: selectedOrg.badgeColor,
+                      boxShadow: `0 0 16px ${selectedOrg.badgeColor}35`
+                    }}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.18, type: "spring", stiffness: 400, damping: 20 }}
+                  >
+                    {selectedOrg.badge}
+                  </motion.span>
+                </div>
+
+                {/* ── DETAILS SECTION ── */}
+                <div className="org-modal-details">
+                  {/* Event label */}
+                  <div className="org-modal-event-label">DevLinkHub AURAXIS 2026</div>
+
+                  {/* Name */}
+                  <h3 className="org-modal-name">{selectedOrg.name}</h3>
+
+                  {/* Role */}
+                  <div className="org-modal-role" style={{ color: selectedOrg.badgeColor }}>
+                    {selectedOrg.role}
+                  </div>
+
+                  {/* Divider */}
+                  <div className="org-modal-divider" style={{ background: `linear-gradient(90deg, ${selectedOrg.badgeColor}, transparent)` }} />
+
+                  {/* Social Links */}
+                  {selectedOrg.socials && (
+                    <div className="org-modal-socials" style={{ marginBottom: "1.25rem", display: "flex", gap: "1rem" }}>
+                      {selectedOrg.socials.linkedin && selectedOrg.socials.linkedin !== "#" && (
+                        <a href={selectedOrg.socials.linkedin} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                          </svg>
+                        </a>
+                      )}
+                      {selectedOrg.socials.twitter && selectedOrg.socials.twitter !== "#" && (
+                        <a href={selectedOrg.socials.twitter} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                          </svg>
+                        </a>
+                      )}
+                      {selectedOrg.socials.instagram && selectedOrg.socials.instagram !== "#" && (
+                        <a href={selectedOrg.socials.instagram} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                          </svg>
+                        </a>
+                      )}
+                      {selectedOrg.socials.github && selectedOrg.socials.github !== "#" && (
+                        <a href={selectedOrg.socials.github} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                          </svg>
+                        </a>
+                      )}
+                      {selectedOrg.socials.telegram && selectedOrg.socials.telegram !== "#" && (
+                        <a href={selectedOrg.socials.telegram} target="_blank" rel="noreferrer" className="org-social-icon" style={{ color: selectedOrg.badgeColor }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  {/* About */}
+                  <div className="org-modal-section-label">About</div>
+                  <p className="org-modal-bio">{selectedOrg.bio}</p>
+                </div>
+              </motion.div>
             </div>
           </>
         )}

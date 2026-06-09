@@ -1,0 +1,3 @@
+@echo off
+echo Starting Ngrok for DevLinkHub Frontend (Port 5173)...
+ngrok http 5173

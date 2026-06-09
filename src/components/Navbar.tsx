@@ -102,20 +102,21 @@ export default function Navbar() {
     }
   };
 
+  const mobileNavLinks = [
+    { label: "Tracks", id: "tracks" },
+    { label: "Schedule", id: "schedule" },
+    { label: "FAQ", id: "faq" },
+  ];
+
   return (
     <>
       <motion.nav
         className={`frosted-navbar ${isScrolled ? "scrolled" : ""}`}
         initial={{ x: "-50%", y: 0 }}
-        animate={{
-          x: "-50%",
-          y: 0,
-        }}
-        transition={{
-          duration: 0.3,
-          ease: "easeInOut",
-        }}
+        animate={{ x: "-50%", y: 0 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
+        {/* Logo — smaller on mobile via CSS */}
         <Link to="/" className="brand-wrapper" onClick={() => {
           setMobileOpen(false);
           window.scrollTo({ top: 0, behavior: "smooth" });
@@ -123,10 +124,12 @@ export default function Navbar() {
           <img
             src="/static/logos/DevLink_Text_Logo-white.png"
             alt="DevLinkHub Logo"
+            className="navbar-logo"
             style={{ height: "32px", width: "auto", display: "block", objectFit: "contain" }}
           />
         </Link>
 
+        {/* Desktop nav links (hidden on mobile) */}
         <ul className="navbar-links">
           {navLinks.map((item) => (
             <li key={item.id}>
@@ -141,6 +144,22 @@ export default function Navbar() {
           ))}
         </ul>
 
+        {/* Mobile inline links — Tracks / Schedule / FAQ only */}
+        <ul className="mobile-nav-links">
+          {mobileNavLinks.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={activeSection === item.id ? "active" : ""}
+                onClick={(e) => handleLinkClick(e, `#${item.id}`)}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Desktop right actions (hidden on mobile) */}
         <div className="nav-right-actions">
           <div className={`badge-devs-online ${isClosed ? "closed" : ""}`}>
             <span className={`pulsing-dot ${isClosed ? "red-dot" : ""}`}></span>
@@ -157,6 +176,7 @@ export default function Navbar() {
           )}
         </div>
 
+        {/* Hamburger — desktop only fallback, hidden on mobile */}
         <button
           className="hamburger-btn"
           aria-label="Open navigation drawer"
@@ -178,7 +198,7 @@ export default function Navbar() {
                 position: "fixed",
                 top: 0,
                 left: 0,
-                width: "100vw",
+                width: "100%",
                 height: "100vh",
                 background: "rgba(3, 5, 16, 0.4)",
                 backdropFilter: "blur(4px)",

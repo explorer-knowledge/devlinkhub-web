@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { API, BACKEND_URL } from "../services/api";
+import { load } from "@cashfreepayments/cashfree-js";
 import "../styles/register.css";
 
 /* ── Validation ── */
@@ -337,14 +338,7 @@ export default function Register() {
     }
   }, [checkoutTimeLeft, timerActive]);
 
-  /* ── Razorpay script ── */
-  useEffect(() => {
-    const s = document.createElement("script");
-    s.src = "https://checkout.razorpay.com/v1/checkout.js";
-    s.async = true;
-    document.body.appendChild(s);
-    return () => { if (document.body.contains(s)) document.body.removeChild(s); };
-  }, []);
+  /* ── Removed Razorpay Script ── */
 
   /* ── Mouse reactive glow ── */
   useEffect(() => {
@@ -672,27 +666,25 @@ export default function Register() {
     try {
       const res = await API.createOrder(payload);
       if (res.success) {
-        const options = {
-          key: res.keyId,
-          amount: res.amount,
-          currency: "INR",
-          name: "DevLinkHub Auraxis 2026",
-          description: "Hackathon Registration",
-          order_id: res.orderId,
-          timeout: 300,
-          modal: {
-            ondismiss: function() {
-              setIsSubmitting(false);
-              triggerToast("Registration session expired (5-minute limit). Please try again.");
-            }
-          },
-          handler: async function (response: any) {
+        const cashfree = await load({ mode: res.environment || 'sandbox' });
+        const checkoutOptions = {
+          paymentSessionId: res.paymentSessionId || '',
+          redirectTarget: "_modal" as const,
+        };
+        
+        cashfree.checkout(checkoutOptions).then(async (result: any) => {
+          if (result.error) {
+            setIsSubmitting(false);
+            triggerToast("Payment failed or cancelled: " + result.error.message);
+          }
+          
+          if (result.paymentDetails) {
             setIsSubmitting(true);
             try {
               const verifyRes = await API.verifyPayment({
                 orderId: res.orderId,
-                paymentId: response.razorpay_payment_id,
-                signature: response.razorpay_signature,
+                paymentId: "cashfree",
+                signature: "cashfree",
                 status: "success"
               });
 
@@ -701,7 +693,7 @@ export default function Register() {
                 status: verifyRes.success ? "success" : "failed",
                 registrationId: regId,
                 teamId: verifyRes.regId ?? null,
-                paymentId: response.razorpay_payment_id,
+                paymentId: "cashfree",
                 orderId: res.orderId,
                 finalAmount: payload.finalAmount,
                 appliedPromo: payload.appliedPromo,
@@ -722,19 +714,8 @@ export default function Register() {
             } finally {
               setIsSubmitting(false);
             }
-          },
-          prefill: {
-            name: payload.leaderName,
-            email: payload.email,
-            contact: payload.mobile
-          },
-          theme: { color: "#00f2fe" }
-        };
-        const rzp = new (window as any).Razorpay(options);
-        rzp.on("payment.failed", function (response: any) {
-          triggerToast("Payment failed: " + response.error.description);
+          }
         });
-        rzp.open();
       }
     } catch (e: any) {
       const errorMsg = e instanceof Error ? e.message : (e?.message || "Error initiating payment. Please try again.");
