@@ -382,7 +382,7 @@ const faqs = [
   { q: "Can I participate alone?", a: "Yes. Solo participation is allowed, and we support solo builders looking to form cohorts." },
   { q: "Can I create a team later?", a: "No. Teams must be finalized during registration. Once a team is registered, members cannot be added, removed, or replaced." },
   { q: "What is the team size?", a: "Teams can consist of 1 to 4 members. The pass covers the entire team." },
-  { q: "Where is the event venue?", a: "The event will be held at RNTU University, Bhopal, Madhya Pradesh. You can view the location on Google Maps here: https://maps.app.goo.gl/XKyiEvVoLczP3wGA9." },
+  { q: "Where is the event venue?", a: "The event venue is to be announced." },
   { q: "When will prizes be announced?", a: "Prize pool details and challenge themes will be revealed during the kickoff on Day 2." }
 ];
 
@@ -821,7 +821,7 @@ export default function Home() {
       { type: "wait", delay: 400 },
       { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Event: DevLinkHub Auraxis 2026\n" },
       { type: "wait", delay: 200 },
-      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Venue: RNTU University , Bhopal, Madhya Pradesh\n" },
+      { type: "print", text: "<span style='color:var(--accent-cyan)'>[OK]</span> Venue: To be announced\n" },
       { type: "wait", delay: 200 },
       {
         type: "print",
@@ -989,19 +989,16 @@ export default function Home() {
                 <span>Open for Students &amp; Developers</span>
               </div>
               <div>
-                <a
-                  href="https://maps.app.goo.gl/XKyiEvVoLczP3wGA9?g_st=atm"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "inherit", textDecoration: "none", cursor: "pointer" }}
+                <div
+                  style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "inherit" }}
                   className="hero-venue-link"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <span style={{ borderBottom: "1px dashed rgba(255, 255, 255, 0.4)" }}>RNTU University , Bhopal, Madhya Pradesh</span>
-                </a>
+                  <span>To be announced</span>
+                </div>
               </div>
             </div>
           </motion.div>
