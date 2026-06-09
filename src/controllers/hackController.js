@@ -112,7 +112,7 @@ async function initiatePayment(req, res) {
     const cfResponse = await cashfree.PGCreateOrder(orderRequest);
     const order = cfResponse.data;
 
-    console.log(`order request`, order);
+    // console.log(`order request`, order);
     // Store pending registration in Redis (TTL: 1 hour)
     const redisKey = `pending_registration:${order.order_id}`;
     const payload = {
