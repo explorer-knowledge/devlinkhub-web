@@ -39,31 +39,31 @@ async function initiatePayment(req, res) {
     const cfOrderId = `dlh_${Date.now()}_${safeLocal}`;
 
     // Before creating the Cashfree order, check and acquire Redis locks for emails and phones
-    const lockTTL = 1200; // 20 minutes (exceeds the 16-minute order expiry)
+    // const lockTTL = 1200; // 20 minutes (exceeds the 16-minute order expiry)
 
-    for (const p of participants) {
-      const emailKey = `lock:email:${p.email.trim().toLowerCase()}`;
-      const phoneKey = `lock:phone:${p.phone.trim()}`;
+    // for (const p of participants) {
+    //   const emailKey = `lock:email:${p.email.trim().toLowerCase()}`;
+    //   const phoneKey = `lock:phone:${p.phone.trim()}`;
 
-      // Check if locks exist
-      const existingEmailLock = await redis.get(emailKey);
-      const existingPhoneLock = await redis.get(phoneKey);
+    //   // Check if locks exist
+    //   const existingEmailLock = await redis.get(emailKey);
+    //   const existingPhoneLock = await redis.get(phoneKey);
 
-      if (existingEmailLock || existingPhoneLock) {
-        return res.status(409).json({ 
-          error: `Registration checkouts are already active for email "${p.email}" or phone "${p.phone}". Please wait 20 minutes and try again.` 
-        });
-      }
-    }
+    //   if (existingEmailLock || existingPhoneLock) {
+    //     return res.status(409).json({ 
+    //       error: `Please wait 20 minutes and try again.` 
+    //     });
+    //   }
+    // }
 
-    // Acquire locks for all participants
-    for (const p of participants) {
-      const emailKey = `lock:email:${p.email.trim().toLowerCase()}`;
-      const phoneKey = `lock:phone:${p.phone.trim()}`;
+    // // Acquire locks for all participants
+    // for (const p of participants) {
+    //   const emailKey = `lock:email:${p.email.trim().toLowerCase()}`;
+    //   const phoneKey = `lock:phone:${p.phone.trim()}`;
 
-      await redis.setex(emailKey, lockTTL, cfOrderId);
-      await redis.setex(phoneKey, lockTTL, cfOrderId);
-    }
+    //   await redis.setex(emailKey, lockTTL, cfOrderId);
+    //   await redis.setex(phoneKey, lockTTL, cfOrderId);
+    // }
 
 
 
@@ -305,11 +305,11 @@ async function handleWebhook(req, res) {
     await redis.lpush('registration_queue', JSON.stringify(queue));
     await redis.del(redisKey);
 
-      // Clean up the temporary locks since the registration is now permanent
-    for (const p of payload.participants) {
-      await redis.del(`lock:email:${p.email}`);
-      await redis.del(`lock:phone:${p.phone}`);
-    }
+    // Clean up the temporary locks since the registration is now permanent
+    // for (const p of payload.participants) {
+    //   await redis.del(`lock:email:${p.email}`);
+    //   await redis.del(`lock:phone:${p.phone}`);
+    // }
     // console.log(...payload);
     addOrderIdtoCache(payload);
     addEventIdtoCache(paymentId);
