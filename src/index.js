@@ -20,11 +20,13 @@ const PORT = process.env.PORT || 10003;
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL,
-    "http://localhost:5173",
   ],
   credentials: true,
 }));
-app.use(globalLimiter); // ─── Global rate limit: 120 req/min per IP ───────────
+app.use((req, res, next) => {
+  if (req.path === '/api/hackathon/webhook') return next();
+  globalLimiter(req, res, next);
+}); // ─── Global rate limit: 120 req/min per IP ───────────
 // app.use(cors());
 
 // ─── Cloudflare Origin Guard ───────────────────────────────────────────────────
