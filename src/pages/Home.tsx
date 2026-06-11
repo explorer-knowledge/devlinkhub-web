@@ -1447,6 +1447,90 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SECTION 3.6: FEATURED SPEAKER */}
+      <section className="speaker-section" style={{ padding: "6rem 2rem", position: "relative", zIndex: 10, background: "rgba(10, 10, 15, 0.4)" }}>
+        <div className="section-wrapper">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="section-head-mono" style={{ color: "var(--accent-pink)" }}>&gt; auraxis.featured_speaker()</span>
+            <h2 className="section-title-display" style={{ marginBottom: "3rem" }}>Featured Speaker</h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <TiltGlassCard className="speaker-glass-card" style={{ padding: 0, overflow: "hidden" }}>
+              <div className="speaker-card-inner">
+                {/* Image side */}
+                <div className="speaker-img-container">
+                  <img src="/static/chavi_garg.jpg" alt="Chhavi Garg" className="speaker-img" />
+                  <div className="speaker-img-overlay"></div>
+                  <div className="speaker-badge-floating">
+                    <span>FEATURED SPEAKER</span>
+                  </div>
+                </div>
+
+                {/* Content side */}
+                <div className="speaker-content">
+                  <div className="speaker-meta">
+                    <span className="speaker-tag">AURAXIS 2026 GUEST</span>
+                    <h3 className="speaker-name">Chhavi Garg</h3>
+                    <p className="speaker-title">Founder & CEO, Bharat XR | Co-Founder, Arexa & StartupTale</p>
+                  </div>
+
+                  <p className="speaker-bio">
+                    An immersive technology pioneer, entrepreneur, and AR creator. As the founder of 
+                    <strong> Bharat XR</strong> and co-founder of <strong>Arexa</strong>, she has empowered over 
+                    <strong> 80,000+ students</strong> across India, building one of the nation's largest immersive 
+                    technology communities. Recognized as a Snapchat Business Partner (Snap AR), Chhavi is driving 
+                    the next wave of spatial computing and XR innovation.
+                  </p>
+
+                  <div className="speaker-highlights">
+                    <div className="highlight-item">
+                      <span className="highlight-count" style={{ color: "var(--accent-cyan)" }}>80k+</span>
+                      <span className="highlight-label">Students Trained</span>
+                    </div>
+                    <div className="highlight-item">
+                      <span className="highlight-count" style={{ color: "var(--accent-green)" }}>Snap AR</span>
+                      <span className="highlight-label">Official Partner</span>
+                    </div>
+                    <div className="highlight-item">
+                      <span className="highlight-count" style={{ color: "var(--accent-pink)" }}>XR Pioneer</span>
+                      <span className="highlight-label">Community Head</span>
+                    </div>
+                  </div>
+
+                  <div className="speaker-actions">
+                    <a 
+                      href="https://www.linkedin.com/in/chhavigg?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="btn-primary linkedin-btn"
+                      style={{ fontSize: "14px", padding: "10px 24px" }}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "4px" }}>
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                        <rect x="2" y="9" width="4" height="12" />
+                        <circle cx="4" cy="4" r="2" />
+                      </svg>
+                      Connect on LinkedIn
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </TiltGlassCard>
+          </motion.div>
+        </div>
+      </section>
+
       {/* SECTION 3.7: PIPELINE VISUAL GRAPHIC */}
       <section className="pipeline-section" style={{ padding: "5rem 2rem 5rem 2rem", position: "relative", zIndex: 10, background: "rgba(10, 10, 15, 0.2)" }}>
         <div className="section-wrapper">
