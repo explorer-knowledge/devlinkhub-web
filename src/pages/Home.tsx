@@ -1528,6 +1528,19 @@ export default function Home() {
               </div>
             </TiltGlassCard>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            style={{ textAlign: "center", marginTop: "3rem", fontFamily: "var(--font-mono)", fontSize: "14px", color: "var(--white-secondary)" }}
+          >
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <span className="pulsing-dot" style={{ background: "var(--accent-cyan)", boxShadow: "0 0 8px var(--accent-cyan)" }}></span>
+              More speakers & mentors to be announced soon...
+            </span>
+          </motion.div>
         </div>
       </section>
 
