@@ -27,3 +27,10 @@ temp.sh
 # Backend repo — separate git repository, must NOT be tracked here
 # (was accidentally stored as a phantom git submodule causing Vercel build warning)
 backend/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
